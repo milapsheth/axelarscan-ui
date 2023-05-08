@@ -1,0 +1,163 @@
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import PageVisibility from 'react-page-visibility'
+
+import Navbar from '../../components/navbar'
+import Footer from '../../components/footer'
+import meta from '../../lib/meta'
+import { THEME, PAGE_VISIBLE } from '../../reducers/types'
+
+export default ({ children }) => {
+  const dispatch = useDispatch()
+  const {
+    preferences,
+  } = useSelector(
+    state => (
+      {
+        preferences: state.preferences,
+      }
+    ),
+    shallowEqual,
+  )
+  const {
+    theme,
+  } = { ...preferences }
+
+  const router = useRouter()
+  const {
+    asPath,
+  } = { ...router }
+
+  useEffect(
+    () => {
+      if (typeof window !== 'undefined') {
+        const _theme = localStorage.getItem(THEME)
+        if (_theme && _theme !== theme) {
+          dispatch({ type: THEME, value: _theme })
+        }
+      }
+    },
+    [theme],
+  )
+
+  const {
+    title,
+    description,
+    image,
+    url,
+  } = { ...meta(asPath) }
+
+  return (
+    <>
+      <Head>
+        <title>
+          {title}
+        </title>
+        <meta
+          name="og:site_name"
+          property="og:site_name"
+          content={title}
+        />
+        <meta
+          name="og:title"
+          property="og:title"
+          content={title}
+        />
+        <meta
+          itemProp="name"
+          content={title}
+        />
+        <meta
+          itemProp="headline"
+          content={title}
+        />
+        <meta
+          itemProp="publisher"
+          content={title}
+        />
+        <meta
+          name="twitter:title"
+          content={title}
+        />
+
+        <meta
+          name="description"
+          content={description}
+        />
+        <meta
+          name="og:description"
+          property="og:description"
+          content={description}
+        />
+        <meta
+          itemProp="description"
+          content={description}
+        />
+        <meta
+          name="twitter:description"
+          content={description}
+        />
+
+        <meta
+          name="og:image"
+          property="og:image"
+          content={image}
+        />
+        <meta
+          itemProp="thumbnailUrl"
+          content={image}
+        />
+        <meta
+          itemProp="image"
+          content={image}
+        />
+        <meta
+          name="twitter:image"
+          content={image}
+        />
+        <link
+          rel="image_src"
+          href={image}
+        />
+
+        <meta
+          name="og:url"
+          property="og:url"
+          content={url}
+        />
+        <meta
+          itemProp="url"
+          content={url}
+        />
+        <meta
+          name="twitter:url"
+          content={url}
+        />
+        <link
+          rel="canonical"
+          href={url}
+        />
+      </Head>
+      <PageVisibility onChange={v => dispatch({ type: PAGE_VISIBLE, value: v })}>
+        <div
+          data-layout="layout"
+          data-background={theme}
+          data-navbar={theme}
+          className={`min-h-screen antialiased disable-scrollbars text-sm ${theme}`}
+        >
+          <div className="wrapper">
+            <div className="main w-full bg-white dark:bg-black">
+              <Navbar />
+              <div className="w-full px-2 sm:px-4">
+                {children}
+              </div>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      </PageVisibility>
+    </>
+  )
+}
