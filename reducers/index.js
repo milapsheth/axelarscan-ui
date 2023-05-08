@@ -5,12 +5,12 @@ import chains from './chains'
 import assets from './assets'
 import ens from './ens'
 import accounts from './accounts'
+import chain from './chain'
 import status from './status'
 import maintainers from './maintainers'
 import tvl from './tvl'
 import validators from './validators'
 import profiles from './profiles'
-import rpcs from './rpcs'
 import wallet from './wallet'
 
 export default combineReducers(
@@ -20,12 +20,12 @@ export default combineReducers(
     assets,
     ens,
     accounts,
+    chain,
     status,
     maintainers,
     tvl,
     validators,
     profiles,
-    rpcs,
     wallet,
   },
 )
