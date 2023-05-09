@@ -17,13 +17,13 @@ import '../styles/globals.css'
 import '../styles/animate.css'
 import '../styles/layout.css'
 import '../styles/tailwind.css'
+import '../styles/material.css'
 import '../styles/ant.css'
 import '../styles/components/button.css'
 import '../styles/components/dropdown.css'
 import '../styles/components/forms.css'
 import '../styles/components/modals.css'
 import '../styles/components/navbar.css'
-import '../styles/components/notifications.css'
 import '../styles/components/nprogress.css'
 import '../styles/components/recharts.css'
 import '../styles/components/table.css'
@@ -98,7 +98,7 @@ export default (
         />
         {process.env.NEXT_PUBLIC_GA_TRACKING_ID && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}/>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`} />
             <script
               dangerouslySetInnerHTML={{
                 __html: `

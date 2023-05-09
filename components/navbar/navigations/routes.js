@@ -38,7 +38,7 @@ export default toArray(
     {
       title: 'Resources',
       path: '/resources',
-      others_paths: ['/assets'],
+      others_paths: ['/resources/[by]', '/assets'],
     },
   ]
 )

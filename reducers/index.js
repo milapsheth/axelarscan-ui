@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 import preferences from './preferences'
 import chains from './chains'
 import assets from './assets'
+import contracts from './contracts'
 import ens from './ens'
 import accounts from './accounts'
 import chain from './chain'
@@ -18,6 +19,7 @@ export default combineReducers(
     preferences,
     chains,
     assets,
+    contracts,
     ens,
     accounts,
     chain,

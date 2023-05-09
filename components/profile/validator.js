@@ -94,6 +94,8 @@ export default (
     _image ?
       <Image
         src={_image}
+        width={24}
+        height={24}
         className={`w-6 h-6 rounded-full ${className}`}
       /> :
       <div className={`flex items-center justify-center ${className}`}>

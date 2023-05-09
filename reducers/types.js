@@ -2,11 +2,10 @@
 export const THEME = 'theme'
 export const PAGE_VISIBLE = 'page_visible'
 
-// chains
+// config
 export const CHAINS_DATA = 'chains_data'
-
-// assets
 export const ASSETS_DATA = 'assets_data'
+export const CONTRACTS_DATA = 'contracts_data'
 
 // naming
 export const ENS_DATA = 'ens_data'

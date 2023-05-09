@@ -15,14 +15,15 @@ export default (
     src,
     alt = '',
     ...rest
-  }
+  },
 ) => {
   return (
     <Image
       alt={alt}
       { ...rest }
       src={src}
-      loader={ () => loader({ ...rest, src }) }
+      loader={() => loader({ ...rest, src })}
+      unoptimized={true}
     />
   )
 }

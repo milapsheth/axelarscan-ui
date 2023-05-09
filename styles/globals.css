@@ -33,10 +33,10 @@ h6 {
 }
 
 code {
-  @apply inline rounded font-mono font-semibold p-1;
+  @apply inline rounded font-semibold p-1;
 }
 pre {
-  @apply block rounded whitespace-pre-wrap font-mono font-semibold p-2;
+  @apply block rounded whitespace-pre-wrap font-semibold p-2;
 }
 
 ul {

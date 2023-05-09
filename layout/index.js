@@ -11,6 +11,7 @@ import Footer from '../components/footer'
 import meta from '../lib/meta'
 import { getChains, getAssets } from '../lib/api/config'
 import { getTokensPrice } from '../lib/api/tokens'
+import { getContracts } from '../lib/api/gmp'
 import { getENS } from '../lib/api/ens'
 import { getChainMaintainers, getEscrowAddresses } from '../lib/api/axelar'
 import { stakingParams, bankSupply, stakingPool, slashingParams } from '../lib/api/lcd'
@@ -20,7 +21,7 @@ import { searchHeartbeats, getValidators, getValidatorsVotes } from '../lib/api/
 import { getKeyType } from '../lib/key'
 import { NUM_BLOCKS_PER_HEARTBEAT, startBlock, endBlock } from '../lib/heartbeat'
 import { toArray, equalsIgnoreCase } from '../lib/utils'
-import { THEME, PAGE_VISIBLE, CHAINS_DATA, ASSETS_DATA, ENS_DATA, ACCOUNTS_DATA, CHAIN_DATA, STATUS_DATA, MAINTAINERS_DATA, TVL_DATA, VALIDATORS_DATA } from '../reducers/types'
+import { THEME, PAGE_VISIBLE, CHAINS_DATA, ASSETS_DATA, CONTRACTS_DATA, ENS_DATA, ACCOUNTS_DATA, CHAIN_DATA, STATUS_DATA, MAINTAINERS_DATA, TVL_DATA, VALIDATORS_DATA } from '../reducers/types'
 
 export default ({ children }) => {
   const dispatch = useDispatch()
@@ -109,6 +110,15 @@ export default ({ children }) => {
 
         dispatch({ type: ASSETS_DATA, value: assets })
       }
+      getData()
+    },
+    [],
+  )
+
+  // contracts
+  useEffect(
+    () => {
+      const getData = async () => dispatch({ type: CONTRACTS_DATA, value: await getContracts() })
       getData()
     },
     [],
@@ -476,7 +486,7 @@ export default ({ children }) => {
           <div className="wrapper">
             <div className="main w-full bg-white dark:bg-black">
               <Navbar />
-              <div className="w-full px-2 sm:px-4">
+              <div className="w-full">
                 {children}
               </div>
             </div>
