@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Railway:200,300,400,500,600,700,800,900&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Lexend Deca:200,300,400,500,600,700,800,900&display=swap");
 
 html {
   scroll-behavior: smooth;
-  font-family: 'Railway', sans-serif !important;
+  font-family: 'Lexend Deca', sans-serif !important;
 }
 
 h1 {
@@ -29,7 +29,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-sans;
+  /* @apply font-sans; */
 }
 
 code {
@@ -55,9 +55,9 @@ button {
   }
 }
 
-/**
- * hide scrollbars
- */
+/*******************
+ * hide scrollbars *
+ *******************/
 ::-webkit-scrollbar {
   display: none;
   width: 0 !important;
@@ -79,7 +79,7 @@ button {
 }
 
 body {
-  @apply font-sans antialiased text-sm disable-scrollbars;
+  @apply antialiased text-sm disable-scrollbars;
 }
 
 [data-background="light"] {
@@ -133,6 +133,10 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.wrapper {
+  min-height: calc(100vh - 64px);
+}
+
 .text-2xs {
   font-size: .65rem;
 }
@@ -157,5 +161,5 @@ input[type=number] {
 }
 
 .status-message a {
-  @apply text-blue-500 dark:text-blue-600 font-medium;
+  @apply underline font-bold;
 }

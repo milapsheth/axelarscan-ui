@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { toArray } from '../utils'
+import { toArray } from '../lib/utils'
 import { ACCOUNTS_DATA } from './types'
 
 export default (

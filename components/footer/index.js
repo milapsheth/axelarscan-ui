@@ -23,14 +23,14 @@ export default () => {
   } = { ..._package }
 
   return (
-    <div className={`${theme} footer flex flex-col md:flex-row items-center space-y-2.5 sm:space-y-0 p-3 3xl:text-2xl 3xl:p-8`}>
+    <div className={`${theme} footer flex flex-col md:flex-row items-end space-y-2.5 sm:space-y-0 p-3 3xl:text-2xl 3xl:p-8`} style={{ minHeight: '64px' }}>
       <div className="w-full md:w-1/2 lg:w-1/3 min-w-max flex items-center justify-center md:justify-start space-x-1">
         {dependencies?.['@axelar-network/axelarjs-sdk'] && (
           <a
             href={`${process.env.NEXT_PUBLIC_DOC_URL}/dev/axelarjs-sdk/intro`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 font-medium"
+            className="text-blue-400 dark:text-white font-medium"
           >
             SDK v{dependencies['@axelar-network/axelarjs-sdk'].replace('^', '')}
           </a>
@@ -45,7 +45,7 @@ export default () => {
           href={process.env.NEXT_PUBLIC_WEBSITE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 font-medium"
+          className="text-blue-400 dark:text-white font-medium"
         >
           {process.env.NEXT_PUBLIC_PROJECT_NAME}.
         </a>

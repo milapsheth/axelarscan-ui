@@ -128,7 +128,7 @@ export default (
                     enableExplorer={true}
                     themeMode="dark"
                     themeVariables={{
-                      '--w3m-font-family': 'Railway, sans-serif',
+                      '--w3m-font-family': 'Lexend Deca, sans-serif',
                       '--w3m-logo-image-url': `${process.env.NEXT_PUBLIC_APP_URL}/logos/logo_white.png`,
                     }}
                   />

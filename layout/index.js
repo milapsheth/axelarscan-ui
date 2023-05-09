@@ -6,19 +6,21 @@ import PageVisibility from 'react-page-visibility'
 import { utils } from 'ethers'
 import _ from 'lodash'
 
-import Navbar from '../../components/navbar'
-import Footer from '../../components/footer'
-import meta from '../../lib/meta'
-import { getChains, getAssets } from '../../lib/api/config'
-import { getTokenPrices } from '../../lib/api/tokens'
-import { getENS } from '../../lib/api/ens'
-import { getChainMaintainers, getEscrowAddresses } from '../../lib/api/axelar'
-import { stakingParams, bankSupply, stakingPool, slashingParams } from '../../lib/api/lcd'
-import { getStatus } from '../../lib/api/rpc'
-import { getTVL } from '../../lib/api/tvl'
-import { getKeyType } from '../../lib/key'
-import { toArray } from '../../lib/utils'
-import { THEME, PAGE_VISIBLE, CHAINS_DATA, ASSETS_DATA, ENS_DATA, ACCOUNTS_DATA, CHAIN_DATA, STATUS_DATA, MAINTAINERS_DATA, TVL_DATA } from '../../reducers/types'
+import Navbar from '../components/navbar'
+import Footer from '../components/footer'
+import meta from '../lib/meta'
+import { getChains, getAssets } from '../lib/api/config'
+import { getTokensPrice } from '../lib/api/tokens'
+import { getENS } from '../lib/api/ens'
+import { getChainMaintainers, getEscrowAddresses } from '../lib/api/axelar'
+import { stakingParams, bankSupply, stakingPool, slashingParams } from '../lib/api/lcd'
+import { getStatus } from '../lib/api/rpc'
+import { getTVL } from '../lib/api/tvl'
+import { searchHeartbeats, getValidators, getValidatorsVotes } from '../lib/api/validators'
+import { getKeyType } from '../lib/key'
+import { NUM_BLOCKS_PER_HEARTBEAT, startBlock, endBlock } from '../lib/heartbeat'
+import { toArray, equalsIgnoreCase } from '../lib/utils'
+import { THEME, PAGE_VISIBLE, CHAINS_DATA, ASSETS_DATA, ENS_DATA, ACCOUNTS_DATA, CHAIN_DATA, STATUS_DATA, MAINTAINERS_DATA, TVL_DATA, VALIDATORS_DATA } from '../reducers/types'
 
 export default ({ children }) => {
   const dispatch = useDispatch()
@@ -27,6 +29,8 @@ export default ({ children }) => {
     chains,
     assets,
     ens,
+    status,
+    validators,
   } = useSelector(
     state => (
       {
@@ -34,6 +38,8 @@ export default ({ children }) => {
         chains: state.chains,
         assets: state.assets,
         ens: state.ens,
+        status: state.status,
+        validators: state.validators,
       }
     ),
     shallowEqual,
@@ -50,6 +56,12 @@ export default ({ children }) => {
   const {
     ens_data,
   } = { ...ens }
+  const {
+    status_data,
+  } = { ...status }
+  const {
+    validators_data,
+  } = { ...validators }
 
   const router = useRouter()
   const {
@@ -87,7 +99,7 @@ export default ({ children }) => {
     () => {
       const getData = async () => {
         const assets = toArray(await getAssets())
-        const prices = await getTokenPrices(assets.map(a => a.symbol))
+        const prices = await getTokensPrice({ symbols: assets.map(a => a.symbol) })
 
         if (toArray(prices).length > 0) {
           for (let i = 0; i < prices.length; i++) {
@@ -265,6 +277,95 @@ export default ({ children }) => {
       return () => clearInterval(interval)
     },
     [pathname, assets_data],
+  )
+
+  // validators
+  useEffect(
+    () => {
+      const exclude_paths = ['/address', '/interchain', '/transfer', '/gmp', '/batch', '/assets']
+
+      const getVoteCount = (vote, votes) => _.sum(Object.values({ ...votes }).map(v => _.last(Object.entries({ ...v?.votes }).find(([_k, _v]) => equalsIgnoreCase(_k, vote?.toString()))) || 0))
+
+      const getData = async is_interval => {
+        const {
+          latest_block_height,
+        } = { ...status_data }
+
+        if (is_interval || (pathname && exclude_paths.findIndex(p => pathname.startsWith(p)) < 0 && latest_block_height && !validators_data)) {
+          let {
+            data,
+          } = { ...await getValidators() }
+
+          if (data) {
+            dispatch({ type: VALIDATORS_DATA, value: data })
+
+            if (pathname?.startsWith('/validator')) {
+              const fromBlock = startBlock(latest_block_height - NUM_BLOCKS_PER_HEARTBEAT)
+              const toBlock = endBlock(latest_block_height)
+              const totalHeartbeat = Math.floor((toBlock - fromBlock) / NUM_BLOCKS_PER_HEARTBEAT) + 1
+
+              let response =
+                await searchHeartbeats(
+                  {
+                    fromBlock,
+                    toBlock,
+                    aggs: {
+                      heartbeats: {
+                        terms: { field: 'sender.keyword', size: 1000 },
+                        aggs: { period_height: { terms: { field: 'period_height', size: 1000 } } },
+                      },
+                    },
+                    size: 0,
+                  }
+                )
+
+              if (response) {
+                data =
+                  data.map(d => {
+                    const {
+                      broadcaster_address,
+                    } = { ...d }
+
+                    d.heartbeats_uptime = totalHeartbeat > 0 ? (response.find(_d => equalsIgnoreCase(_d.key, broadcaster_address))?.count || 0) * 100 / totalHeartbeat : 0
+                    d.heartbeats_uptime = d.heartbeats_uptime > 100 ? 100 : d.heartbeats_uptime
+
+                    return d
+                  })
+
+                dispatch({ type: VALIDATORS_DATA, value: data })
+              }
+
+              response = await getValidatorsVotes()
+
+              if (response) {
+                data =
+                  data.map(d => {
+                    const {
+                      broadcaster_address,
+                    } = { ...d }
+
+                    d.votes = { ...response.data?.[broadcaster_address] }
+                    d.total_votes = d.votes.total || 0
+                    d.total_yes_votes = getVoteCount(true, d.votes.chains)
+                    d.total_no_votes = getVoteCount(false, d.votes.chains)
+                    d.total_unsubmitted_votes = getVoteCount('unsubmitted', d.votes.chains)
+                    d.total_polls = response.total || 0
+
+                    return d
+                  })
+
+                dispatch({ type: VALIDATORS_DATA, value: data })
+              }
+            }
+          }
+        }
+      }
+
+      getData()
+      const interval = setInterval(() => getData(true), 5 * 60 * 1000)
+      return () => clearInterval(interval)
+    },
+    [pathname, status_data, validators_data],
   )
 
   const {

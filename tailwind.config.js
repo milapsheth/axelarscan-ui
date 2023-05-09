@@ -5,4 +5,11 @@ module.exports = {
     './styles/globals.css',
   ],
   darkMode: 'class',
+  theme: {
+    extend: {
+      screens: {
+        '3xl': '3000px',
+      },
+    },
+  },
 }

@@ -72,14 +72,13 @@ export default (
         )}
         <div className="flex flex-col">
           {url ?
-            <Link href={typeof url === 'string' ? url : `/account/${address}`}>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
-              >
-                {nameComponent}
-              </a>
+            <Link
+              href={typeof url === 'string' ? url : `/account/${address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+            >
+              {nameComponent}
             </Link> :
             <div className="tracking-wider text-blue-500 dark:text-blue-500 font-medium">
               {nameComponent}
@@ -97,14 +96,13 @@ export default (
       </div> :
       url ?
         <div className="flex items-center space-x-1">
-          <Link href={typeof url === 'string' ? url : `/account/${address}`}>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
-            >
-              {ellipse(address, ellipseLength, prefix)}
-            </a>
+          <Link
+            href={typeof url === 'string' ? url : `/account/${address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+          >
+            {ellipse(address, ellipseLength, prefix)}
           </Link>
           <Copy value={address} />
         </div> :

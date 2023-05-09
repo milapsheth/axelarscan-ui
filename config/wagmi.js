@@ -17,10 +17,10 @@ export const EVM_CHAIN_CONFIGS =
       { _id: 'aurora', ...aurora },
       { _id: 'arbitrum', ...arbitrum },
       { _id: 'optimism', ...optimism },
-      { _id: 'base', {} },
+      // { _id: 'base', id: 8453, network: 'base', name: 'Base', nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }, rpcUrls: { default: { http: [''] } }, blockExplorers: { default: { name: 'Basescan', url: 'https://basescan.org' } } },
       { _id: 'celo', ...celo },
-      { _id: 'kava', {} },
-      { _id: 'filecoin', {} },
+      { _id: 'kava', id: 2222, network: 'kava', name: 'Kava', nativeCurrency: { name: 'Kava', symbol: 'KAVA', decimals: 18 }, rpcUrls: { default: { http: ['https://evm.data.axelar.kava.io', 'https://evm.kava.io', 'https://evm2.kava.io'] } }, blockExplorers: { default: { name: 'Kava', url: 'https://explorer.kava.io' } } },
+      { _id: 'filecoin', id: 314, network: 'filecoin', name: 'Filecoin', nativeCurrency: { name: 'Filecoin', symbol: 'FIL', decimals: 18 }, rpcUrls: { default: { http: ['https://rpc.ankr.com/filecoin', 'https://api.node.glif.io'] } }, blockExplorers: { default: { name: 'Filecoin', url: 'https://filfox.info' } } },
     ] :
     [
       { _id: 'goerli', ...goerli },
@@ -32,10 +32,10 @@ export const EVM_CHAIN_CONFIGS =
       { _id: 'aurora', ...auroraTestnet },
       { _id: 'arbitrum', ...arbitrumGoerli },
       { _id: 'optimism', ...optimismGoerli },
-      { _id: 'base', {} },
+      { _id: 'base', id: 84531, network: 'base', name: 'Base', nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }, rpcUrls: { default: { http: ['https://goerli.base.org'] } }, blockExplorers: { default: { name: 'Basescan', url: 'https://goerli.basescan.org' } } },
       { _id: 'celo', ...celoAlfajores },
-      { _id: 'kava', {} },
-      { _id: 'filecoin', {} },
+      { _id: 'kava', id: 2221, network: 'kava', name: 'Kava', nativeCurrency: { name: 'Kava', symbol: 'KAVA', decimals: 18 }, rpcUrls: { default: { http: ['https://evm.testnet.kava.io'] } }, blockExplorers: { default: { name: 'Kava', url: 'https://explorer.testnet.kava.io' } } },
+      { _id: 'filecoin', id: 3141, network: 'filecoin', name: 'Filecoin', nativeCurrency: { name: 'Filecoin', symbol: 'FIL', decimals: 18 }, rpcUrls: { default: { http: ['https://rpc.ankr.com/filecoin_testnet', 'https://api.hyperspace.node.glif.io/rpc/v1'] } }, blockExplorers: { default: { name: 'Filecoin', url: 'https://hyperspace.filfox.info' } } },
     ]
 
 const { webSocketProvider, provider } = configureChains(EVM_CHAIN_CONFIGS, [publicProvider()])
