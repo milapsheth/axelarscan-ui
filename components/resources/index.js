@@ -6,6 +6,7 @@ import _ from 'lodash'
 import { TbFileSearch } from 'react-icons/tb'
 
 import Image from '../image'
+import AddMetamask from '../metamask/add-button'
 import ValueBox from '../value-box'
 import { toArray, getTitle } from '../../lib/utils'
 
@@ -132,6 +133,9 @@ export default () => {
                               <TbFileSearch size={24} />
                             </a>
                           </Tooltip>
+                        )}
+                        {chain_type === 'evm' && (
+                          <AddMetamask chain={id} />
                         )}
                       </div>
                     </div>

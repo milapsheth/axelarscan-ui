@@ -13,6 +13,7 @@ import tvl from './tvl'
 import validators from './validators'
 import profiles from './profiles'
 import wallet from './wallet'
+import web3 from './web3'
 
 export default combineReducers(
   {
@@ -29,5 +30,6 @@ export default combineReducers(
     validators,
     profiles,
     wallet,
+    web3,
   },
 )

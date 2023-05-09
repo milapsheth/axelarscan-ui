@@ -31,5 +31,8 @@
   }
   .card-footer {
     @apply mt-auto pt-0;
+    div {
+      @apply select-auto;
+    }
   }
 }
