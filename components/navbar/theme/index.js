@@ -1,5 +1,5 @@
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
-import { RiMoonFill, RiSunLine } from 'react-icons/ri'
+import { RiMoonLine, RiSunLine } from 'react-icons/ri'
 
 import { THEME } from '../../../reducers/types'
 
@@ -26,13 +26,13 @@ export default () => {
     >
       <div className="w-6 h-6 flex items-center justify-center">
         {theme === 'light' ?
-          <RiMoonFill
-            size={16}
-            className="3xl:w-6 3xl:h-6"
+          <RiMoonLine
+            size={20}
+            className="3xl:w-6 3xl:h-6 text-yellow-500"
           /> :
           <RiSunLine
-            size={16}
-            className="3xl:w-6 3xl:h-6"
+            size={20}
+            className="3xl:w-6 3xl:h-6 text-red-500"
           />
         }
       </div>

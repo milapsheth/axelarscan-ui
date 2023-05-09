@@ -22,7 +22,7 @@ export default toArray(
       path: '/evm-polls',
     },
     {
-      title: 'Batches',
+      title: 'EVM Batches',
       path: '/batches',
       others_paths: ['/batch/[chain]/[id]'],
     },
@@ -36,12 +36,9 @@ export default toArray(
       path: '/tvl',
     },
     {
-      title: 'Contracts',
-      path: '/contracts',
-    },
-    {
-      title: 'Assets',
-      path: '/assets',
+      title: 'Resources',
+      path: '/resources',
+      others_paths: ['/assets'],
     },
   ]
 )
