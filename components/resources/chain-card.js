@@ -11,14 +11,7 @@ import { toArray, getTitle } from '../../lib/utils'
 export default ({ data }) => {
   const {
     contracts,
-  } = useSelector(
-    state => (
-      {
-        contracts: state.contracts,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ contracts: state.contracts }), shallowEqual)
   const {
     contracts_data,
   } = { ...contracts }

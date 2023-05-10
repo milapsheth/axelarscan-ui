@@ -85,13 +85,13 @@ export default () => {
       case 'chains':
         return (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-7 gap-4 xl:gap-6">
-            {filter(by).map(d => <ChainCard data={d} />)}
+            {filter(by).map((d, i) => <ChainCard key={i} data={d} />)}
           </div>
         )
       case 'assets':
         return (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-7 gap-4 xl:gap-6">
-            {filter(by).map(d => <AssetCard data={d} focusId={assetFocusId} focus={id => setAssetFocusId(id)} />)}
+            {filter(by).map((d, i) => <AssetCard key={i} data={d} focusId={assetFocusId} focus={id => setAssetFocusId(id)} />)}
           </div>
         )
       default:
@@ -101,7 +101,7 @@ export default () => {
 
   return (
     rendered && by && (
-      <Tabs value={by} className="tabs pt-8 px-2 sm:px-4">
+      <Tabs value={by} className="children tabs pt-8 px-2 sm:px-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-2">
           <TabsHeader className="max-w-xs">
             {BYS.map(b => (

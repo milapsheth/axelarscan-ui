@@ -7,14 +7,7 @@ export default () => {
   const dispatch = useDispatch()
   const {
     preferences,
-  } = useSelector(
-    state => (
-      {
-        preferences: state.preferences,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
   const {
     theme,
   } = { ...preferences }

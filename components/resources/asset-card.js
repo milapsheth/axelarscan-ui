@@ -7,6 +7,7 @@ import { BiLinkExternal } from 'react-icons/bi'
 import Image from '../image'
 import AddMetamask from '../metamask/add-button'
 import ValueBox from '../value-box'
+import { getIBCDenomBase64 } from '../../lib/ibc-denom'
 import { toArray } from '../../lib/utils'
 
 const NUM_CHAINS_TRUNCATE = 6
@@ -20,14 +21,7 @@ export default (
 ) => {
   const {
     chains,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
   const {
     chains_data,
   } = { ...chains }
@@ -193,7 +187,7 @@ export default (
                 )}
                 {ibc_denom && (
                   <ValueBox
-                    url={url && asset_path && `${url}${asset_path.replace('{ibc_denom}', '')}`}
+                    url={url && asset_path && `${url}${asset_path.replace('{ibc_denom}', getIBCDenomBase64(ibc_denom))}`}
                     title="IBC Denom"
                     value={ibc_denom}
                     ellipseLength={9}
@@ -202,7 +196,7 @@ export default (
                 )}
                 {token_symbol && (
                   <ValueBox
-                    url={url && address ? `${url}${contract_path?.replace('{address}', address)}` : asset_path && ibc_denom ? `${url}${asset_path.replace('{ibc_denom}', '')}` : null}
+                    url={url && address ? `${url}${contract_path?.replace('{address}', address)}` : asset_path && ibc_denom ? `${url}${asset_path.replace('{ibc_denom}', getIBCDenomBase64(ibc_denom))}` : null}
                     title="Symbol"
                     value={token_symbol}
                   />

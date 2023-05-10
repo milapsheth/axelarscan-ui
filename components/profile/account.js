@@ -20,14 +20,7 @@ export default (
 ) => {
   const {
     _accounts,
-  } = useSelector(
-    state => (
-      {
-        _accounts: state.accounts,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ _accounts: state.accounts }), shallowEqual)
   const {
     accounts_data,
   } = { ..._accounts }

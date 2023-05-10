@@ -42,6 +42,9 @@
 
 .table {
   @apply shadow text-left;
+  &.no-shadow {
+    @apply shadow-none
+  }
   thead tr th,
   tbody tr td {
     @apply text-left;

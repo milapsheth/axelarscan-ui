@@ -18,14 +18,7 @@ export default (
   const dispatch = useDispatch()
   const {
     wallet,
-  } = useSelector(
-    state => (
-      {
-        wallet: state.wallet,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ wallet: state.wallet }), shallowEqual)
   const {
     wallet_data,
   } = { ...wallet }

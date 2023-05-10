@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import _ from 'lodash'
-import { ColorRing } from 'react-loader-spinner'
 
+import Spinner from '../spinner'
 import Image from '../image'
 import { getProfile } from '../../lib/api/keybase'
-import { split, randImage, loaderColor } from '../../lib/utils'
+import { split, randImage } from '../../lib/utils'
 import { PROFILES_DATA } from '../../reducers/types'
 
 export default (
@@ -16,20 +16,8 @@ export default (
 ) => {
   const dispatch = useDispatch()
   const {
-    preferences,
     profiles,
-  } = useSelector(
-    state => (
-      {
-        preferences: state.preferences,
-        profiles: state.profiles,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    theme,
-  } = { ...preferences }
+  } = useSelector(state => ({ profiles: state.profiles }), shallowEqual)
   const {
     profiles_data,
   } = { ...profiles }
@@ -99,11 +87,7 @@ export default (
         className={`w-6 h-6 rounded-full ${className}`}
       /> :
       <div className={`flex items-center justify-center ${className}`}>
-        <ColorRing
-          width="24"
-          height="24"
-          color={loaderColor(theme)}
-        />
+        <Spinner />
       </div>
   )
 }

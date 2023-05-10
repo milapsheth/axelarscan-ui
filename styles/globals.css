@@ -163,3 +163,11 @@ input[type=number] {
 .status-message a {
   @apply underline font-bold;
 }
+
+.left-tvl-native-chain {
+  left: 179.16px;
+}
+
+.left-tvl-total-locked {
+  left: calc(179.16px + 124.82px);
+}

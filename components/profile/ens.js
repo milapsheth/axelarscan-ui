@@ -19,14 +19,7 @@ export default (
   const dispatch = useDispatch()
   const {
     ens,
-  } = useSelector(
-    state => (
-      {
-        ens: state.ens,
-      }
-    ),
-    shallowEqual,
-  )
+  } = useSelector(state => ({ ens: state.ens }), shallowEqual)
   const {
     ens_data,
   } = { ...ens }

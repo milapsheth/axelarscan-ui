@@ -3,7 +3,6 @@
 }
 
 .tabs {
-  @apply bg-white dark:bg-black;
   nav {
     @apply w-full;
     ul {
