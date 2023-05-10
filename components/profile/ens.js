@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 
 import Copy from '../copy'
-import { ens as getEns } from '../../lib/api/ens'
+import { ens as getENS } from '../../lib/api/ens'
 import { toArray, ellipse } from '../../lib/utils'
 import { ENS_DATA } from '../../reducers/types'
 
@@ -55,7 +55,7 @@ export default (
             let data = setDefaultData(addresses, data)
             dispatch({ type: ENS_DATA, value: { ...data } })
 
-            data = await getEns(addresses)
+            data = await getENS(addresses)
             setDefaultData(addresses, data)
             dispatch({ type: ENS_DATA, value: { ...data } })
           }

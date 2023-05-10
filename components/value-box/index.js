@@ -8,12 +8,13 @@ export default (
     title,
     url,
     value,
-    ellipseLength = 12,
+    ellipseLength = 11,
+    ellipsePrefix = '0x',
     noEllipse = false,
     className = 'border border-slate-100 dark:border-slate-800 rounded-lg flex items-center justify-between space-x-1.5 py-1.5 pl-2.5 pr-2',
   },
 ) => {
-  const displayValue = noEllipse ? value : ellipse(value, ellipseLength)
+  const displayValue = noEllipse ? value : ellipse(value, ellipseLength, ellipsePrefix)
   const valueClassName = `${noEllipse ? 'truncate' : ''} font-normal`
   const valueComponent = (
     url ?

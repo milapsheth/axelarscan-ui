@@ -113,7 +113,7 @@ export default () => {
 
       if (input && input_type === 'address') {
         const addresses = toArray(input, 'lower').filter(a => !ens_data?.[a])
-        const data = await getEns(addresses)
+        const data = await getENS(addresses)
 
         if (data) {
           dispatch({ type: ENS_DATA, value: data })

@@ -4,12 +4,15 @@
 
 .tabs {
   @apply bg-white dark:bg-black;
-  ul {
-    @apply bg-slate-50 dark:bg-slate-900;
-    li {
-      @apply custom-font text-slate-600 dark:text-slate-400;
-      .absolute {
-        @apply dark:bg-slate-800;
+  nav {
+    @apply w-full;
+    ul {
+      @apply bg-slate-50 dark:bg-slate-900;
+      li {
+        @apply custom-font text-slate-600 dark:text-slate-400;
+        .absolute {
+          @apply dark:bg-slate-800;
+        }
       }
     }
   }
@@ -24,7 +27,7 @@
 .card {
   @apply bg-light dark:bg-slate-900 rounded-sm;
   .title {
-    @apply text-lg 3xl:text-2xl text-black dark:text-white font-semibold mt-3;
+    @apply whitespace-nowrap text-lg 3xl:text-2xl text-black dark:text-white font-semibold mt-3;
   }
   .description {
     @apply space-y-1 mt-2;
