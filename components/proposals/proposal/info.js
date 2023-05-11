@@ -3,6 +3,7 @@ import Linkify from 'react-linkify'
 import moment from 'moment'
 
 import Spinner from '../../spinner'
+import JSONView from '../../json-view'
 import NumberDisplay from '../../number'
 import { toArray, getTitle, toJson } from '../../../lib/utils'
 
@@ -101,9 +102,7 @@ export default ({ data }) => {
               <span className={titleClassName}>{getTitle(type)}:</span>
               <div className="text-sm lg:text-base font-medium">
                 {typeof toJson(info) === 'object' ?
-                  <div className="max-w-xs sm:max-w-xl max-h-96 overflow-y-auto whitespace-pre text-sm">
-                    {JSON.stringify(toJson(info), null, 4)}
-                  </div> :
+                  <JSONView value={info} /> :
                   <div className="bg-slate-100 dark:bg-slate-800 rounded capitalize p-3">
                     {info}
                   </div>
@@ -127,9 +126,7 @@ export default ({ data }) => {
               {typeof toJson(value) === 'object' ?
                 <div className="space-y-2">
                   <Chip color="amber" value={getTitle(key)} className="select-auto normal-case custom-font" />
-                  <div className="max-w-xs sm:max-w-xl max-h-96 overflow-y-auto whitespace-pre text-sm">
-                    {JSON.stringify(toJson(value), null, 4)}
-                  </div>
+                  <JSONView value={value} />
                 </div> :
                 <Chip color="cyan" value={`${getTitle(key)} = ${value}`} className="select-auto normal-case custom-font" />
               }

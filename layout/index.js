@@ -292,7 +292,8 @@ export default ({ children }) => {
   // validators
   useEffect(
     () => {
-      const exclude_paths = ['/address', '/interchain', '/transfer', '/gmp', '/batch', '/assets']
+      const exclude_paths = ['/address', '/interchain', '/transfer', '/gmp', '/batch', '/proposals', '/resources', '/assets']
+      const lite_paths = ['/proposal']
 
       const getVoteCount = (vote, votes) => _.sum(Object.values({ ...votes }).map(v => _.last(Object.entries({ ...v?.votes }).find(([_k, _v]) => equalsIgnoreCase(_k, vote?.toString()))) || 0))
 
@@ -302,9 +303,11 @@ export default ({ children }) => {
         } = { ...status_data }
 
         if (is_interval || (pathname && exclude_paths.findIndex(p => pathname.startsWith(p)) < 0 && latest_block_height && !validators_data)) {
+          const includes = lite_paths.findIndex(p => pathname.startsWith(p)) > -1 ? [] : undefined
+
           let {
             data,
-          } = { ...await getValidators() }
+          } = { ...await getValidators({ includes }) }
 
           if (data) {
             dispatch({ type: VALIDATORS_DATA, value: data })

@@ -32,27 +32,9 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        if (id && validators_data) {
+        if (id) {
           const response = await getProposal({ id })
-
-          let {
-            votes,
-          } = { ...response }
-
-          votes =
-            _.orderBy(
-              toArray(votes).map(v => {
-                const {
-                  voter,
-                } = { ...v }
-
-                return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
-              }),
-              ['validator_data.tokens', 'validator_data.description.moniker'],
-              ['desc', 'asc'],
-            )
-
-          setData({ ...response, votes })
+          setData({ ...response, votes: setValidatorDataToVotes(response?.votes) })
         }
       }
 
@@ -60,8 +42,36 @@ export default () => {
       const interval = setInterval(() => getData(), 5 * 60 * 1000)
       return () => clearInterval(interval)
     },
-    [id, validators_data],
+    [id],
   )
+
+  useEffect(
+    () => {
+      if (validators_data && data) {
+        setData({ ...data, votes: setValidatorDataToVotes(data.votes) })
+      }
+    },
+    [validators_data],
+  )
+
+  const setValidatorDataToVotes = votes => {
+    if (validators_data) {
+      votes =
+        _.orderBy(
+          toArray(votes).map(v => {
+            const {
+              voter,
+            } = { ...v }
+
+            return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
+          }),
+          ['validator_data.tokens', 'validator_data.description.moniker'],
+          ['desc', 'asc'],
+        )
+    }
+
+    return votes
+  }
 
   const {
     proposal_id,
@@ -115,7 +125,7 @@ export default () => {
                 })
               }
             </div>
-            {!end && <Votes data={votes} />}
+            {!end && validators_data && <Votes data={votes} />}
           </div>
         </div> :
         <div className="loading">
