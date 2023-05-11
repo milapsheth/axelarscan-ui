@@ -160,6 +160,10 @@ input[type=number] {
   height: auto !important;
 }
 
+.linkify a {
+  @apply text-blue-400 dark:text-white font-medium;
+}
+
 .status-message a {
   @apply underline font-bold;
 }

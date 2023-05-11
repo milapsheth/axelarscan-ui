@@ -27,7 +27,7 @@ export default () => {
       </div>
       {process.env.NEXT_PUBLIC_STATUS_MESSAGE && (
         <div className="w-full bg-blue-400 dark:bg-blue-800 overflow-x-auto flex items-center py-2 sm:py-2.5 3xl:py-4 px-2 sm:px-4 3xl:px-6">
-          <div className="flex flex-wrap items-center text-white text-2xs xl:text-sm 3xl:text-2xl font-semibold text-center space-x-1.5 xl:space-x-2 3xl:space-x-3 mx-auto">
+          <div className="flex flex-wrap items-center text-white text-xs xl:text-sm 3xl:text-2xl font-semibold text-center space-x-1.5 xl:space-x-2 3xl:space-x-3 mx-auto">
             <span className="status-message">
               <Linkify>
                 {parse(process.env.NEXT_PUBLIC_STATUS_MESSAGE)}

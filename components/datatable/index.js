@@ -167,7 +167,7 @@ export default (
         </tbody>
       </table>
       {!noPagination && data?.length > 0 && (
-        <div className={`flex flex-col items-center ${noRecordPerPage || pageCount > 4 ? 'sm:flex-row justify-center' : 'sm:grid sm:grid-cols-3 justify-between'} gap-4 my-0.5`}>
+        <div className={`flex flex-col items-center ${noRecordPerPage || pageCount > 4 ? 'sm:flex-row justify-center' : 'sm:grid sm:grid-cols-3 justify-between'} gap-4 my-2`}>
           {!noRecordPerPage && (
             <select
               disabled={loading}
@@ -224,9 +224,7 @@ export default (
                       }
                     }
                   >
-                    <span className="text-black dark:text-white font-bold">
-                      First
-                    </span>
+                    First
                   </PageWithText>
                 )}
                 {canPreviousPage && (
@@ -258,9 +256,7 @@ export default (
                       }
                     }
                   >
-                    <span className="text-black dark:text-white font-bold">
-                      Last
-                    </span>
+                    Last
                   </PageWithText>
                 )}
               </>

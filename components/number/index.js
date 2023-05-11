@@ -15,7 +15,7 @@ export default (
     suffix = '',
     noTooltip = false,
     placement = 'top',
-    className = 'whitespace-nowrap text-xs font-semibold',
+    className = 'whitespace-nowrap text-sm font-semibold',
   },
 ) => {
   let _value = ['string', 'number'].includes(typeof value) ? value.toString() : undefined
@@ -80,7 +80,7 @@ export default (
           {`${prefix}${_value}${suffix}`}
         </span> :
       <span className={className}>
-        {`${prefix}${value}${suffix}`}
+        {![undefined, null].includes(value) ? `${prefix}${value}${suffix}` : '-'}
       </span>
   )
 }

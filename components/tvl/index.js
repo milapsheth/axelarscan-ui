@@ -177,14 +177,14 @@ export default () => {
                       url,
                     } = { ...native }
 
-                    const totalComponent =
-                      typeof total === 'number' ?
-                        <NumberDisplay
-                          value={total}
-                          format="0,0.0a"
-                          suffix={` ${symbol}`}
-                        /> :
-                        <span>-</span>
+                    const totalComponent = (
+                      <NumberDisplay
+                        value={total}
+                        format="0,0.0a"
+                        suffix={` ${symbol}`}
+                        className="text-xs font-semibold"
+                      />
+                    )
 
                     const valueComponent = value > 0 && (
                       <NumberDisplay
@@ -244,14 +244,14 @@ export default () => {
                       symbol,
                     } = { ...asset_data }
 
-                    const totalComponent =
-                      typeof total_on_evm === 'number' ?
-                        <NumberDisplay
-                          value={total_on_evm}
-                          format="0,0.0a"
-                          suffix={` ${symbol}`}
-                        /> :
-                        <span>-</span>
+                    const totalComponent = (
+                      <NumberDisplay
+                        value={total_on_evm}
+                        format="0,0.0a"
+                        suffix={` ${symbol}`}
+                        className="text-xs font-semibold"
+                      />
+                    )
 
                     const valueComponent = value_on_evm > 0 && (
                       <NumberDisplay
@@ -301,14 +301,14 @@ export default () => {
                       symbol,
                     } = { ...asset_data }
 
-                    const totalComponent =
-                      typeof total_on_cosmos === 'number' ?
-                        <NumberDisplay
-                          value={total_on_cosmos}
-                          format="0,0.0a"
-                          suffix={` ${symbol}`}
-                        /> :
-                        <span>-</span>
+                    const totalComponent = (
+                      <NumberDisplay
+                        value={total_on_cosmos}
+                        format="0,0.0a"
+                        suffix={` ${symbol}`}
+                        className="text-xs font-semibold"
+                      />
+                    )
 
                     const valueComponent = value_on_cosmos > 0 && (
                       <NumberDisplay
@@ -412,13 +412,13 @@ export default () => {
                       const amount = supply || total
                       const value = amount * price
 
-                      const totalComponent =
-                        typeof amount === 'number' ?
-                          <NumberDisplay
-                            value={amount}
-                            format="0,0.0a"
-                          /> :
-                          <span>-</span>
+                      const totalComponent = (
+                        <NumberDisplay
+                          value={amount}
+                          format="0,0.0a"
+                          className="text-xs font-semibold"
+                        />
+                      )
 
                       const valueComponent = value > 0 && (
                         <NumberDisplay
