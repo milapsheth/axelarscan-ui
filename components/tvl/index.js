@@ -5,7 +5,7 @@ import Spinner from '../spinner'
 import Datatable from '../datatable'
 import Image from '../image'
 import NumberDisplay from '../number'
-import { PROJECT_ASSET, getAssetData } from '../../lib/config'
+import { PROJECT_ASSET, getChainData, getAssetData } from '../../lib/config'
 import { toArray, equalsIgnoreCase, loaderColor } from '../../lib/utils'
 
 const PAGE_SIZE = 100
@@ -63,7 +63,7 @@ export default () => {
                   value_on_evm: (total_on_evm || 0) * price,
                   value_on_cosmos: (total_on_cosmos || 0) * price,
                   value: (total || 0) * price,
-                  native: _.head(Object.entries({ ...tvl }).filter(([_k, _v]) => toArray([_v.contract_data, _v.denom_data]).findIndex(d => d.native_chain === _k || d.is_native) > -1).map(([_k, _v]) => { return { chain: _k, chain_data: chains_data.find(c => c.id === _k), ..._v }})),
+                  native: _.head(Object.entries({ ...tvl }).filter(([_k, _v]) => toArray([_v.contract_data, _v.denom_data]).findIndex(d => d.native_chain === _k || d.is_native) > -1).map(([_k, _v]) => { return { chain: _k, chain_data: getChainData(_k, chains_data, true), ..._v }})),
                 }
               }),
               ['value'], ['desc'],

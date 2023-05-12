@@ -8,9 +8,10 @@ export default (
   {
     fromTime,
     toTime,
+    format = 'MMM D, YYYY h:mm:ss A',
     noTooltip = false,
     placement = 'top',
-    title = 'time',
+    title = 'Time',
     titleClassName = 'normal-case text-xs font-semibold',
     className = 'normal-case text-slate-400 dark:text-slate-600 font-medium',
   },
@@ -42,11 +43,11 @@ export default (
             <div className={className}>
               <div className="w-38 whitespace-nowrap text-2xs font-medium space-x-1">
                 <span>
-                  {from_time.format('MMM D, YYYY h:mm:ss A')}
+                  {from_time.format(format)}
                 </span>
                 <span>-</span>
                 <span>
-                  {to_time.format('MMM D, YYYY h:mm:ss A')}
+                  {to_time.format(format)}
                 </span>
               </div>
             </div>

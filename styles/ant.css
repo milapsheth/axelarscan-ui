@@ -1,18 +1,30 @@
+.custom-font {
+  font-family: 'Lexend Deca', sans-serif !important;
+}
+
+.ant-picker-panel-layout {
+  @apply custom-font;
+}
+
 .ant-picker-input input,
 .ant-picker-range-separator span,
 .ant-picker-suffix span {
-  @apply text-black dark:text-white !important;
+  @apply custom-font text-black dark:text-white;
+}
+
+.ant-picker-input input::placeholder {
+  @apply custom-font text-slate-400 dark:text-slate-500 text-base;
 }
 
 .ant-picker-clear {
   @apply bg-white rounded-full;
   span {
-    @apply text-slate-400 dark:text-slate-600 !important;
+    @apply custom-font text-slate-400 dark:text-slate-500;
   }
 }
 
 .ant-btn-primary {
   &:not(:disabled) {
-    @apply bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-400 border-0 text-white !important;
+    @apply bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-400 border-0 custom-font text-white;
   }
 }

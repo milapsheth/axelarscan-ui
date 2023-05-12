@@ -7,9 +7,10 @@ import { createMomentFromUnixtime } from '../../lib/utils'
 export default (
   {
     time,
+    format = 'MMM D, YYYY h:mm:ss A',
     noTooltip = false,
     placement = 'top',
-    title = 'time',
+    title = 'Time',
     titleClassName = 'normal-case text-xs font-semibold',
     className = 'normal-case text-slate-400 dark:text-slate-600 font-medium',
   },
@@ -41,7 +42,7 @@ export default (
             <div className={className}>
               <div className="w-38 whitespace-nowrap text-xs font-medium">
                 <span>
-                  {_time.format('MMM D, YYYY h:mm:ss A')}
+                  {_time.format(format)}
                 </span>
               </div>
             </div>
