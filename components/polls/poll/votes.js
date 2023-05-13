@@ -227,7 +227,6 @@ export default ({ data }) => {
             Cell: props => {
               const {
                 value,
-                row,
               } = { ...props }
 
               return value && (

@@ -170,7 +170,6 @@ export default () => {
                     vote_options.push({ option: 'unsubmitted', value: participants.length - _.sumBy(vote_options, 'value') })
                   }
                   vote_options = _.orderBy(vote_options, ['i'], ['asc'])
-
                   const _event = split(event, 'lower', '_').join('_')
 
                   const {
@@ -179,7 +178,7 @@ export default () => {
                   } = { ..._d }
 
                   return {
-                    ..._d,
+                    ...d,
                     id_number: !isNaN(id) ? Number(id) : id,
                     height: _.minBy(votes, 'height')?.height || height,
                     confirmation_vote: toArray(votes).find(v => v.confirmed),
