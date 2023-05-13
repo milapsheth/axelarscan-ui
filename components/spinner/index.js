@@ -8,6 +8,7 @@ export default (
     name,
     width = 24,
     height = 24,
+    color,
   },
 ) => {
   const {
@@ -17,7 +18,7 @@ export default (
     theme,
   } = { ...preferences }
 
-  const color = loaderColor(theme)
+  color = color || loaderColor(theme)
   let spinner
 
   switch (name) {

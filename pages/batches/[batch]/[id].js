@@ -1,4 +1,4 @@
-import Batch from '../../components/batches/batch'
+import Batch from '../../../components/batches/batch'
 
 export default () => {
   return <Batch />

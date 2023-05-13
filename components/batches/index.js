@@ -276,7 +276,7 @@ export default () => {
                   const {
                     name,
                     image,
-                  } = { ...getChainData(value, chains_data, true) }
+                  } = { ...getChainData(value, chains_data) }
 
                   return (
                     <Tooltip content={name}>
@@ -326,7 +326,7 @@ export default () => {
 
                   const {
                     explorer,
-                  } = { ...getChainData(chain, chains_data, true) }
+                  } = { ...getChainData(chain, chains_data) }
 
                   const {
                     url,
@@ -377,7 +377,7 @@ export default () => {
                           decimals = token_data?.decimals || asset_data?.decimals || decimals || 18
                           const image = token_data?.image || asset_data?.image
 
-                          const source_chain_data = getChainData(sourceChain, chains_data, true)
+                          const source_chain_data = getChainData(sourceChain, chains_data)
                           const typeComponent = (
                             <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
                               <Chip color={executed ? 'green' : 'cyan'} value={type} className="rounded select-auto normal-case custom-font text-2xs mr-2 py-0 px-2" />

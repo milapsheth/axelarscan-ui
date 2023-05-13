@@ -129,6 +129,7 @@ export default (
                     themeMode="dark"
                     themeVariables={{
                       '--w3m-font-family': 'Lexend Deca, sans-serif',
+                      '--w3m-background-color': '#1f1f1f',
                       '--w3m-logo-image-url': `${process.env.NEXT_PUBLIC_APP_URL}/logos/logo_white.png`,
                     }}
                   />

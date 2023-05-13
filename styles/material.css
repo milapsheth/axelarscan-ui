@@ -38,3 +38,15 @@
     }
   }
 }
+
+.alert-box {
+  .transition-all {
+    @apply relative right-0 ml-auto;
+    svg {
+      @apply w-5 h-5;
+    }
+  }
+  .top-3 {
+    @apply top-0;
+  }
+}

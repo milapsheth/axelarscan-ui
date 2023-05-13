@@ -156,7 +156,7 @@ export default (
     id,
     chain_id,
     name,
-  } = { ...getChainData(chain, chains_data) }
+  } = { ...getChainData(chain, chains_data, false) }
 
   const {
     symbol,
