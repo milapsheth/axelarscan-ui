@@ -238,10 +238,10 @@ export default () => {
                     <div className="flex flex-col mb-4">
                       <div className="flex items-center space-x-1">
                         <Link
-                          href={`/batch/${chain}/${value}`}
+                          href={`/evm-batch/${chain}/${value}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-500 dark:text-blue-400 font-medium"
+                          className="text-blue-400 dark:text-blue-500 font-medium"
                         >
                           {ellipse(value, 10)}
                         </Link>
@@ -380,7 +380,7 @@ export default () => {
                           const source_chain_data = getChainData(sourceChain, chains_data)
                           const typeComponent = (
                             <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
-                              <Chip color={executed ? 'green' : 'cyan'} value={type} className="rounded select-auto normal-case custom-font text-2xs mr-2 py-0 px-2" />
+                              <Chip color={executed ? 'green' : 'cyan'} value={type} className="rounded select-auto normal-case custom-font text-2xs font-medium mr-2 py-0 px-2" />
                             </Tooltip>
                           )
 
@@ -434,7 +434,7 @@ export default () => {
                                         href={`/gmp/${sourceTxHash}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+                                        className="text-blue-400 dark:text-blue-500 font-medium"
                                       >
                                         GMP
                                       </Link>
@@ -458,7 +458,7 @@ export default () => {
                                     href={`/transfer?transfer_id=${transfer_id}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+                                    className="text-blue-400 dark:text-blue-500 font-medium"
                                   >
                                     Transfer
                                   </Link>
@@ -566,10 +566,10 @@ export default () => {
                         })}
                         {toArray(value).length > NUM_COMMANDS_TRUNCATE && (
                           <Link
-                            href={`/batch/${chain}/${batch_id}`}
+                            href={`/evm-batch/${chain}/${batch_id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="whitespace-nowrap text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+                            className="whitespace-nowrap text-blue-400 dark:text-blue-500 font-medium"
                           >
                             <NumberDisplay
                               value={toArray(value).length - NUM_COMMANDS_TRUNCATE}
@@ -603,7 +603,7 @@ export default () => {
                     <Chip
                       color={executed ? 'green' : equalsIgnoreCase(value, 'BATCHED_COMMANDS_STATUS_SIGNED') ? 'teal' : equalsIgnoreCase(value, 'BATCHED_COMMANDS_STATUS_SIGNING') ? 'blue' : 'red'}
                       value={executed ? 'Executed' : value.replace('BATCHED_COMMANDS_STATUS_', '')}
-                      className="rounded select-auto custom-font text-2xs py-0 px-1.5"
+                      className="rounded select-auto custom-font text-2xs font-medium py-0 px-1.5"
                     />
                   )
                 },

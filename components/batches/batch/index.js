@@ -200,7 +200,7 @@ export default () => {
               <Chip
                 color={executed ? 'green' : equalsIgnoreCase(status, 'BATCHED_COMMANDS_STATUS_SIGNED') ? 'teal' : equalsIgnoreCase(status, 'BATCHED_COMMANDS_STATUS_SIGNING') ? 'blue' : 'red'}
                 value={executed ? 'Executed' : status.replace('BATCHED_COMMANDS_STATUS_', '')}
-                className="rounded select-auto custom-font"
+                className="rounded select-auto custom-font font-medium"
               />
             )}
           </div>
@@ -305,7 +305,7 @@ export default () => {
 
                     const typeComponent = (
                       <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
-                        <Chip color={executed ? 'green' : 'cyan'} value={value} className="rounded select-auto normal-case custom-font text-xs mr-2 py-1 px-2.5" />
+                        <Chip color={executed ? 'green' : 'cyan'} value={value} className="rounded select-auto normal-case custom-font text-xs font-medium mr-2 py-1 px-2.5" />
                       </Tooltip>
                     )
 
@@ -370,7 +370,7 @@ export default () => {
                                 href={`/transfer?transfer_id=${transfer_id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+                                className="text-blue-400 dark:text-blue-500 font-medium"
                               >
                                 Transfer
                               </Link>
@@ -402,7 +402,7 @@ export default () => {
                                   href={`/gmp/${sourceTxHash}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+                                  className="text-blue-400 dark:text-blue-500 font-medium"
                                 >
                                   GMP
                                 </Link>
@@ -689,7 +689,7 @@ export default () => {
             <div>
               <Link
                 href={`${pathname?.replace('[chain]', chain).replace('[id]', prev_batched_commands_id)}`}
-                className="flex items-center text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 space-x-1"
+                className="flex items-center text-blue-400 dark:text-blue-500 space-x-1"
               >
                 <BsArrowLeftShort size={20} />
                 <span className="font-medium">

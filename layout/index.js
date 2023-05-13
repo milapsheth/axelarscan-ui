@@ -292,7 +292,7 @@ export default ({ children }) => {
   // validators
   useEffect(
     () => {
-      const exclude_paths = ['/address', '/interchain', '/transfer', '/gmp', '/batch', '/proposals', '/resources', '/assets']
+      const exclude_paths = ['/address', '/interchain', '/transfer', '/gmp', '/evm-batch', '/batch', '/proposals', '/resources', '/assets']
       const lite_paths = ['/proposal']
 
       const getVoteCount = (vote, votes) => _.sum(Object.values({ ...votes }).map(v => _.last(Object.entries({ ...v?.votes }).find(([_k, _v]) => equalsIgnoreCase(_k, vote?.toString()))) || 0))

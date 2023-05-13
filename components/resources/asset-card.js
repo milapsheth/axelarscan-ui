@@ -173,7 +173,7 @@ export default (
             {id && (
               <div className="space-y-1">
                 <div className="flex items-center justify-between space-x-2">
-                  <Chip value={id} />
+                  <Chip value={id} className="font-medium" />
                   {chain_type === 'evm' && (
                     <AddMetamask chain={id} asset={denom} />
                   )}
@@ -211,12 +211,12 @@ export default (
           {toArray(_.concat(denom, denoms)).map((d, i) =>
             <div key={i} className="mt-2 mr-2">
               <Tooltip content="Denom">
-                <Chip color="amber" value={d} className="normal-case" />
+                <Chip color="amber" value={d} className="normal-case font-medium" />
               </Tooltip>
             </div>
           )}
           {decimals && (
-            <Chip color="teal" value={`Decimals: ${decimals}`} className="normal-case mt-2 mr-2" />
+            <Chip color="teal" value={`Decimals: ${decimals}`} className="normal-case font-medium mt-2 mr-2" />
           )}
         </div>
       </CardFooter>

@@ -125,9 +125,9 @@ export default ({ data }) => {
       </CardBody>
       <CardFooter className="card-footer">
         <div className="flex items-center space-x-2">
-          <Chip color="amber" value={getTitle(chain_type)} />
+          <Chip color="amber" value={getTitle(chain_type)} className="font-medium" />
           {chain_id && (
-            <Chip color="teal" value={`ID: ${chain_id}`} />
+            <Chip color="teal" value={`ID: ${chain_id}`} className="font-medium" />
           )}
         </div>
       </CardFooter>

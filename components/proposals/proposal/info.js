@@ -65,7 +65,7 @@ export default ({ data }) => {
             <Chip
               color={['UNSPECIFIED', 'DEPOSIT_PERIOD'].includes(status) ? 'cyan' : ['VOTING_PERIOD'].includes(status) ? 'amber' : ['REJECTED', 'FAILED'].includes(status) ? 'red' : 'green'}
               value={getTitle(status)}
-              className="select-auto normal-case custom-font"
+              className="select-auto normal-case custom-font font-medium"
             />
           ) :
           <Spinner name="ProgressBar" />
@@ -75,7 +75,7 @@ export default ({ data }) => {
         <div className={rowClassName}>
           <span className={titleClassName}>Type:</span>
           {data ?
-            <Chip value={getTitle(type)} className="select-auto normal-case custom-font" /> :
+            <Chip value={getTitle(type)} className="select-auto normal-case custom-font font-medium" /> :
             <Spinner name="ProgressBar" />
           }
         </div>
@@ -125,10 +125,10 @@ export default ({ data }) => {
             <div className="text-sm lg:text-base font-medium">
               {typeof toJson(value) === 'object' ?
                 <div className="space-y-2">
-                  <Chip color="amber" value={getTitle(key)} className="select-auto normal-case custom-font" />
+                  <Chip color="amber" value={getTitle(key)} className="select-auto normal-case custom-font font-medium" />
                   <JSONView value={value} />
                 </div> :
-                <Chip color="cyan" value={`${getTitle(key)} = ${value}`} className="select-auto normal-case custom-font" />
+                <Chip color="cyan" value={`${getTitle(key)} = ${value}`} className="select-auto normal-case custom-font font-medium" />
               }
             </div>
           </div>

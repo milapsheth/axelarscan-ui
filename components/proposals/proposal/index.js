@@ -56,18 +56,17 @@ export default () => {
 
   const setValidatorDataToVotes = votes => {
     if (validators_data) {
-      votes =
-        _.orderBy(
-          toArray(votes).map(v => {
-            const {
-              voter,
-            } = { ...v }
+      votes = _.orderBy(
+        toArray(votes).map(v => {
+          const {
+            voter,
+          } = { ...v }
 
-            return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
-          }),
-          ['validator_data.tokens', 'validator_data.description.moniker'],
-          ['desc', 'asc'],
-        )
+          return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
+        }),
+        ['validator_data.tokens', 'validator_data.description.moniker'],
+        ['desc', 'asc'],
+      )
     }
 
     return votes
@@ -119,7 +118,7 @@ export default () => {
                       format="0,0.00a"
                       prefix={`${getTitle(option).toLowerCase()}: `}
                       noTooltip={true}
-                      className={`${['NO'].includes(value) ? 'bg-red-500 dark:bg-red-400' : ['YES'].includes(value) ? 'bg-green-500 dark:bg-green-400' : 'bg-blue-500 dark:bg-blue-400'} rounded-lg capitalize text-white text-sm font-medium mr-2 py-1.5 px-2`}
+                      className={`${['NO'].includes(value) ? 'bg-red-500 dark:bg-red-600' : ['YES'].includes(value) ? 'bg-green-500 dark:bg-green-600' : 'bg-blue-500 dark:bg-blue-400'} rounded-lg capitalize text-white text-sm font-medium mr-2 py-1.5 px-2`}
                     />
                   )
                 })

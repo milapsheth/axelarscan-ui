@@ -7,8 +7,8 @@ import moment from 'moment'
 import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
-import { searchBatches } from '../../lib/api/batches'
-import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
+import { searchPolls } from '../../lib/api/polls'
+import { split, toArray, getTitle, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
 
 export default () => {
   const {
@@ -33,7 +33,7 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const response = await searchBatches({ aggs: { types: { terms: { field: 'commands.type.keyword', size: 100 } } }, size: 0 })
+        const response = await searchPolls({ aggs: { types: { terms: { field: 'event.keyword', size: 100 } } }, size: 0 })
         setTypes(toArray(response).map(d => d.key))
       }
       getData()
@@ -65,18 +65,17 @@ export default () => {
 
   const fields = [
     {
-      label: 'Batch ID',
-      name: 'batchId',
+      label: 'Poll ID',
+      name: 'pollId',
       type: 'text',
-      placeholder: 'Batch ID',
-      className: 'col-span-2',
+      placeholder: 'Poll ID',
     },
     {
-      label: 'Command ID',
-      name: 'commandId',
-      type: 'text',
-      placeholder: 'Command ID',
-      className: 'col-span-2',
+      label: 'Event',
+      name: 'event',
+      type: 'select',
+      placeholder: 'Select event',
+      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: split(getTitle(t), 'normal', ' ').join('') } })),
     },
     {
       label: 'Chain',
@@ -100,47 +99,79 @@ export default () => {
       ),
     },
     {
-      label: 'Key ID',
-      name: 'keyId',
-      type: 'text',
-      placeholder: 'Key ID',
-    },
-    {
-      label: 'Command Type',
-      name: 'type',
-      type: 'select',
-      placeholder: 'Select command type',
-      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: t } })),
-    },
-    {
       label: 'Status',
       name: 'status',
       type: 'select',
-      placeholder: 'Select batch status',
+      placeholder: 'Select poll status',
       options: [
         {
           value: '',
           title: 'Any',
         },
         {
-          value: 'executed',
-          title: 'Executed',
+          value: 'completed',
+          title: 'Completed',
         },
         {
-          value: 'unexecuted',
-          title: 'Unexecuted',
+          value: 'failed',
+          title: 'Failed',
         },
         {
-          value: 'signed',
-          title: 'Signed',
+          value: 'confirmed',
+          title: 'Confirmed',
         },
         {
-          value: 'signing',
-          title: 'Signing',
+          value: 'pending',
+          title: 'Pending',
+        },
+      ],
+    },
+    {
+      label: 'EVM Transaction ID',
+      name: 'transactionId',
+      type: 'text',
+      placeholder: 'Transaction ID',
+      className: 'col-span-2',
+    },
+    {
+      label: 'Transfer ID',
+      name: 'transferId',
+      type: 'text',
+      placeholder: 'Transfer ID',
+    },
+    {
+      label: 'Deposit Address',
+      name: 'depositAddress',
+      type: 'text',
+      placeholder: 'Deposit Address',
+    },
+    {
+      label: 'Voter (Broadcaster Address)',
+      name: 'voter',
+      type: 'text',
+      placeholder: 'Voter',
+    },
+    {
+      label: 'Vote',
+      name: 'vote',
+      type: 'select',
+      placeholder: 'Select vote',
+      options: [
+        {
+          value: '',
+          title: 'Any',
         },
         {
-          value: 'aborted',
-          title: 'Aborted',
+          value: 'yes',
+          title: 'Yes',
+        },
+        {
+          value: 'no',
+          title: 'No',
+        },
+        {
+          value: 'unsubmitted',
+          title: 'Unsubmitted',
         },
       ],
     },
@@ -158,14 +189,14 @@ export default () => {
   return (
     <Modal
       hidden={hidden}
-      disabled={!types}
+      disabled={!chains_data}
       onClick={() => setHidden(false)}
       buttonTitle={`Filter${filtered ? 'ed' : ''}`}
       buttonClassName={`max-w-min ${filtered ? 'border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 font-semibold py-0.5 px-2' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 font-normal py-1 px-2.5'} rounded text-sm sm:text-base`}
       title={
         <div className="flex items-center justify-between">
           <span>
-            Filter EVM Batches
+            Filter EVM Polls
           </span>
           <div
             onClick={() => setHidden(true)}
@@ -187,7 +218,8 @@ export default () => {
               className,
             } = { ...f }
 
-            return (
+            const hidden = !(name !== 'vote' || filters?.voter?.startsWith('axelar'))
+            return !hidden && (
               <div key={i} className={`form-element ${className || ''}`}>
                 {label && (
                   <div className="form-label text-slate-600 dark:text-slate-200 font-normal">

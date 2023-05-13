@@ -99,7 +99,7 @@ export default () => {
               sortType: (a, b) => a.original.type > b.original.type ? 1 : -1,
               Cell: props => (
                 props.value ?
-                  <Chip value={props.value} className="select-auto normal-case custom-font" /> :
+                  <Chip value={props.value} className="select-auto normal-case custom-font font-medium" /> :
                   <span>-</span>
               ),
             },
@@ -171,7 +171,7 @@ export default () => {
                         <Chip
                           color={['UNSPECIFIED', 'DEPOSIT_PERIOD'].includes(value) ? 'cyan' : ['VOTING_PERIOD'].includes(value) ? 'amber' : ['REJECTED', 'FAILED'].includes(value) ? 'red' : 'green'}
                           value={getTitle(value)}
-                          className="select-auto normal-case custom-font"
+                          className="select-auto normal-case custom-font font-medium"
                         />
                         {['PASSED', 'REJECTED'].includes(value) && (
                           Object.entries({ ...final_tally_result })

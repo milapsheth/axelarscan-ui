@@ -20,11 +20,20 @@ export default toArray(
     {
       title: 'EVM Polls',
       path: '/evm-polls',
+      others_paths: [
+        '/evm-poll/[id]',
+        '/polls',
+        '/poll/[id]',
+      ],
     },
     {
       title: 'EVM Batches',
-      path: '/batches',
-      others_paths: ['/batch/[chain]/[id]'],
+      path: '/evm-batches',
+      others_paths: [
+        '/evm-batch/[chain]/[id]',
+        '/batches',
+        '/batch/[chain]/[id]',
+      ],
     },
     {
       title: 'Interchain',

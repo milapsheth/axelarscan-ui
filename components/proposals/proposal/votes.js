@@ -41,7 +41,7 @@ export default ({ data }) => {
                 href={`/account/${props.value}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 dark:text-white font-medium"
+                className="text-blue-400 dark:text-white font-medium"
               >
                 {ellipse(props.value, 10, 'axelar')}
               </Link>
@@ -82,7 +82,7 @@ export default ({ data }) => {
                       href={`/validator/${value}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 font-medium"
+                      className="text-blue-400 font-medium"
                     >
                       {ellipse(moniker, 16)}
                     </Link>
@@ -105,7 +105,7 @@ export default ({ data }) => {
                       href={`/validator/${value}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 font-medium"
+                      className="text-blue-400 font-medium"
                     >
                       {ellipse(value, 10, 'axelarvaloper')}
                     </Link>
@@ -125,7 +125,6 @@ export default ({ data }) => {
             } = { ...props }
 
             const total_voting_power = _.sumBy(toArray(validators_data).filter(v => !v.jailed && v.status === 'BOND_STATUS_BONDED'), 'tokens')
-
             return (
               <div className="flex flex-col items-start sm:items-end text-left sm:text-right">
                 <NumberDisplay
@@ -160,7 +159,7 @@ export default ({ data }) => {
                   <Chip
                     color={['NO'].includes(value) ? 'red' : ['YES'].includes(value) ? 'green' : 'cyan'}
                     value={getTitle(value).toLowerCase()}
-                    className="select-auto capitalize custom-font"
+                    className="select-auto capitalize custom-font font-medium"
                   /> :
                   <span>-</span>
                 }
@@ -173,7 +172,7 @@ export default ({ data }) => {
       data={data}
       defaultPageSize={PAGE_SIZE}
       noPagination={data.length <= 10}
-      className="no-border"
+      className="no-border no-shadow"
     />
   )
 }
