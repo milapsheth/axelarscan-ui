@@ -15,25 +15,17 @@ export default toArray(
     {
       title: 'Transactions',
       path: '/transactions/search',
-      others_paths: ['/transactions', '/tx/[tx]'],
+      others_paths: ['/transactions', '/txs/search', '/txs', '/tx/[tx]', '/transactions/[tx]', '/txs/[tx]', '/transaction/[tx]'],
     },
     {
       title: 'EVM Polls',
       path: '/evm-polls',
-      others_paths: [
-        '/evm-poll/[id]',
-        '/polls',
-        '/poll/[id]',
-      ],
+      others_paths: ['/evm-poll/[id]', '/polls', '/poll/[id]'],
     },
     {
       title: 'EVM Batches',
       path: '/evm-batches',
-      others_paths: [
-        '/evm-batch/[chain]/[id]',
-        '/batches',
-        '/batch/[chain]/[id]',
-      ],
+      others_paths: ['/evm-batch/[chain]/[id]', '/batches', '/batch/[chain]/[id]'],
     },
     {
       title: 'Interchain',

@@ -1,23 +1,15 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { useSelector, shallowEqual } from 'react-redux'
 import { DatePicker } from 'antd'
 import _ from 'lodash'
 import moment from 'moment'
 import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
-import { searchPolls } from '../../lib/api/polls'
-import { split, toArray, getTitle, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
+import { searchTransactions } from '../../lib/api/transactions'
+import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
 
 export default () => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
-
   const router = useRouter()
   const {
     pathname,
@@ -33,7 +25,7 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const response = await searchPolls({ aggs: { types: { terms: { field: 'event.keyword', size: 100 } } }, size: 0 })
+        const response = await searchTransactions({ aggs: { types: { terms: { field: 'types.keyword', size: 100 } } }, size: 0 })
         setTypes(toArray(response).map(d => d.key))
       }
       getData()
@@ -65,115 +57,45 @@ export default () => {
 
   const fields = [
     {
-      label: 'Poll ID',
-      name: 'pollId',
+      label: 'Transaction Hash',
+      name: 'txHash',
       type: 'text',
-      placeholder: 'Poll ID',
+      placeholder: 'Transaction Hash',
+      className: 'col-span-2',
     },
     {
-      label: 'Event',
-      name: 'event',
+      label: 'Transaction Type',
+      name: 'type',
       type: 'select',
-      placeholder: 'Select event',
-      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: split(getTitle(t), 'normal', ' ').join('') } })),
-    },
-    {
-      label: 'Chain',
-      name: 'chain',
-      type: 'select',
-      placeholder: 'Select chain',
-      options: _.concat(
-        { value: '', title: 'Any' },
-        _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc'])
-          .map(c => {
-            const {
-              id,
-              name,
-            } = { ...c }
-
-            return {
-              value: id,
-              title: name,
-            }
-          }),
-      ),
+      placeholder: 'Select transaction type',
+      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: t } })),
     },
     {
       label: 'Status',
       name: 'status',
       type: 'select',
-      placeholder: 'Select poll status',
+      placeholder: 'Select transaction status',
       options: [
         {
           value: '',
           title: 'Any',
         },
         {
-          value: 'completed',
-          title: 'Completed',
+          value: 'success',
+          title: 'Success',
         },
         {
           value: 'failed',
           title: 'Failed',
         },
-        {
-          value: 'confirmed',
-          title: 'Confirmed',
-        },
-        {
-          value: 'pending',
-          title: 'Pending',
-        },
       ],
     },
     {
-      label: 'EVM Transaction ID',
-      name: 'transactionId',
+      label: 'Address',
+      name: 'address',
       type: 'text',
-      placeholder: 'Transaction ID',
+      placeholder: 'Axelar Address',
       className: 'col-span-2',
-    },
-    {
-      label: 'Transfer ID',
-      name: 'transferId',
-      type: 'text',
-      placeholder: 'Transfer ID',
-    },
-    {
-      label: 'Deposit Address',
-      name: 'depositAddress',
-      type: 'text',
-      placeholder: 'Deposit Address',
-    },
-    {
-      label: 'Voter (Broadcaster Address)',
-      name: 'voter',
-      type: 'text',
-      placeholder: 'Voter',
-    },
-    {
-      label: 'Vote',
-      name: 'vote',
-      type: 'select',
-      placeholder: 'Select vote',
-      options: [
-        {
-          value: '',
-          title: 'Any',
-        },
-        {
-          value: 'yes',
-          title: 'Yes',
-        },
-        {
-          value: 'no',
-          title: 'No',
-        },
-        {
-          value: 'unsubmitted',
-          title: 'Unsubmitted',
-        },
-      ],
     },
     {
       label: 'Time',
@@ -189,14 +111,14 @@ export default () => {
   return (
     <Modal
       hidden={hidden}
-      disabled={!chains_data}
+      disabled={!types}
       onClick={() => setHidden(false)}
       buttonTitle={`Filter${filtered ? 'ed' : ''}`}
       buttonClassName={`max-w-min ${filtered ? 'border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 font-semibold py-0.5 px-2' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 font-normal py-1 px-2.5'} rounded text-sm sm:text-base`}
       title={
         <div className="flex items-center justify-between">
           <span>
-            Filter EVM Polls
+            Filter Transactions
           </span>
           <div
             onClick={() => setHidden(true)}
@@ -218,8 +140,7 @@ export default () => {
               className,
             } = { ...f }
 
-            const hidden = !(name !== 'vote' || filters?.voter?.startsWith('axelar'))
-            return !hidden && (
+            return (
               <div key={i} className={`form-element ${className || ''}`}>
                 {label && (
                   <div className="form-label text-slate-600 dark:text-slate-200 font-normal">

@@ -201,24 +201,22 @@ export default () => {
                     onChange={e => setFilters({ ...filters, [name]: e.target.value })}
                     className="form-select bg-slate-50"
                   >
-                    {(options || [])
-                      .map((o, i) => {
-                        const {
-                          title,
-                          value,
-                        } = { ...o }
+                    {toArray(options).map((o, i) => {
+                      const {
+                        title,
+                        value,
+                      } = { ...o }
 
-                        return (
-                          <option
-                            key={i}
-                            title={title}
-                            value={value}
-                          >
-                            {title}
-                          </option>
-                        )
-                      })
-                    }
+                      return (
+                        <option
+                          key={i}
+                          title={title}
+                          value={value}
+                        >
+                          {title}
+                        </option>
+                      )
+                    })}
                   </select> :
                   type === 'datetime-range' ?
                     <DatePicker.RangePicker

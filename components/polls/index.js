@@ -231,8 +231,8 @@ export default () => {
                 <NumberDisplay
                   value={total}
                   format="0,0"
-                  suffix={' Results'}
-                  className="text-slate-500 dark:text-slate-200 font-normal"
+                  suffix=" Results"
+                  className="whitespace-nowrap text-slate-500 dark:text-slate-200 font-normal"
                 />
               )}
             </div>
@@ -584,7 +584,7 @@ export default () => {
                             format="0,0"
                             suffix={` ${getTitle(option?.replace('submitted', ''))}`}
                             noTooltip={true}
-                            className={`${['no'].includes(option) ? 'bg-red-500 dark:bg-red-600 text-white' : ['yes'].includes(option) ? 'bg-green-500 dark:bg-green-600 text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-50'} rounded capitalize text-xs font-medium mr-2 py-1 px-2`}
+                            className={`${['no'].includes(option) ? 'bg-red-500 dark:bg-red-600 text-white' : ['yes'].includes(option) ? 'bg-green-500 dark:bg-green-600 text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500'} rounded capitalize text-xs font-medium mr-2 py-1 px-2`}
                           />
                         )
                       })}

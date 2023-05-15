@@ -191,8 +191,8 @@ export default () => {
                 <NumberDisplay
                   value={total}
                   format="0,0"
-                  suffix={' Results'}
-                  className="text-slate-500 dark:text-slate-200 font-normal"
+                  suffix=" Results"
+                  className="whitespace-nowrap text-slate-500 dark:text-slate-200 font-normal"
                 />
               )}
             </div>

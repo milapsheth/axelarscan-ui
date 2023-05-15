@@ -25,7 +25,7 @@ export default (
     accounts_data,
   } = { ..._accounts }
 
-  prefix = address?.startsWith('axelar') ? 'axelar' : prefix
+  prefix = address ? address.startsWith('axelar') ? 'axelar' : address.startsWith('0x') ? '0x' : address.includes('1') ? address.substring(0, address.indexOf('1')) : prefix : prefix
 
   const {
     name,
