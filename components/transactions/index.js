@@ -6,8 +6,6 @@ import { Chip } from '@material-tailwind/react'
 import { utils } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
-import { BsArrowRightShort, BsArrowLeftShort } from 'react-icons/bs'
-import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
 
 import Filters from './filters'
 import Spinner from '../spinner'
@@ -17,7 +15,7 @@ import Copy from '../copy'
 import ValidatorProfile from '../profile/validator'
 import AccountProfile from '../profile/account'
 import TimeAgo from '../time/timeAgo'
-import { searchTransactions } from '../../lib/api/transactions'
+import { searchTransactions } from '../../lib/api/axelar'
 import { searchDepositAddresses } from '../../lib/api/transfers'
 import { getTransactions, getTransaction } from '../../lib/api/lcd'
 import { getKeyType } from '../../lib/key'
@@ -296,16 +294,14 @@ export default ({ n }) => {
                   } = { ...props }
 
                   return value && (
-                    <div>
-                      <Link
-                        href={`/block/${value}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 dark:text-blue-500 font-medium"
-                      >
-                        <NumberDisplay value={value} format="0,0" />
-                      </Link>
-                    </div>
+                    <Link
+                      href={`/block/${value}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 dark:text-blue-500 font-medium"
+                    >
+                      <NumberDisplay value={value} format="0,0" />
+                    </Link>
                   )
                 },
               },

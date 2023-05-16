@@ -6,7 +6,6 @@ import moment from 'moment'
 import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
-import { searchTransactions } from '../../lib/api/axelar'
 import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
 
 export default () => {
@@ -19,19 +18,7 @@ export default () => {
 
   const [filters, setFilters] = useState(null)
   const [filterTrigger, setFilterTrigger] = useState(undefined)
-  const [types, setTypes] = useState(null)
   const [hidden, setHidden] = useState(true)
-
-  useEffect(
-    () => {
-      const getData = async () => {
-        const response = await searchTransactions({ aggs: { types: { terms: { field: 'types.keyword', size: 100 } } }, size: 0 })
-        setTypes(toArray(response).map(d => d.key))
-      }
-      getData()
-    },
-    [],
-  )
 
   useEffect(
     () => {
@@ -57,52 +44,16 @@ export default () => {
 
   const fields = [
     {
-      label: 'Transaction Hash',
-      name: 'txHash',
-      type: 'text',
-      placeholder: 'Transaction Hash',
-      className: 'col-span-2',
+      label: 'From Block',
+      name: 'fromBlock',
+      type: 'number',
+      placeholder: 'From Block',
     },
     {
-      label: 'Transaction Type',
-      name: 'type',
-      type: 'select',
-      placeholder: 'Select transaction type',
-      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: t } })),
-    },
-    {
-      label: 'Status',
-      name: 'status',
-      type: 'select',
-      placeholder: 'Select transaction status',
-      options: [
-        {
-          value: '',
-          title: 'Any',
-        },
-        {
-          value: 'success',
-          title: 'Success',
-        },
-        {
-          value: 'failed',
-          title: 'Failed',
-        },
-      ],
-    },
-    {
-      label: 'Address',
-      name: 'address',
-      type: 'text',
-      placeholder: 'Axelar Address',
-      className: 'col-span-2',
-    },
-    {
-      label: 'Time',
-      name: 'time',
-      type: 'datetime-range',
-      placeholder: 'Select transaction time',
-      className: 'col-span-2',
+      label: 'To Block',
+      name: 'toBlock',
+      type: 'number',
+      placeholder: 'To Block',
     },
   ]
 
@@ -118,7 +69,7 @@ export default () => {
       title={
         <div className="flex items-center justify-between">
           <span>
-            Filter Transactions
+            Filter Blocks
           </span>
           <div
             onClick={() => setHidden(true)}

@@ -311,7 +311,7 @@ export default () => {
 
                     return (
                       value ?
-                        (transactionHash && url ?
+                        transactionHash && url ?
                           <a
                             href={`${url}${transaction_path?.replace('{tx}', transactionHash)}`}
                             target="_blank"
@@ -320,8 +320,7 @@ export default () => {
                           >
                             {typeComponent}
                           </a> :
-                          typeComponent
-                        ) :
+                          typeComponent :
                         <span className="text-slate-400 dark:text-slate-500">
                           Unknown
                         </span>
