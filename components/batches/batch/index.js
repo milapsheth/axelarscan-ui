@@ -274,7 +274,7 @@ export default () => {
                             href={`${url}${transaction_path?.replace('{tx}', transactionHash)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400"
+                            className="text-blue-400 dark:text-blue-500"
                           >
                             {idComponent}
                           </a> :
@@ -316,7 +316,7 @@ export default () => {
                             href={`${url}${transaction_path?.replace('{tx}', transactionHash)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400"
+                            className="text-blue-400 dark:text-blue-500"
                           >
                             {typeComponent}
                           </a> :

@@ -219,7 +219,7 @@ export default ({ n }) => {
 
   const dataFiltered = _.slice(toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(_.head(d.types))), 0, n || undefined)
   const isTransactionsPage = includesStringList(pathname, ['/transactions', '/txs'])
-console.log(data)
+
   return (
     <div className="children">
       {data ?
@@ -355,7 +355,7 @@ console.log(data)
                   const {
                     operator_address,
                     description,
-                  } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address], 'lower') )) }
+                  } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address], 'lower'))) }
 
                   const {
                     moniker,

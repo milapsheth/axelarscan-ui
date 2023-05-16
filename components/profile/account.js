@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import Image from '../image'
 import Copy from '../copy'
-import { toArray, ellipse, equalsIgnoreCase } from '../../lib/utils'
+import { toArray, ellipse, equalsIgnoreCase, toHex } from '../../lib/utils'
 import accounts from '../../data/accounts'
 import broadcasters from '../../data/broadcasters'
 
@@ -25,6 +25,7 @@ export default (
     accounts_data,
   } = { ..._accounts }
 
+  address = Array.isArray(address) ? toHex(address) : address
   prefix = address ? address.startsWith('axelar') ? 'axelar' : address.startsWith('0x') ? '0x' : address.includes('1') ? address.substring(0, address.indexOf('1')) : prefix : prefix
 
   const {

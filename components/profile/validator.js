@@ -87,7 +87,7 @@ export default (
         className={`w-6 h-6 rounded-full ${className}`}
       /> :
       <div className={`flex items-center justify-center ${className}`}>
-        <Spinner />
+        <Spinner width={22} height={22} />
       </div>
   )
 }
