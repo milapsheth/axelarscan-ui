@@ -38,6 +38,7 @@ const FORMATTABLE_TYPES = [
   'MsgUndelegate',
   'CreatePendingTransfers',
   'ExecutePendingTransfers',
+  'SignCommands',
 ]
 const TIME_FORMAT = 'D MMM YYYY HH:mm:ss A'
 
