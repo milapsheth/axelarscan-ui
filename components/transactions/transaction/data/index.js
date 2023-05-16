@@ -6,16 +6,17 @@ import _ from 'lodash'
 import moment from 'moment'
 import { BsArrowRightShort } from 'react-icons/bs'
 
-import NumberDisplay from '../../number'
-import Copy from '../../copy'
-import Image from '../../image'
-import ValidatorProfile from '../../profile/validator'
-import AccountProfile from '../../profile/account'
-import JSONView from '../../json-view'
-import { getChainData, getAssetData } from '../../../lib/config'
-import { getType, getActivities } from '../../../lib/transaction'
-import { base64ToString } from '../../../lib/base64'
-import { split, toArray, includesStringList, getTitle, ellipse, toJson, toHex } from '../../../lib/utils'
+import DataTabs from './tabs'
+import NumberDisplay from '../../../number'
+import Copy from '../../../copy'
+import Image from '../../../image'
+import ValidatorProfile from '../../../profile/validator'
+import AccountProfile from '../../../profile/account'
+import JSONView from '../../../json-view'
+import { getChainData, getAssetData } from '../../../../lib/config'
+import { getType, getActivities } from '../../../../lib/transaction'
+import { base64ToString } from '../../../../lib/base64'
+import { split, toArray, includesStringList, getTitle, ellipse, toJson, toHex } from '../../../../lib/utils'
 
 const FORMATS = [
   { id: 'formatted', title: 'Formatted' },
@@ -618,80 +619,22 @@ export default ({ data }) => {
 
   return (
     <div className="children space-y-8 pt-8">
-      <Tabs value={txFormat} className="tabs">
-        <div className="flex flex-col space-y-2">
-          <div className="text-slate-600 dark:text-slate-200 text-base lg:text-lg font-medium">
-            Activities
-          </div>
-          {txFormattable && (
-            <TabsHeader className="max-w-xs">
-              {FORMATS.map((f, i) => {
-                const {
-                  id,
-                  title,
-                } = { ...f }
-
-                return (
-                  <Tab
-                    key={i}
-                    value={id}
-                    onClick={() => setTxFormat(id)}
-                  >
-                    {title}
-                  </Tab>
-                )
-              })}
-            </TabsHeader>
-          )}
-        </div>
-        <TabsBody>
-          {FORMATS.map((f, i) => (
-            <TabPanel
-              key={i}
-              value={f.id}
-            >
-              {renderTx(f.id)}
-            </TabPanel>
-          ))}
-        </TabsBody>
-      </Tabs>
-      <Tabs value={logsFormat} className="tabs">
-        <div className="flex flex-col space-y-2">
-          <div className="text-slate-600 dark:text-slate-200 text-base lg:text-lg font-medium">
-            Events
-          </div>
-          {logsFormattable && (
-            <TabsHeader className="max-w-xs">
-              {FORMATS.map((f, i) => {
-                const {
-                  id,
-                  title,
-                } = { ...f }
-
-                return (
-                  <Tab
-                    key={i}
-                    value={id}
-                    onClick={() => setLogsFormat(id)}
-                  >
-                    {title}
-                  </Tab>
-                )
-              })}
-            </TabsHeader>
-          )}
-        </div>
-        <TabsBody>
-          {FORMATS.map((f, i) => (
-            <TabPanel
-              key={i}
-              value={f.id}
-            >
-              {renderLogs(f.id)}
-            </TabPanel>
-          ))}
-        </TabsBody>
-      </Tabs>
+      <DataTabs
+        value={txFormat}
+        title="Activities"
+        formattable={txFormattable}
+        formats={FORMATS}
+        onSelect={format => setTxFormat(format)}
+        render={format => renderTx(format)}
+      />
+      <DataTabs
+        value={logsFormat}
+        title="Events"
+        formattable={logsFormattable}
+        formats={FORMATS}
+        onSelect={format => setLogsFormat(format)}
+        render={format => renderLogs(format)}
+      />
     </div>
   )
 }

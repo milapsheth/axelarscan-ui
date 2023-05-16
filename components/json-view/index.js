@@ -3,7 +3,7 @@ import { toJson } from '../../lib/utils'
 export default (
   {
     value,
-    className = 'max-w-xs sm:max-w-xl max-h-96 overflow-y-auto whitespace-pre text-black dark:text-white text-sm',
+    className = 'max-w-xs sm:max-w-4xl max-h-96 overflow-y-auto whitespace-pre text-black dark:text-white text-sm',
     tab = 4,
   },
 ) => {
