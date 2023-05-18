@@ -19,7 +19,7 @@ import { searchTransactions } from '../../lib/api/axelar'
 import { searchDepositAddresses } from '../../lib/api/transfers'
 import { getTransactions, getTransaction } from '../../lib/api/lcd'
 import { getKeyType } from '../../lib/key'
-import { getSender, getRecipient } from '../../lib/transaction'
+import { getType, getSender, getRecipient } from '../../lib/transaction'
 import { formatUnits } from '../../lib/number'
 import { split, toArray, includesStringList, getTitle, ellipse, equalsIgnoreCase, getQueryParams, normalizeQuote, sleep } from '../../lib/utils'
 
@@ -113,12 +113,12 @@ export default ({ n }) => {
 
           if (height) {
             const {
-              data,
-              total,
+              tx_responses,
+              pagination,
             } = { ...await getTransactions({ index: true, events: `tx.height=${height}` }) }
 
-            transactions_data = data
-            total_data = total
+            transactions_data = toArray(tx_responses)
+            total_data = pagination?.total
           }
           else if (address?.length >= 65 || getKeyType(address) === 'evmAddress') {
             const {
@@ -136,9 +136,9 @@ export default ({ n }) => {
               switch (getKeyType(address)) {
                 case 'axelarAddress':
                   response = await getTransactions({ index: true, events: `transfer.sender='${address}'` })
-                  transactions_data = _.concat(toArray(response?.data), toArray(transactions_data))
+                  transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
                   response = await getTransactions({ index: true, events: `message.sender='${address}'` })
-                  transactions_data = _.concat(toArray(response?.data), toArray(transactions_data))
+                  transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
                   break
                 case 'evmAddress':
                   address = utils.getAddress(address)
@@ -148,9 +148,9 @@ export default ({ n }) => {
               }
 
               response = await getTransactions({ index: true, events: `link.depositAddress='${address}'` })
-              transactions_data = _.concat(toArray(response?.data), toArray(transactions_data))
+              transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
               response = await getTransactions({ index: true, events: `transfer.recipient='${address}'` })
-              transactions_data = _.concat(toArray(response?.data), toArray(transactions_data))
+              transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
 
               transactions_data = _.orderBy(_.uniqBy(transactions_data, 'txhash'), ['timestamp'], ['desc'])
               total_data = transactions_data.length
@@ -182,6 +182,7 @@ export default ({ n }) => {
                 _.concat(toArray(transactions_data), _data).map(d => {
                   return {
                     ...d,
+                    type: getType(d),
                     sender: getSender(d, assets_data),
                     recipient: getRecipient(d, assets_data),
                   }
@@ -307,16 +308,16 @@ export default ({ n }) => {
               },
               {
                 Header: 'Type',
-                accessor: 'types',
+                accessor: 'type',
                 disableSortBy: true,
                 Cell: props => {
                   const {
                     value,
                   } = { ...props }
 
-                  return _.head(value) && (
+                  return value && (
                     <div className="max-w-min bg-slate-50 dark:bg-slate-900 rounded capitalize text-xs font-medium py-1 px-2">
-                      {_.head(value).replace('Request', '')}
+                      {value.replace('Request', '')}
                     </div>
                   )
                 },
@@ -522,9 +523,9 @@ export default ({ n }) => {
                 headerClassName: 'justify-end text-right',
               },
             ]
-            .filter(c => height ? ['height'].includes(c.accessor) : n ? ['height', 'recipient', 'fee'].includes(c.accessor) : true)}
+            .filter(c => height ? !['height'].includes(c.accessor) : n ? !['height', 'recipient', 'fee'].includes(c.accessor) : true)}
             data={dataFiltered}
-            defaultPageSize={n ? 10 : 50}
+            defaultPageSize={n || height ? 10 : 50}
             noPagination={dataFiltered.length <= 10 || (!n && !(pathname.includes('/search') || height || address))}
             className="no-border no-shadow"
           />
