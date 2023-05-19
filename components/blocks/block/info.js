@@ -10,7 +10,7 @@ import NumberDisplay from '../../number'
 import Copy from '../../copy'
 import ValidatorProfile from '../../profile/validator'
 import AccountProfile from '../../profile/account'
-import { validatorSets as getValidatorSets } from '../../../lib/api/lcd'
+import { getValidatorSets } from '../../../lib/api/lcd'
 import { toArray, includesStringList, ellipse, equalsIgnoreCase } from '../../../lib/utils'
 
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'

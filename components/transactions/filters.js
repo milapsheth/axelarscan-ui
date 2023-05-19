@@ -68,7 +68,7 @@ export default () => {
       name: 'type',
       type: 'select',
       placeholder: 'Select transaction type',
-      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: t } })),
+      options: _.concat({ value: '', title: 'Any' }, _.orderBy(toArray(types).map(t => { return { value: t, title: t } }), ['title'], ['asc'])),
     },
     {
       label: 'Status',

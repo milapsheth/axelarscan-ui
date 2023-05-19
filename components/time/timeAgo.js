@@ -27,7 +27,7 @@ export default (
 
   const _time = createMomentFromUnixtime(time)
   const second_diff = moment().diff(_time, 'seconds')
-  const time_string = second_diff > 59 ? _time.fromNow() : `${second_diff}s ago`
+  const time_string = second_diff > 59 || second_diff <= 0 ? _time.fromNow() : `${second_diff}s ago`
 
   return (
     _time &&

@@ -169,7 +169,7 @@ export default ({ n }) => {
             const {
               data,
               total,
-            } = { ...await searchTransactions({ ...filters, size, from }) }
+            } = { ...await searchTransactions({ ...filters, address, size, from }) }
 
             transactions_data = data
             total_data = total
@@ -352,7 +352,7 @@ export default ({ n }) => {
                   const {
                     operator_address,
                     description,
-                  } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address], 'lower'))) }
+                  } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower'))) }
 
                   const {
                     moniker,
@@ -428,7 +428,7 @@ export default ({ n }) => {
                         const {
                           operator_address,
                           description,
-                        } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address], 'lower') )) }
+                        } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower') )) }
 
                         const {
                           moniker,
@@ -523,7 +523,7 @@ export default ({ n }) => {
                 headerClassName: 'justify-end text-right',
               },
             ]
-            .filter(c => height ? !['height'].includes(c.accessor) : n ? !['height', 'recipient', 'fee'].includes(c.accessor) : true)}
+            .filter(c => height ? !['height'].includes(c.accessor) : address ? !['tx.auth_info.fee'].includes(c.accessor) : n ? !['height', 'recipient', 'tx.auth_info.fee'].includes(c.accessor) : true)}
             data={dataFiltered}
             defaultPageSize={n || height ? 10 : 50}
             noPagination={dataFiltered.length <= 10 || (!n && !(pathname.includes('/search') || height || address))}
@@ -552,7 +552,7 @@ export default ({ n }) => {
           <div className="loading">
             <Spinner name="Blocks" />
           </div> :
-          <div className="p-3">
+          <div className={`${height || address ? '' : 'p-3'}`}>
             <Spinner name="ProgressBar" width={36} height={36} />
           </div>
       }
