@@ -46,7 +46,7 @@ export default (
       _value = _value.substring(0, _value.length - 1)
     }
 
-    if (_value?.endsWith(`${delimiter}0`)) {
+    if (_value?.endsWith(`${delimiter}0`) || _value?.endsWith(delimiter)) {
       _value = _.head(_value.split(delimiter))
     }
   }

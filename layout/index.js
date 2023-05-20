@@ -313,7 +313,7 @@ export default ({ children }) => {
             dispatch({ type: VALIDATORS_DATA, value: data })
 
             if (pathname?.startsWith('/validator')) {
-              const fromBlock = startBlock(latest_block_height - NUM_BLOCKS_PER_HEARTBEAT)
+              const fromBlock = startBlock(latest_block_height - 10000)
               const toBlock = endBlock(latest_block_height)
               const totalHeartbeat = Math.floor((toBlock - fromBlock) / NUM_BLOCKS_PER_HEARTBEAT) + 1
 

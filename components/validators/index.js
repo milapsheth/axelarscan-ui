@@ -11,9 +11,10 @@ import NumberDisplay from '../number'
 import Image from '../image'
 import Copy from '../copy'
 import ValidatorProfile from '../profile/validator'
+import { ProgressBar, ProgressBarWithText } from '../progress-bars'
 import { getInflation } from '../../lib/api/axelar'
 import { getChainData } from '../../lib/config'
-import { toArray, includesStringList, ellipse, equalsIgnoreCase, fixDecimals } from '../../lib/utils'
+import { toArray, ellipse, fixDecimals } from '../../lib/utils'
 
 const PAGE_SIZE = 100
 const STATUSES = ['active', 'inactive']
@@ -21,7 +22,6 @@ const STATUSES = ['active', 'inactive']
 export default () => {
   const {
     chains,
-    assets,
     chain,
     validators,
     maintainers,
@@ -29,7 +29,6 @@ export default () => {
     state => (
       {
         chains: state.chains,
-        assets: state.assets,
         chain: state.chain,
         validators: state.validators,
         maintainers: state.maintainers,
@@ -40,9 +39,6 @@ export default () => {
   const {
     chains_data,
   } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
   const {
     chain_data,
   } = { ...chain }
@@ -161,6 +157,21 @@ export default () => {
     [validators_data, maintainers_data, inflationData],
   )
 
+  const {
+    staking_params,
+    slashing_params,
+  } = { ...chain_data }
+
+  const {
+    max_validators,
+    unbonding_time,
+  } = { ...staking_params }
+
+  const {
+    slash_fraction_downtime,
+    downtime_jail_duration,
+  } = { ...slashing_params }
+
   const filterByStatus = status => toArray(data || validators_data).filter(v => status === 'inactive' ? v.status !== 'BOND_STATUS_BONDED' : v.status === 'BOND_STATUS_BONDED' && !v.jailed)
 
   const render = status => {
@@ -190,57 +201,78 @@ export default () => {
 
               const {
                 description,
+                commission,
               } = { ...row.original }
 
               const {
                 moniker,
               } = { ...description }
 
+              const {
+                rate,
+              } = { ...commission?.commission_rates }
+
               return (
-                description ?
-                  <div className="min-w-max flex items-start space-x-2">
-                    <Link
-                      href={`/validator/${value}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ValidatorProfile description={description} />
-                    </Link>
-                    <div className="flex flex-col">
+                <div>
+                  {description ?
+                    <div className="min-w-max flex items-start space-x-2">
                       <Link
                         href={`/validator/${value}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 text-sm font-medium"
                       >
-                        {ellipse(moniker, 16)}
+                        <ValidatorProfile description={description} />
                       </Link>
+                      <div className="flex flex-col">
+                        <Link
+                          href={`/validator/${value}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 text-sm font-medium"
+                        >
+                          {ellipse(moniker, 16)}
+                        </Link>
+                        <div className="flex items-center space-x-1">
+                          <Link
+                            href={`/validator/${value}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-slate-400 dark:text-slate-500 text-sm"
+                          >
+                            {ellipse(value, 6, 'axelarvaloper')}
+                          </Link>
+                          <Copy value={value} />
+                        </div>
+                      </div>
+                    </div> :
+                    value ?
                       <div className="flex items-center space-x-1">
                         <Link
                           href={`/validator/${value}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-400 dark:text-slate-500 text-sm"
+                          className="text-blue-400 text-sm font-medium"
                         >
                           {ellipse(value, 6, 'axelarvaloper')}
                         </Link>
                         <Copy value={value} />
-                      </div>
+                      </div> :
+                      '-'
+                  }
+                  {Number(rate) > 0 && (
+                    <div className="leading-3 mt-0.5 ml-8">
+                      <NumberDisplay
+                        value={rate * 100}
+                        format="0,0.0"
+                        maxDecimals={2}
+                        prefix="Commission: "
+                        suffix="%"
+                        noTooltip={true}
+                        className="text-black dark:text-white text-xs font-medium"
+                      />
                     </div>
-                  </div> :
-                  value ?
-                    <div className="flex items-center space-x-1">
-                      <Link
-                        href={`/validator/${value}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 text-sm font-medium"
-                      >
-                        {ellipse(value, 6, 'axelarvaloper')}
-                      </Link>
-                      <Copy value={value} />
-                    </div> :
-                    '-'
+                  )}
+                </div>
               )
             },
           },
@@ -251,10 +283,10 @@ export default () => {
                   Voting Power
                 </span>
                 <div className="w-32 grid grid-cols-2 gap-2">
-                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium">
+                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium text-center">
                     Consensus
                   </span>
-                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium">
+                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium text-center">
                     Quadratic
                   </span>
                 </div>
@@ -278,7 +310,7 @@ export default () => {
                       value={tokens}
                       format="0,0.0a"
                       noTooltip={true}
-                      className="text-black dark:text-white text-xs lg:text-sm font-medium"
+                      className="text-slate-600 dark:text-slate-200 text-xs lg:text-sm font-normal"
                     />
                     <NumberDisplay
                       value={tokens * 100 / total_voting_power}
@@ -337,6 +369,117 @@ export default () => {
                     noTooltip={true}
                     className="text-slate-400 dark:text-slate-500 text-2xs lg:text-xs"
                   />
+                </div>
+              )
+            },
+            headerClassName: 'whitespace-nowrap justify-start sm:justify-end text-left sm:text-right',
+          },
+          {
+            Header: (
+              <div className="flex flex-col items-center space-y-0.5">
+                <span>
+                  Cumulative Share %
+                </span>
+                <div className="w-60 grid grid-cols-2 gap-2">
+                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium text-center">
+                    Consensus
+                  </span>
+                  <span className="text-slate-400 dark:text-slate-500 text-3xs font-medium text-center">
+                    Quadratic
+                  </span>
+                </div>
+              </div>
+            ),
+            accessor: 'cumulative_share',
+            disableSortBy: true,
+            Cell: props => {
+              const {
+                flatRows,
+                row,
+              } = { ...props }
+
+              const {
+                tokens,
+                quadratic_voting_power,
+              } = { ...row.original }
+
+              const index = flatRows?.indexOf(row)
+              const total_voting_power = _.sumBy(filterByStatus('active'), 'tokens')
+              const total_quadratic_voting_power = _.sumBy(filterByStatus('active'), 'quadratic_voting_power')
+
+              const _data = toArray(
+                index > -1 && _.slice(
+                  flatRows.map(d => {
+                    const {
+                      original,
+                    } = { ...d }
+
+                    const {
+                      tokens,
+                      quadratic_voting_power,
+                    } = { ...original }
+
+                    return {
+                      ...original,
+                      consensus_share: tokens * 100 / total_voting_power,
+                      quadratic_share: quadratic_voting_power * 100 / total_quadratic_voting_power,
+                    }
+                  }),
+                  0,
+                  index + 1,
+                )
+              )
+
+              const {
+                consensus_share,
+                quadratic_share,
+              } = { ..._.last(_data) }
+
+              const total_consensus_share = _.sumBy(_data, 'consensus_share')
+              const total_quadratic_share = _.sumBy(_data, 'quadratic_share')
+
+              return (
+                <div className="w-60 grid grid-cols-2 gap-2 sm:ml-auto">
+                  <div className="flex items-start space-x-1.5">
+                    <div className="w-20 bg-slate-50 dark:bg-slate-900">
+                      <div style={{ width: `${fixDecimals(total_consensus_share)}%` }}>
+                        <ProgressBar
+                          width={(total_consensus_share - consensus_share) * 100 / total_consensus_share}
+                          color="bg-blue-100 dark:bg-blue-400"
+                          backgroundClassName="h-7 bg-blue-600 dark:bg-blue-800"
+                          className="h-7"
+                        />
+                      </div>
+                    </div>
+                    <NumberDisplay
+                      value={total_consensus_share}
+                      format="0,0.0"
+                      maxDecimals={1}
+                      suffix="%"
+                      noTooltip={true}
+                      className="text-black dark:text-white text-2xs font-medium"
+                    />
+                  </div>
+                  <div className="flex items-start space-x-1.5">
+                    <div className="w-20 bg-slate-50 dark:bg-slate-900">
+                      <div style={{ width: `${fixDecimals(total_quadratic_share)}%` }}>
+                        <ProgressBar
+                          width={(total_quadratic_share - quadratic_share) * 100 / total_quadratic_share}
+                          color="bg-red-100 dark:bg-red-400"
+                          backgroundClassName="h-7 bg-red-600 dark:bg-red-800"
+                          className="h-7"
+                        />
+                      </div>
+                    </div>
+                    <NumberDisplay
+                      value={total_quadratic_share}
+                      format="0,0.0"
+                      maxDecimals={1}
+                      suffix="%"
+                      noTooltip={true}
+                      className="text-black dark:text-white text-2xs font-medium"
+                    />
+                  </div>
                 </div>
               )
             },
@@ -406,7 +549,244 @@ export default () => {
             headerClassName: 'whitespace-nowrap justify-start sm:justify-end text-left sm:text-right',
           },
           {
-            Header: 'EVM Chains Supported',
+            Header: (
+              <Tooltip content="No. of blocks signed off by the validator in the last 10k blocks">
+                <span>Uptime</span>
+              </Tooltip>
+            ),
+            accessor: 'uptime',
+            sortType: (a, b) => a.original.uptime > b.original.uptime ? 1 : -1,
+            Cell: props => {
+              const {
+                value,
+                row,
+              } = { ...props }
+
+              const {
+                start_height,
+              } = { ...row.original }
+
+              return (
+                <div className="w-28 flex flex-col items-start sm:items-end text-left sm:text-right space-y-0.5 sm:ml-auto">
+                  {typeof value === 'number' ?
+                    value > 0 ?
+                      <div className="w-full mt-0.5">
+                        <ProgressBarWithText
+                          width={value}
+                          text={
+                            <NumberDisplay
+                              value={value}
+                              format="0,0.0"
+                              suffix="%"
+                              noTooltip={true}
+                              className="text-white text-2xs font-medium mx-1.5"
+                            />
+                          }
+                          color={`${value < 95 ? 'bg-yellow-500 dark:bg-yellow-600' : 'bg-green-500 dark:bg-green-600'} rounded-lg`}
+                          backgroundClassName="h-4 bg-slate-50 dark:bg-slate-900 rounded-lg"
+                          className={`h-4 flex items-center ${value < 33 ? 'justify-start' : 'justify-end'}`}
+                        />
+                      </div> :
+                      <span className="h-4 text-slate-400 dark:text-slate-500 text-xs font-medium mt-0.5">
+                        No Uptimes
+                      </span> :
+                    <div className="-my-0.5">
+                      <Spinner name="ProgressBar" />
+                    </div>
+                  }
+                  {typeof start_height === 'number' && (
+                    <Link
+                      href={`/block/${start_height}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="leading-3 text-blue-400 dark:text-blue-500"
+                    >
+                      <NumberDisplay
+                        value={start_height}
+                        format="0,0"
+                        prefix="Started: "
+                        className="text-2xs font-medium"
+                      />
+                    </Link>
+                  )}
+                </div>
+              )
+            },
+            headerClassName: 'whitespace-nowrap justify-start sm:justify-end text-left sm:text-right',
+          },
+          {
+            Header: (
+              <Tooltip content="No. of heartbeats from validator in the last 10k blocks">
+                <span>Heartbeat</span>
+              </Tooltip>
+            ),
+            accessor: 'heartbeats_uptime',
+            sortType: (a, b) => a.original.heartbeats_uptime > b.original.heartbeats_uptime ? 1 : -1,
+            Cell: props => {
+              const {
+                value,
+                row,
+              } = { ...props }
+
+              const {
+                start_proxy_height,
+                stale_heartbeats,
+              } = { ...row.original }
+
+              return (
+                <div className="w-28 flex flex-col items-start sm:items-end text-left sm:text-right space-y-0.5 sm:ml-auto">
+                  {typeof value === 'number' ?
+                    value > 0 ?
+                      <div className="w-full mt-0.5">
+                        <ProgressBarWithText
+                          width={value}
+                          text={
+                            <NumberDisplay
+                              value={value}
+                              format="0,0.0"
+                              suffix="%"
+                              noTooltip={true}
+                              className="text-white text-2xs font-medium mx-1.5"
+                            />
+                          }
+                          color={`${value < 95 ? 'bg-yellow-500 dark:bg-yellow-600' : 'bg-green-500 dark:bg-green-600'} rounded-lg`}
+                          backgroundClassName="h-4 bg-slate-50 dark:bg-slate-900 rounded-lg"
+                          className={`h-4 flex items-center ${value < 33 ? 'justify-start' : 'justify-end'}`}
+                        />
+                      </div> :
+                      <span className="h-4 text-slate-400 dark:text-slate-500 text-xs font-medium mt-0.5">
+                        No Heartbeats
+                      </span> :
+                    <div className="-my-0.5">
+                      <Spinner name="ProgressBar" />
+                    </div>
+                  }
+                  {typeof start_proxy_height === 'number' && (
+                    <Link
+                      href={`/block/${start_proxy_height}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="leading-3 text-blue-400 dark:text-blue-500"
+                    >
+                      <NumberDisplay
+                        value={start_proxy_height}
+                        format="0,0"
+                        prefix="Started: "
+                        className="text-2xs font-medium"
+                      />
+                    </Link>
+                  )}
+                  {stale_heartbeats && (
+                    <span className="h-4 text-slate-400 dark:text-slate-500 text-xs font-medium">
+                      Stale Heartbeats
+                    </span>
+                  )}
+                </div>
+              )
+            },
+            headerClassName: 'whitespace-nowrap justify-start sm:justify-end text-left sm:text-right',
+          },
+          {
+            Header: (
+              <Tooltip content="Votes by the validator on cross-chain msgs on EVM chains in the last 10k blocks">
+                <span>EVM Votes</span>
+              </Tooltip>
+            ),
+            accessor: 'votes',
+            sortType: (a, b) => a.original.total_yes_votes > b.original.total_yes_votes ? 1 : a.original.total_yes_votes < b.original.total_yes_votes ? -1 : a.original.total_no_votes < b.original.total_no_votes ? 1 : a.original.total_no_votes > b.original.total_no_votes ? 1 : a.original.total_unsubmitted_votes <= b.original.total_unsubmitted_votes ? 1 : -1,
+            Cell: props => {
+              const {
+                value,
+              } = { ...props }
+
+              return (
+                <div className="flex flex-col space-y-0.5">
+                  {value ?
+                    Object.keys({ ...value.chains }).length > 0 ?
+                      Object.entries(value.chains).map(([k, v]) => {
+                        const {
+                          name,
+                          image,
+                        } = { ...getChainData(k, chains_data) }
+
+                        const {
+                          votes,
+                          total_polls,
+                          total,
+                        } = { ...v }
+
+                        return (
+                          <div key={k} className="min-w-max flex items-center justify-between space-x-2">
+                            <div className="flex items-center space-x-2">
+                              <Tooltip content={name}>
+                                <div className="w-fit">
+                                  <Image
+                                    src={image}
+                                    width={20}
+                                    height={20}
+                                    className="3xl:w-6 3xl:h-6 rounded-full"
+                                  />
+                                </div>
+                              </Tooltip>
+                              <Tooltip content="Yes Votes">
+                                <div className="leading-3">
+                                  <NumberDisplay
+                                    value={votes?.true || 0}
+                                    format="0,0"
+                                    suffix=" Y"
+                                    className={`${votes?.true ? 'text-green-400 dark:text-green-500 font-medium' : 'text-slate-400 dark:text-slate-500 font-normal'} text-xs`}
+                                  />
+                                </div>
+                              </Tooltip>
+                              <Tooltip content="No Votes">
+                                <div className="leading-3">
+                                  <NumberDisplay
+                                    value={votes?.false || 0}
+                                    format="0,0"
+                                    suffix=" N"
+                                    className={`${votes?.false ? 'text-red-400 dark:text-red-500 font-medium' : 'text-slate-400 dark:text-slate-500 font-normal'} text-xs`}
+                                  />
+                                </div>
+                              </Tooltip>
+                              {votes?.unsubmitted > 0 && (
+                                <Tooltip content="Unsubmitted Votes">
+                                  <div className="leading-3">
+                                    <NumberDisplay
+                                      value={votes.unsubmitted}
+                                      format="0,0"
+                                      suffix=" UN"
+                                      className="text-slate-400 dark:text-slate-500 text-xs font-medium"
+                                    />
+                                  </div>
+                                </Tooltip>
+                              )}
+                            </div>
+                            <Tooltip content="Total EVM Polls">
+                              <div className="leading-3">
+                                <NumberDisplay
+                                  value={total_polls || 0}
+                                  format="0,0"
+                                  prefix="["
+                                  suffix="]"
+                                  className="text-blue-400 dark:text-blue-500 text-xs font-medium"
+                                />
+                              </div>
+                            </Tooltip>
+                          </div>
+                        )
+                      }) :
+                      '-' :
+                    <div className="-my-0.5">
+                      <Spinner name="ProgressBar" />
+                    </div>
+                  }
+                </div>
+              )
+            },
+            headerClassName: 'whitespace-nowrap',
+          },
+          {
+            Header: 'EVM Supported',
             accessor: 'supported_chains',
             sortType: (a, b) => toArray(a.original.supported_chains).length > toArray(b.original.supported_chains).length ? 1 : -1,
             Cell: props => {
@@ -425,7 +805,7 @@ export default () => {
                         } = { ...c }
 
                         return (
-                          <div key={i} className="mb-1 mr-1">
+                          <div key={i} className="mb-1 mr-0.5">
                             <Tooltip content={name}>
                               <div className="w-fit">
                                 <Image
@@ -440,7 +820,9 @@ export default () => {
                         )
                       }) :
                       '-' :
-                    <Spinner name="ProgressBar" />
+                    <div className="-my-0.5">
+                      <Spinner name="ProgressBar" />
+                    </div>
                   }
                 </div>
               )
@@ -494,7 +876,7 @@ export default () => {
             headerClassName: 'justify-start sm:justify-end text-left sm:text-right',
           },
         ]
-        .filter(c => status === 'inactive' ? !['voting_power', 'cumulative_share', 'quadratic_cumulative_share', 'apr'].includes(c.accessor) : !['tokens', 'status'].includes(c.accessor))}
+        .filter(c => status === 'inactive' ? !['voting_power', 'cumulative_share', 'commission.commission_rates.rate', 'apr'].includes(c.accessor) : !['tokens', 'commission.commission_rates.rate', 'status'].includes(c.accessor))}
         data={_data}
         defaultPageSize={PAGE_SIZE}
         noPagination={_data.length <= PAGE_SIZE}
@@ -507,18 +889,57 @@ export default () => {
     <div className="children">
       {data ?
         <Tabs value={status} className="tabs pt-8 px-2 sm:px-4">
-          <TabsHeader className="max-w-xs">
-            {STATUSES.map(s => (
-              <Tab
-                key={s}
-                value={s}
-                onClick={() => setStatus(s)}
-                className="capitalize"
-              >
-                {s} ({filterByStatus(s).length})
-              </Tab>
-            ))}
-          </TabsHeader>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 space-x-3">
+            <TabsHeader className="max-w-xs">
+              {STATUSES.map(s => (
+                <Tab
+                  key={s}
+                  value={s}
+                  onClick={() => setStatus(s)}
+                  className="capitalize"
+                >
+                  {s} ({filterByStatus(s).length})
+                </Tab>
+              ))}
+            </TabsHeader>
+            <div className="flex items-center space-x-3 sm:space-x-6">
+              <div className="flex flex-col space-y-0.5">
+                {max_validators && (
+                  <NumberDisplay
+                    value={max_validators}
+                    format="0,0"
+                    prefix="Max Validators: "
+                  />
+                )}
+                {unbonding_time && (
+                  <NumberDisplay
+                    value={Math.floor(Number(unbonding_time.replace('s', '')) / 86400)}
+                    format="0,0"
+                    prefix="Undelegate Period: "
+                    suffix=" Days"
+                  />
+                )}
+              </div>
+              <div className="flex flex-col space-y-0.5">
+                {slash_fraction_downtime && (
+                  <NumberDisplay
+                    value={slash_fraction_downtime * 100}
+                    format="0,0.00"
+                    prefix="Jail Penalty: "
+                    suffix="%"
+                  />
+                )}
+                {downtime_jail_duration && (
+                  <NumberDisplay
+                    value={Math.floor(Number(downtime_jail_duration.replace('s', '')) / 3600)}
+                    format="0,0"
+                    prefix="Jail Duration: "
+                    suffix=" Hrs"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
           <TabsBody>
             {STATUSES.map(s => (
               <TabPanel
