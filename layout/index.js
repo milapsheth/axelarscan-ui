@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import PageVisibility from 'react-page-visibility'
-import { utils } from 'ethers'
 import _ from 'lodash'
 
 import Navbar from '../components/navbar'
@@ -20,6 +19,7 @@ import { getTVL } from '../lib/api/tvl'
 import { searchHeartbeats, getValidators, getValidatorsVotes } from '../lib/api/validators'
 import { getKeyType } from '../lib/key'
 import { NUM_BLOCKS_PER_HEARTBEAT, startBlock, endBlock } from '../lib/heartbeat'
+import { formatUnits } from '../lib/number'
 import { toArray, equalsIgnoreCase } from '../lib/utils'
 import { THEME, PAGE_VISIBLE, CHAINS_DATA, ASSETS_DATA, CONTRACTS_DATA, ENS_DATA, ACCOUNTS_DATA, CHAIN_DATA, STATUS_DATA, MAINTAINERS_DATA, TVL_DATA, VALIDATORS_DATA } from '../reducers/types'
 
@@ -89,7 +89,7 @@ export default ({ children }) => {
   // chains
   useEffect(
     () => {
-      const getData = async () => dispatch({ type: CHAINS_DATA, value: toArray(await getChains()) })
+      const getData = async () => dispatch({ type: CHAINS_DATA, value: toArray(await getChains()).map((c, i) => { return { ...c, i } }) })
       getData()
     },
     [],
@@ -183,7 +183,7 @@ export default ({ children }) => {
             } = { ...response?.amount }
 
             if (amount) {
-              dispatch({ type: CHAIN_DATA, value: { bank_supply: { symbol: 'AXL', amount: utils.formatUnits(amount, 6) } } })
+              dispatch({ type: CHAIN_DATA, value: { bank_supply: { symbol: 'AXL', amount: formatUnits(amount, 6) } } })
             }
           }
         }
@@ -195,7 +195,7 @@ export default ({ children }) => {
             pool,
           } = { ...response }
 
-          dispatch({ type: CHAIN_DATA, value: { staking_pool: Object.fromEntries(Object.entries({ ...pool }).map(([k, v]) => [k, utils.formatUnits(v, 6)])) } })
+          dispatch({ type: CHAIN_DATA, value: { staking_pool: Object.fromEntries(Object.entries({ ...pool }).map(([k, v]) => [k, formatUnits(v, 6)])) } })
         }
 
         if (!is_interval) {

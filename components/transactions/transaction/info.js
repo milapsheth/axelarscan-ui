@@ -182,7 +182,7 @@ export default ({ data }) => {
                 </div> :
                 sender ?
                   <AccountProfile address={sender} url={true} /> :
-                  <span>-</span>
+                  '-'
             }
           </div> :
           <Spinner name="ProgressBar" />

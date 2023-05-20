@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Chip, Tooltip } from '@material-tailwind/react'
-import { utils } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { IoCheckmarkCircle } from 'react-icons/io5'
@@ -17,7 +16,7 @@ import Image from '../image'
 import TimeAgo from '../time/timeAgo'
 import { searchPolls } from '../../lib/api/polls'
 import { getChainData, getAssetData } from '../../lib/config'
-import { toBigNumber } from '../../lib/number'
+import { formatUnits } from '../../lib/number'
 import { split, toArray, includesStringList, getTitle, ellipse, equalsIgnoreCase, getQueryParams, toJson } from '../../lib/utils'
 
 const PAGE_SIZE = 25
@@ -407,7 +406,7 @@ export default () => {
                                   )}
                                   {!!(amount) && decimals && (
                                     <NumberDisplay
-                                      value={utils.formatUnits(toBigNumber(amount), decimals)}
+                                      value={formatUnits(amount, decimals)}
                                       format="0,0.000000"
                                       className="text-xs font-medium"
                                     />
@@ -509,7 +508,10 @@ export default () => {
                         rel="noopener noreferrer"
                         className="text-blue-400 dark:text-blue-500 font-medium"
                       >
-                        <NumberDisplay value={value} format="0,0" />
+                        <NumberDisplay
+                          value={value}
+                          format="0,0"
+                        />
                       </Link>
                       {id && (
                         <Link

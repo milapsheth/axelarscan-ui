@@ -246,7 +246,10 @@ export default ({ data }) => {
                         </span>
                       </div>
                     )}
-                    <Chip value={split(activities.length > 1 ? a.type : type, 'normal', ' ').join('')} className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2" />
+                    <Chip
+                      value={split(activities.length > 1 ? a.type : type, 'normal', ' ').join('')}
+                      className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2"
+                    />
                     {status && (
                       <div className="text-center">
                         <Chip
@@ -448,7 +451,10 @@ export default ({ data }) => {
                       return (
                         <div key={j} className="w-fit bg-slate-100 dark:bg-slate-800 rounded space-y-2 py-5 px-4">
                           {event && (
-                            <Chip value={split(getTitle(event), 'normal', ' ').join('')} className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2" />
+                            <Chip
+                              value={split(getTitle(event), 'normal', ' ').join('')}
+                              className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2"
+                            />
                           )}
                           {Object.entries({ ...e }).filter(([k, v]) => !['event'].includes(k)).map(([k, v], i) => (
                             <div key={i} className="flex items-start space-x-4">
@@ -481,7 +487,10 @@ export default ({ data }) => {
                 )}
                 {packet && (
                   <div className="w-fit bg-slate-100 dark:bg-slate-800 rounded space-y-2 py-5 px-4">
-                    <Chip value="Packet" className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2" />
+                    <Chip
+                      value="Packet"
+                      className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2"
+                    />
                     {Object.entries({ ...packet }).map(([k, v], i) => (
                       <div key={i} className="flex items-start space-x-4">
                         <span className="w-56 text-slate-500 dark:text-slate-400">
@@ -567,7 +576,10 @@ export default ({ data }) => {
                     return (
                       <div key={j} className="min-w-max bg-slate-100 dark:bg-slate-800 rounded space-y-2 py-5 px-4">
                         {type && (
-                          <Chip value={split(getTitle(type), 'normal', ' ').join('')} className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2" />
+                          <Chip
+                            value={split(getTitle(type), 'normal', ' ').join('')}
+                            className="rounded select-auto normal-case custom-font text-xs font-medium py-1 px-2"
+                          />
                         )}
                         {attributes.filter(([k, v]) => typeof v !== 'undefined').map(([k, v], i) => (
                           <div key={i} className="flex items-start space-x-4">

@@ -148,7 +148,10 @@ export default ({ n }) => {
                       rel="noopener noreferrer"
                       className="text-blue-400 dark:text-blue-500 font-medium"
                     >
-                      <NumberDisplay value={value} format="0,0" />
+                      <NumberDisplay
+                        value={value}
+                        format="0,0"
+                      />
                     </Link>
                   )
                 },
@@ -244,7 +247,7 @@ export default ({ n }) => {
                         </div> :
                         value ?
                           <AccountProfile address={value} url={true} /> :
-                          <span>-</span>
+                          '-'
                   )
                 },
               },
@@ -280,7 +283,7 @@ export default ({ n }) => {
             ]
             .filter(c => n ? ['hash'].includes(c.accessor) : true)}
             data={data}
-            defaultPageSize={n ? 10 : 50}
+            defaultPageSize={n ? 10 : PAGE_SIZE}
             noPagination={data.length <= 10 || (!n && !pathname.includes('/search'))}
             className="no-border no-shadow"
           />

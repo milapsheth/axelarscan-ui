@@ -19,6 +19,7 @@ import { getAssetData } from '../../lib/config'
 import { getKeyType } from '../../lib/key'
 import { toArray, includesStringList, ellipse, equalsIgnoreCase } from '../../lib/utils'
 
+const PAGE_SIZE = 10
 const STAKING_FIELDS = [
   { id: 'delegations', title: 'Delegations' },
   { id: 'redelegations', title: 'Redelegations' },
@@ -102,7 +103,7 @@ export default ({ address, data }) => {
                   accessor: 'i',
                   disableSortBy: true,
                   Cell: props => (
-                    <span className="font-medium">
+                    <span className="text-black dark:text-white font-medium">
                       {props.flatRows?.indexOf(props.row) + 1}
                     </span>
                   ),
@@ -169,7 +170,7 @@ export default ({ address, data }) => {
                             </Link>
                             <Copy value={operator_address} />
                           </div> :
-                          <span>-</span>
+                          '-'
                     )
                   },
                 },
@@ -202,7 +203,7 @@ export default ({ address, data }) => {
               ]}
               size="small"
               data={delegations}
-              defaultPageSize={10}
+              defaultPageSize={PAGE_SIZE}
               noPagination={delegations.length <= 10}
               className="no-border no-shadow"
             /> :
@@ -218,7 +219,7 @@ export default ({ address, data }) => {
                   accessor: 'i',
                   disableSortBy: true,
                   Cell: props => (
-                    <span className="font-medium">
+                    <span className="text-black dark:text-white font-medium">
                       {props.flatRows?.indexOf(props.row) + 1}
                     </span>
                   ),
@@ -351,7 +352,7 @@ export default ({ address, data }) => {
               ]}
               size="small"
               data={redelegations}
-              defaultPageSize={10}
+              defaultPageSize={PAGE_SIZE}
               noPagination={redelegations.length <= 10}
               className="no-border no-shadow"
             /> :
@@ -367,7 +368,7 @@ export default ({ address, data }) => {
                   accessor: 'i',
                   disableSortBy: true,
                   Cell: props => (
-                    <span className="font-medium">
+                    <span className="text-black dark:text-white font-medium">
                       {props.flatRows?.indexOf(props.row) + 1}
                     </span>
                   ),
@@ -434,7 +435,7 @@ export default ({ address, data }) => {
                             </Link>
                             <Copy value={operator_address} />
                           </div> :
-                          <span>-</span>
+                          '-'
                     )
                   },
                 },
@@ -474,7 +475,7 @@ export default ({ address, data }) => {
               ]}
               size="small"
               data={unbondings}
-              defaultPageSize={10}
+              defaultPageSize={PAGE_SIZE}
               noPagination={unbondings.length <= 10}
               className="no-border no-shadow"
             /> :
@@ -693,7 +694,7 @@ export default ({ address, data }) => {
                     </div> :
                     address ?
                       <AccountProfile address={address} url={true} /> :
-                      <span>-</span>
+                      '-'
                 }
               </div>
             </div>
@@ -794,7 +795,7 @@ export default ({ address, data }) => {
                   accessor: 'i',
                   disableSortBy: true,
                   Cell: props => (
-                    <span className="font-medium">
+                    <span className="text-black dark:text-white font-medium">
                       {props.flatRows?.indexOf(props.row) + 1}
                     </span>
                   ),
@@ -901,7 +902,7 @@ export default ({ address, data }) => {
               ]}
               size="small"
               data={balances}
-              defaultPageSize={10}
+              defaultPageSize={PAGE_SIZE}
               noPagination={balances.length <= 10}
               className="no-border no-shadow"
             /> :

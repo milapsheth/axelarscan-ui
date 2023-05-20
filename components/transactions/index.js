@@ -301,7 +301,10 @@ export default ({ n }) => {
                       rel="noopener noreferrer"
                       className="text-blue-400 dark:text-blue-500 font-medium"
                     >
-                      <NumberDisplay value={value} format="0,0" />
+                      <NumberDisplay
+                        value={value}
+                        format="0,0"
+                      />
                     </Link>
                   )
                 },
@@ -404,7 +407,7 @@ export default ({ n }) => {
                         </div> :
                         value ?
                           <AccountProfile address={value} url={true} /> :
-                          <span>-</span>
+                          '-'
                   )
                 },
               },
@@ -435,52 +438,55 @@ export default ({ n }) => {
                         } = { ...description }
 
                         return (
-                          description ?
-                            <div key={i} className="min-w-max flex items-start space-x-2">
-                              <Link
-                                href={`/validator/${operator_address}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ValidatorProfile description={description} />
-                              </Link>
-                              <div className="flex flex-col">
+                          <div key={i}>
+                            {description ?
+                              <div className="min-w-max flex items-start space-x-2">
                                 <Link
                                   href={`/validator/${operator_address}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-blue-400 font-medium"
                                 >
-                                  {ellipse(moniker, 16)}
+                                  <ValidatorProfile description={description} />
                                 </Link>
+                                <div className="flex flex-col">
+                                  <Link
+                                    href={`/validator/${operator_address}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-400 font-medium"
+                                  >
+                                    {ellipse(moniker, 16)}
+                                  </Link>
+                                  <div className="flex items-center space-x-1">
+                                    <Link
+                                      href={`/validator/${operator_address}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-slate-400 dark:text-slate-500"
+                                    >
+                                      {ellipse(operator_address, 6, 'axelarvaloper')}
+                                    </Link>
+                                    <Copy value={operator_address} />
+                                  </div>
+                                </div>
+                              </div> :
+                              operator_address ?
                                 <div className="flex items-center space-x-1">
                                   <Link
                                     href={`/validator/${operator_address}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-slate-400 dark:text-slate-500"
+                                    className="text-blue-400 font-medium"
                                   >
                                     {ellipse(operator_address, 6, 'axelarvaloper')}
                                   </Link>
                                   <Copy value={operator_address} />
-                                </div>
-                              </div>
-                            </div> :
-                            operator_address ?
-                              <div key={i} className="flex items-center space-x-1">
-                                <Link
-                                  href={`/validator/${operator_address}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-400 font-medium"
-                                >
-                                  {ellipse(operator_address, 6, 'axelarvaloper')}
-                                </Link>
-                                <Copy value={operator_address} />
-                              </div> :
-                              value ?
-                                <AccountProfile key={i} address={value} url={true} /> :
-                                <span key={i}>-</span>
+                                </div> :
+                                value ?
+                                  <AccountProfile address={value} url={true} /> :
+                                  '-'
+                            }
+                          </div>
                         )
                       })}
                     </div>

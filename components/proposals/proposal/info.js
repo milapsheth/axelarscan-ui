@@ -75,7 +75,10 @@ export default ({ data }) => {
         <div className={rowClassName}>
           <span className={titleClassName}>Type:</span>
           {data ?
-            <Chip value={getTitle(type)} className="select-auto normal-case custom-font font-medium" /> :
+            <Chip
+              value={getTitle(type)}
+              className="select-auto normal-case custom-font font-medium"
+            /> :
             <Spinner name="ProgressBar" />
           }
         </div>
@@ -125,10 +128,18 @@ export default ({ data }) => {
             <div className="text-sm lg:text-base font-medium">
               {typeof toJson(value) === 'object' ?
                 <div className="space-y-2">
-                  <Chip color="amber" value={getTitle(key)} className="select-auto normal-case custom-font font-medium" />
+                  <Chip
+                    color="amber"
+                    value={getTitle(key)}
+                    className="select-auto normal-case custom-font font-medium"
+                  />
                   <JSONView value={value} />
                 </div> :
-                <Chip color="cyan" value={`${getTitle(key)} = ${value}`} className="select-auto normal-case custom-font font-medium" />
+                <Chip
+                  color="cyan"
+                  value={`${getTitle(key)} = ${value}`}
+                  className="select-auto normal-case custom-font font-medium"
+                />
               }
             </div>
           </div>
@@ -199,7 +210,7 @@ export default ({ data }) => {
                   />
                 )
               }) :
-              <span>-</span>
+              '-'
             }
           </div> :
           <Spinner name="ProgressBar" />

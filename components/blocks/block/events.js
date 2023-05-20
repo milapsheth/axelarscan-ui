@@ -20,7 +20,10 @@ export default ({ data }) => {
     <div className="grid sm:grid-cols-2 gap-6">
       {FIELDS.map((f, i) => (
         <div key={i} className="space-y-3">
-          <Chip value={split(f, 'normal', '_').join(' ')} className="rounded select-auto custom-font text-2xs font-medium py-0.5 px-2" />
+          <Chip
+            value={split(f, 'normal', '_').join(' ')}
+            className="rounded select-auto custom-font text-2xs font-medium py-0.5 px-2"
+          />
           {data ?
             toArray(data[f]).length > 0 ?
               <Datatable
@@ -103,7 +106,7 @@ export default ({ data }) => {
                 ]}
                 data={toArray(data[f])}
                 defaultPageSize={PAGE_SIZE}
-                noPagination={toArray(data[f]).length <= PAGE_SIZE}
+                noPagination={toArray(data[f]).length <= 10}
                 className="no-border no-shadow"
               /> :
               <div className="text-slate-400 dark:text-slate-500 text-base font-medium">

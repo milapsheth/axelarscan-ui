@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Chip, Tooltip } from '@material-tailwind/react'
-import { utils } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { BsArrowRightShort } from 'react-icons/bs'
@@ -20,7 +19,7 @@ import TimeAgo from '../time/timeAgo'
 import { searchBatches } from '../../lib/api/batches'
 import { batchedCommands } from '../../lib/api/lcd'
 import { getChainData, getAssetData } from '../../lib/config'
-import { toBigNumber } from '../../lib/number'
+import { formatUnits } from '../../lib/number'
 import { split, toArray, ellipse, equalsIgnoreCase, getQueryParams, sleep } from '../../lib/utils'
 
 const PAGE_SIZE = 25
@@ -380,7 +379,11 @@ export default () => {
                           const source_chain_data = getChainData(sourceChain, chains_data)
                           const typeComponent = (
                             <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
-                              <Chip color={executed ? 'green' : 'cyan'} value={type} className="rounded select-auto normal-case custom-font text-2xs font-medium mr-2 py-0 px-2" />
+                              <Chip
+                                color={executed ? 'green' : 'cyan'}
+                                value={type}
+                                className="rounded select-auto normal-case custom-font text-2xs font-medium mr-2 py-0 px-2"
+                              />
                             </Tooltip>
                           )
 
@@ -407,7 +410,7 @@ export default () => {
                                   )}
                                   {!!(amount) && (
                                     <NumberDisplay
-                                      value={utils.formatUnits(toBigNumber(amount), decimals)}
+                                      value={formatUnits(amount, decimals)}
                                       format="0,0.000000"
                                     />
                                   )}
@@ -580,7 +583,7 @@ export default () => {
                           </Link>
                         )}
                       </div> :
-                      <span>-</span>
+                      '-'
                   )
                 },
               },

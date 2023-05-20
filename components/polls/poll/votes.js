@@ -75,7 +75,7 @@ export default ({ data }) => {
             accessor: 'i',
             disableSortBy: true,
             Cell: props => (
-              <span className="font-medium">
+              <span className="text-black dark:text-white font-medium">
                 {props.flatRows?.indexOf(props.row) + 1}
               </span>
             ),
@@ -142,7 +142,7 @@ export default ({ data }) => {
                       </Link>
                       <Copy value={value} />
                     </div> :
-                    <span>-</span>
+                    '-'
               )
             },
           },
@@ -236,7 +236,10 @@ export default ({ data }) => {
                   rel="noopener noreferrer"
                   className="text-blue-400 dark:text-blue-500 font-medium"
                 >
-                  <NumberDisplay value={value} format="0,0" />
+                  <NumberDisplay
+                    value={value}
+                    format="0,0"
+                  />
                 </Link>
               )
             },
@@ -257,7 +260,7 @@ export default ({ data }) => {
                     <div className={`${['no'].includes(value) ? 'bg-red-500 dark:bg-red-600 text-white' : ['yes'].includes(value) ? 'bg-green-500 dark:bg-green-600 text-white' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500'} rounded-lg capitalize text-xs py-1 px-2`}>
                       {getTitle(value)}
                     </div> :
-                    <span>-</span>
+                    '-'
                   }
                 </div>
               )

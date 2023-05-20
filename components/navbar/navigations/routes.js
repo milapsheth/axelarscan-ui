@@ -10,7 +10,7 @@ export default toArray(
     {
       title: 'Blocks',
       path: '/blocks',
-      others_paths: ['/block/[height]'],
+      others_paths: ['/block/[height]', '/blocks/[height]'],
     },
     {
       title: 'Transactions',
@@ -20,17 +20,17 @@ export default toArray(
     {
       title: 'EVM Polls',
       path: '/evm-polls',
-      others_paths: ['/evm-poll/[id]', '/polls', '/poll/[id]'],
+      others_paths: ['/polls', '/evm-poll/[id]', '/poll/[id]', '/evm-polls/[id]', '/polls/[id]'],
     },
     {
       title: 'EVM Batches',
       path: '/evm-batches',
-      others_paths: ['/evm-batch/[chain]/[id]', '/batches', '/batch/[chain]/[id]'],
+      others_paths: ['/batches', '/evm-batch/[chain]/[id]', '/batch/[chain]/[id]', '/evm-batches/[chain]/[id]', '/batches/[chain]/[id]'],
     },
     {
       title: 'Interchain',
       path: '/interchain-transfers',
-      others_paths: ['/transfers', '/transfers/search', '/transfer/[tx]', '/gmp', '/gmp/search', '/gmp/[tx]'],
+      others_paths: ['/transfers', '/transfers/search', '/transfer/[tx]', '/transfers/[tx]', '/gmp', '/gmp/search', '/gmp/[tx]'],
     },
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'mainnet' && {
       title: 'TVL',

@@ -26,7 +26,7 @@ export default ({ data }) => {
           accessor: 'i',
           disableSortBy: true,
           Cell: props => (
-            <span className="font-medium">
+            <span className="text-black dark:text-white font-medium">
               {props.flatRows?.indexOf(props.row) + 1}
             </span>
           ),
@@ -111,7 +111,7 @@ export default ({ data }) => {
                     </Link>
                     <Copy value={value} />
                   </div> :
-                  <span>-</span>
+                  '-'
             )
           },
         },
@@ -161,7 +161,7 @@ export default ({ data }) => {
                     value={getTitle(value).toLowerCase()}
                     className="select-auto capitalize custom-font font-medium"
                   /> :
-                  <span>-</span>
+                  '-'
                 }
               </div>
             )

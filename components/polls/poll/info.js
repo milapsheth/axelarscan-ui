@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Chip, Tooltip } from '@material-tailwind/react'
-import { utils } from 'ethers'
 import moment from 'moment'
 
 import Spinner from '../../spinner'
@@ -9,7 +8,7 @@ import NumberDisplay from '../../number'
 import Image from '../../image'
 import Copy from '../../copy'
 import { getChainData, getAssetData } from '../../../lib/config'
-import { toBigNumber } from '../../../lib/number'
+import { formatUnits } from '../../../lib/number'
 import { split, toArray, includesStringList, getTitle, ellipse, toJson } from '../../../lib/utils'
 
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'
@@ -181,7 +180,7 @@ export default ({ data }) => {
                         )}
                         {!!(amount) && decimals && (
                           <NumberDisplay
-                            value={utils.formatUnits(toBigNumber(amount), decimals)}
+                            value={formatUnits(amount, decimals)}
                             format="0,0.000000"
                             className="text-xs font-medium"
                           />
@@ -302,7 +301,10 @@ export default ({ data }) => {
       {participants && (
         <div className={rowClassName}>
           <span className={titleClassName}>Participants:</span>
-          <NumberDisplay value={participants.length} format="0,0" />
+          <NumberDisplay
+            value={participants.length}
+            format="0,0"
+          />
         </div>
       )}
     </div>

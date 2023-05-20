@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Alert, Chip, Tooltip } from '@material-tailwind/react'
-import { utils } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { BsArrowRightShort, BsArrowLeftShort } from 'react-icons/bs'
@@ -19,7 +18,7 @@ import ExplorerLink from '../../explorer/link'
 import Wallet from '../../wallet'
 import { batchedCommands } from '../../../lib/api/lcd'
 import { getChainData, getAssetData } from '../../../lib/config'
-import { toBigNumber } from '../../../lib/number'
+import { formatUnits } from '../../../lib/number'
 import { split, toArray, ellipse, equalsIgnoreCase, parseError } from '../../../lib/utils'
 
 import IAxelarGateway from '../../../data/contracts/interfaces/IAxelarGateway.json'
@@ -305,7 +304,11 @@ export default () => {
 
                     const typeComponent = (
                       <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
-                        <Chip color={executed ? 'green' : 'cyan'} value={value} className="rounded select-auto normal-case custom-font text-xs font-medium mr-2 py-1 px-2.5" />
+                        <Chip
+                          color={executed ? 'green' : 'cyan'}
+                          value={value}
+                          className="rounded select-auto normal-case custom-font text-xs font-medium mr-2 py-1 px-2.5"
+                        />
                       </Tooltip>
                     )
 
@@ -543,7 +546,7 @@ export default () => {
                             )}
                             {!!(amount) && (
                               <NumberDisplay
-                                value={utils.formatUnits(toBigNumber(amount), decimals)}
+                                value={formatUnits(amount, decimals)}
                                 format="0,0.000000"
                               />
                             )}
@@ -583,7 +586,7 @@ export default () => {
               ]}
               data={commandsFiltered}
               defaultPageSize={PAGE_SIZE}
-              noPagination={commandsFiltered.length <= PAGE_SIZE}
+              noPagination={commandsFiltered.length <= 10}
               className="no-border no-shadow"
             />
           </div>
@@ -661,7 +664,7 @@ export default () => {
               Signature
             </span>
             {matched ?
-              <div className="flex flex-wrap">
+              <div className="flex flex-wrap text-xs lg:text-base">
                 {signatures || signature ?
                   toArray(signatures || signature).map((s, i) => (
                     <div key={i} className="max-w-min bg-slate-50 dark:bg-slate-900 rounded mr-1 mb-1 py-1 pl-2 pr-1.5">
@@ -678,7 +681,7 @@ export default () => {
                       />
                     </div>
                   )) :
-                  <span className="text-xs lg:text-base">-</span>
+                  '-'
                 }
               </div> :
               <Spinner name="ProgressBar" width={36} height={36} />

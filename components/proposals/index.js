@@ -99,8 +99,11 @@ export default () => {
               sortType: (a, b) => a.original.type > b.original.type ? 1 : -1,
               Cell: props => (
                 props.value ?
-                  <Chip value={props.value} className="select-auto normal-case custom-font font-medium" /> :
-                  <span>-</span>
+                  <Chip
+                    value={props.value}
+                    className="select-auto normal-case custom-font font-medium"
+                  /> :
+                  '-'
               ),
             },
             {

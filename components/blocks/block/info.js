@@ -252,7 +252,7 @@ export default ({ data }) => {
                 </div> :
                 proposer_address ?
                   <AccountProfile address={proposer_address} url={true} /> :
-                  <span>-</span>
+                  '-'
             }
           </div> :
           <Spinner name="ProgressBar" />
