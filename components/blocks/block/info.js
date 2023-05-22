@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import { Popover, PopoverHandler, PopoverContent } from '@material-tailwind/react'
+import { Popover, PopoverHandler, PopoverContent, Tooltip } from '@material-tailwind/react'
 import _ from 'lodash'
 import moment from 'moment'
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 
 import Spinner from '../../spinner'
 import NumberDisplay from '../../number'
@@ -166,11 +167,31 @@ export default ({ data }) => {
         <span className={titleClassName}>Height:</span>
         {data ?
           height && (
-            <NumberDisplay
-              value={height}
-              format="0,0"
-              className="text-sm lg:text-base font-medium"
-            />
+            <div className="flex items-center space-x-3">
+              <NumberDisplay
+                value={height}
+                format="0,0"
+                className="text-sm lg:text-base font-medium"
+              />
+              <div className="flex items-center space-x-1">
+                <Tooltip content={Number(height) - 1}>
+                  <Link
+                    href={`/block/${Number(height) - 1}`}
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded p-2"
+                  >
+                    <BsChevronLeft size={14} />
+                  </Link>
+                </Tooltip>
+                <Tooltip content={Number(height) + 1}>
+                  <Link
+                    href={`/block/${Number(height) + 1}`}
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded p-2"
+                  >
+                    <BsChevronRight size={14} />
+                  </Link>
+                </Tooltip>
+              </div>
+            </div>
           ) :
           <Spinner name="ProgressBar" />
         }
