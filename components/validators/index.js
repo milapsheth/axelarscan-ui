@@ -23,15 +23,15 @@ export default () => {
   const {
     chains,
     chain,
-    validators,
     maintainers,
+    validators,
   } = useSelector(
     state => (
       {
         chains: state.chains,
         chain: state.chain,
-        validators: state.validators,
         maintainers: state.maintainers,
+        validators: state.validators,
       }
     ),
     shallowEqual,
@@ -43,11 +43,11 @@ export default () => {
     chain_data,
   } = { ...chain }
   const {
-    validators_data,
-  } = { ...validators }
-  const {
     maintainers_data,
   } = { ...maintainers }
+  const {
+    validators_data,
+  } = { ...validators }
 
   const router = useRouter()
   const {

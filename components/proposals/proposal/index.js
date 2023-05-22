@@ -64,8 +64,7 @@ export default () => {
 
           return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
         }),
-        ['validator_data.tokens', 'validator_data.description.moniker'],
-        ['desc', 'asc'],
+        ['validator_data.tokens', 'validator_data.description.moniker'], ['desc', 'asc'],
       )
     }
 

@@ -194,6 +194,7 @@ export default ({ address, data }) => {
                           value={value}
                           format="0,0.00000000"
                           suffix={` ${symbol}`}
+                          className="text-black dark:text-white font-medium"
                         />
                       </div>
                     )
@@ -343,6 +344,7 @@ export default ({ address, data }) => {
                           value={value}
                           format="0,0.00000000"
                           suffix={` ${symbol}`}
+                          className="text-black dark:text-white font-medium"
                         />
                       </div>
                     )
@@ -455,6 +457,7 @@ export default ({ address, data }) => {
                           value={value}
                           format="0,0.00000000"
                           suffix=" AXL"
+                          className="text-black dark:text-white font-medium"
                         />
                       </div>
                     )
@@ -626,8 +629,8 @@ export default ({ address, data }) => {
           }
         </div>
       </div> :
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div className="sm:w-full bg-slate-50 dark:bg-slate-900 w-fit flex flex-col rounded-lg space-y-4 p-6">
+      <div className="sm:grid xl:grid-cols-2 sm:gap-4 space-y-4 sm:space-y-0">
+        <div className="w-fit sm:w-full bg-slate-50 dark:bg-slate-900 flex flex-col rounded-lg space-y-4 p-6">
           <div className={rowClassName}>
             <span className={titleClassName}>Address:</span>
             {data ?
@@ -786,7 +789,7 @@ export default ({ address, data }) => {
             </>
           )}
         </div>
-        <div className="sm:w-full sm:bg-slate-50 sm:dark:bg-slate-900 w-fit flex flex-col rounded-lg space-y-4 sm:p-6">
+        <div className="sm:bg-slate-50 sm:dark:bg-slate-900 sm:flex sm:flex-col sm:rounded-lg sm:space-y-4 sm:p-6">
           {balances ?
             <Datatable
               columns={[
@@ -893,6 +896,7 @@ export default ({ address, data }) => {
                           value={value}
                           format="0,0.00a"
                           prefix="$"
+                          noTooltip={true}
                         />
                       </div>
                     )

@@ -302,7 +302,7 @@ export default ({ children }) => {
           latest_block_height,
         } = { ...status_data }
 
-        if (is_interval || (pathname && exclude_paths.findIndex(p => pathname.startsWith(p)) < 0 && latest_block_height && !validators_data)) {
+        if (is_interval || (pathname && exclude_paths.findIndex(p => pathname.startsWith(p)) < 0 && latest_block_height)) {
           const includes = lite_paths.findIndex(p => pathname.startsWith(p)) > -1 ? [] : undefined
 
           let {
@@ -310,45 +310,49 @@ export default ({ children }) => {
           } = { ...await getValidators({ includes }) }
 
           if (data) {
-            dispatch({ type: VALIDATORS_DATA, value: data })
+            if (!validators_data) {
+              dispatch({ type: VALIDATORS_DATA, value: data })
+            }
 
-            if (pathname?.startsWith('/validator')) {
-              const fromBlock = startBlock(latest_block_height - 10000)
-              const toBlock = endBlock(latest_block_height)
-              const totalHeartbeat = Math.floor((toBlock - fromBlock) / NUM_BLOCKS_PER_HEARTBEAT) + 1
+            const fromBlock = startBlock(latest_block_height - 10000)
+            const toBlock = endBlock(latest_block_height)
+            const totalHeartbeat = Math.floor((toBlock - fromBlock) / NUM_BLOCKS_PER_HEARTBEAT) + 1
 
-              let response =
-                await searchHeartbeats(
-                  {
-                    fromBlock,
-                    toBlock,
-                    aggs: {
-                      heartbeats: {
-                        terms: { field: 'sender.keyword', size: 1000 },
-                        aggs: { period_height: { terms: { field: 'period_height', size: 1000 } } },
-                      },
+            const response =
+              await searchHeartbeats(
+                {
+                  fromBlock,
+                  toBlock,
+                  aggs: {
+                    heartbeats: {
+                      terms: { field: 'sender.keyword', size: 1000 },
+                      aggs: { period_height: { terms: { field: 'period_height', size: 1000 } } },
                     },
-                    size: 0,
-                  }
-                )
+                  },
+                  size: 0,
+                }
+              )
 
-              if (response) {
-                data =
-                  data.map(d => {
-                    const {
-                      broadcaster_address,
-                    } = { ...d }
+            if (response) {
+              data =
+                data.map(d => {
+                  const {
+                    broadcaster_address,
+                  } = { ...d }
 
-                    d.heartbeats_uptime = totalHeartbeat > 0 ? (response.find(_d => equalsIgnoreCase(_d.key, broadcaster_address))?.count || 0) * 100 / totalHeartbeat : 0
-                    d.heartbeats_uptime = d.heartbeats_uptime > 100 ? 100 : d.heartbeats_uptime
+                  d.heartbeats_uptime = totalHeartbeat > 0 ? (response.find(_d => equalsIgnoreCase(_d.key, broadcaster_address))?.count || 0) * 100 / totalHeartbeat : 0
+                  d.heartbeats_uptime = d.heartbeats_uptime > 100 ? 100 : d.heartbeats_uptime
 
-                    return d
-                  })
+                  return d
+                })
 
+              if (!validators_data || !pathname?.startsWith('/validator')) {
                 dispatch({ type: VALIDATORS_DATA, value: data })
               }
+            }
 
-              response = await getValidatorsVotes()
+            if (pathname?.startsWith('/validator')) {
+              const response = await getValidatorsVotes()
 
               if (response) {
                 data =
@@ -378,7 +382,7 @@ export default ({ children }) => {
       const interval = setInterval(() => getData(true), 5 * 60 * 1000)
       return () => clearInterval(interval)
     },
-    [pathname, status_data, validators_data],
+    [pathname, status_data],
   )
 
   const {

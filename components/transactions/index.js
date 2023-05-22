@@ -189,8 +189,7 @@ export default ({ n }) => {
                 }),
                 'txhash',
               ),
-              ['timestamp', 'txhash'],
-              ['desc', height ? 'asc' : 'desc'],
+              ['timestamp', 'txhash'], ['desc', height ? 'asc' : 'desc'],
             )
             setData(transactions_data)
           }

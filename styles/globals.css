@@ -175,3 +175,9 @@ input[type=number] {
 .left-tvl-total-locked {
   left: calc(179.16px + 124.82px);
 }
+
+@media (min-width: 768px) {
+  .delegations-table {
+    min-height: calc(100% - 48px);
+  }
+}

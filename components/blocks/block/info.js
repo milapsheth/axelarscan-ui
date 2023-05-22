@@ -279,7 +279,7 @@ export default ({ data }) => {
                     value={_.sumBy(signed_validators_data, 'tokens') * 100 / _.sumBy(_.concat(signed_validators_data, unsigned_validators_data), 'tokens')}
                     format="0,0.00"
                     prefix={`${signed_validators_data.length} (`}
-                    suffix=" %)"
+                    suffix="%)"
                     noTooltip={true}
                     className="text-sm lg:text-base font-medium"
                   />

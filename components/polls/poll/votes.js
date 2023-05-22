@@ -161,6 +161,7 @@ export default ({ data }) => {
                   <NumberDisplay
                     value={value}
                     format="0,0.00a"
+                    noTooltip={true}
                   />
                   {value > 0 && total_voting_power > 0 && (
                     <NumberDisplay

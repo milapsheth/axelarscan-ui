@@ -82,7 +82,12 @@ export default (
             value={address}
             title={
               <div className="cursor-pointer text-slate-400 dark:text-slate-600">
-                {ellipse(address, ellipseLength, prefix)}
+                <div className="sm:hidden">
+                  {ellipse(address, parseInt(ellipseLength / 2), prefix)}
+                </div>
+                <div className="hidden sm:block">
+                  {ellipse(address, ellipseLength, prefix)}
+                </div>
               </div>
             }
           />
@@ -96,7 +101,14 @@ export default (
             rel="noopener noreferrer"
             className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
           >
-            {ellipse(address, ellipseLength, prefix)}
+            <div>
+              <div className="sm:hidden">
+                {ellipse(address, parseInt(ellipseLength / 2), prefix)}
+              </div>
+              <div className="hidden sm:block">
+                {ellipse(address, ellipseLength, prefix)}
+              </div>
+            </div>
           </Link>
           <Copy value={address} />
         </div> :
@@ -104,7 +116,12 @@ export default (
           value={address}
           title={
             <div className="cursor-pointer">
-              {ellipse(address, ellipseLength, prefix)}
+              <div className="sm:hidden">
+                {ellipse(address, parseInt(ellipseLength / 2), prefix)}
+              </div>
+              <div className="hidden sm:block">
+                {ellipse(address, ellipseLength, prefix)}
+              </div>
             </div>
           }
         />

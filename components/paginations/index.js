@@ -15,7 +15,7 @@ export const PageWithText = (
     disabled={disabled}
     onClick={onClick}
     className={active ? activeClassNames : inactiveClassNames}
-    style={{ padding: size === 'small' ? '6px 4px' : undefined }}
+    style={{ padding: size === 'small' ? '4px' : undefined }}
   >
     {children}
   </button>

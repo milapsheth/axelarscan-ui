@@ -188,8 +188,7 @@ export default () => {
                 }),
                 'id',
               ),
-              ['id_number', 'created_at.ms'],
-              ['desc', 'desc'],
+              ['id_number', 'created_at.ms'], ['desc', 'desc'],
             )
             setData(data)
           }

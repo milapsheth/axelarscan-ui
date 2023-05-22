@@ -11,6 +11,8 @@ import { PROFILES_DATA } from '../../reducers/types'
 export default (
   {
     description,
+    width = 24,
+    height = 24,
     className = '',
   },
 ) => {
@@ -82,12 +84,12 @@ export default (
     _image ?
       <Image
         src={_image}
-        width={24}
-        height={24}
-        className={`w-6 h-6 rounded-full ${className}`}
+        width={width}
+        height={height}
+        className={`rounded-full ${className}`}
       /> :
       <div className={`flex items-center justify-center ${className}`}>
-        <Spinner width={22} height={22} />
+        <Spinner width={width - 2} height={height - 2} />
       </div>
   )
 }

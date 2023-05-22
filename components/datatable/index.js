@@ -167,13 +167,13 @@ export default (
         </tbody>
       </table>
       {!noPagination && data?.length > 0 && (
-        <div className={`flex flex-col items-center ${noRecordPerPage || pageCount > 4 ? 'sm:flex-row justify-center' : 'sm:grid sm:grid-cols-3 justify-between'} gap-4 my-2`}>
+        <div className={`flex items-center ${noRecordPerPage || pageCount > 4 ? 'flex-col sm:flex-row justify-center' : 'flex-row sm:grid sm:grid-cols-3 justify-between'} ${size === 'small' ? 'text-xs' : ''} sm:gap-4 sm:my-2`}>
           {!noRecordPerPage && (
             <select
               disabled={loading}
               value={pageSize}
               onChange={e => setPageSize(Number(e.target.value))}
-              className="w-24 form-select bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 outline-none border-zinc-100 dark:border-zinc-900 appearance-none shadow rounded cursor-pointer text-center py-2 px-3"
+              className={`${size === 'small' ? 'w-fit py-1 px-0.5' : 'w-24 py-2 px-3'} form-select bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 outline-none border-zinc-100 dark:border-zinc-900 appearance-none shadow rounded cursor-pointer text-center`}
             >
               {pageSizes.map((s, i) =>
                 <option
@@ -224,7 +224,9 @@ export default (
                       }
                     }
                   >
-                    First
+                    <span className={`${size === 'small' ? 'text-2xs' : ''}`}>
+                      First
+                    </span>
                   </PageWithText>
                 )}
                 {canPreviousPage && (
@@ -233,7 +235,9 @@ export default (
                     disabled={loading}
                     onClick={() => previousPage()}
                   >
-                    Previous
+                    <span className={`${size === 'small' ? 'text-2xs' : ''}`}>
+                      Prev
+                    </span>
                   </PageWithText>
                 )}
                 {canNextPage && (
@@ -242,7 +246,9 @@ export default (
                     disabled={!canNextPage || loading}
                     onClick={() => nextPage()}
                   >
-                    Next
+                    <span className={`${size === 'small' ? 'text-2xs' : ''}`}>
+                      Next
+                    </span>
                   </PageWithText>
                 )}
                 {pageIndex !== pageCount - 1 && (
@@ -256,7 +262,9 @@ export default (
                       }
                     }
                   >
-                    Last
+                    <span className={`${size === 'small' ? 'text-2xs' : ''}`}>
+                      Last
+                    </span>
                   </PageWithText>
                 )}
               </>
