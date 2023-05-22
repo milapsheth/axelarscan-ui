@@ -85,18 +85,17 @@ export default () => {
       placeholder: 'Select chain',
       options: _.concat(
         { value: '', title: 'Any' },
-        _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc'])
-          .map(c => {
-            const {
-              id,
-              name,
-            } = { ...c }
+        _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc']).map(c => {
+          const {
+            id,
+            name,
+          } = { ...c }
 
-            return {
-              value: id,
-              title: name,
-            }
-          }),
+          return {
+            value: id,
+            title: name,
+          }
+        }),
       ),
     },
     {

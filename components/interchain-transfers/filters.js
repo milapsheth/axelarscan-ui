@@ -7,8 +7,7 @@ import moment from 'moment'
 import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
-import { searchPolls } from '../../lib/api/polls'
-import { split, toArray, getTitle, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
+import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
 
 export default () => {
   const {
@@ -27,19 +26,7 @@ export default () => {
 
   const [filters, setFilters] = useState(null)
   const [filterTrigger, setFilterTrigger] = useState(undefined)
-  const [types, setTypes] = useState(null)
   const [hidden, setHidden] = useState(true)
-
-  useEffect(
-    () => {
-      const getData = async () => {
-        const response = await searchPolls({ aggs: { types: { terms: { field: 'event.keyword', size: 100 } } }, size: 0 })
-        setTypes(toArray(response).map(d => d.key))
-      }
-      getData()
-    },
-    [],
-  )
 
   useEffect(
     () => {
@@ -63,28 +50,22 @@ export default () => {
     [filterTrigger],
   )
 
-  const fields = [
-    {
-      label: 'Poll ID',
-      name: 'pollId',
+  const fields = toArray([
+    ['/gmp', '/transfers'].findIndex(s => pathname.startsWith(s)) > -1 && {
+      label: 'Tx Hash',
+      name: 'txHash',
       type: 'text',
-      placeholder: 'Poll ID',
+      placeholder: 'Transaction Hash',
+      className: 'col-span-2',
     },
     {
-      label: 'Event',
-      name: 'event',
+      label: 'Source Chain',
+      name: 'sourceChain',
       type: 'select',
-      placeholder: 'Select event',
-      options: _.concat({ value: '', title: 'Any' }, toArray(types).map(t => { return { value: t, title: split(getTitle(t), 'normal', ' ').join('') } })),
-    },
-    {
-      label: 'Chain',
-      name: 'chain',
-      type: 'select',
-      placeholder: 'Select chain',
+      placeholder: 'Select source chain',
       options: _.concat(
         { value: '', title: 'Any' },
-        _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc']).map(c => {
+        _.orderBy(toArray(chains_data).filter(c => !c.no_inflation || c.deprecated), ['deprecated'], ['desc']).map(c => {
           const {
             id,
             name,
@@ -98,81 +79,96 @@ export default () => {
       ),
     },
     {
+      label: 'Destination Chain',
+      name: 'destinationChain',
+      type: 'select',
+      placeholder: 'Select destination chain',
+      options: _.concat(
+        { value: '', title: 'Any' },
+        _.orderBy(toArray(chains_data).filter(c => !c.no_inflation || c.deprecated), ['deprecated'], ['desc']).map(c => {
+          const {
+            id,
+            name,
+          } = { ...c }
+
+          return {
+            value: id,
+            title: name,
+          }
+        }),
+      ),
+    },
+    pathname.startsWith('/gmp') && {
+      label: 'Method',
+      name: 'method',
+      type: 'select',
+      placeholder: 'Select method',
+      options: [
+        { value: '', title: 'Any' },
+        { value: 'callContract', title: 'callContract' },
+        { value: 'callContractWithToken', title: 'callContractWithToken' },
+      ],
+    },
+    pathname.startsWith('/transfers') && {
+      label: 'Type',
+      name: 'type',
+      type: 'select',
+      placeholder: 'Select type',
+      options: [
+        { value: '', title: 'Any' },
+        { value: 'deposit_address', title: 'Deposit Address' },
+        { value: 'send_token', title: 'Send Token' },
+        { value: 'wrap', title: 'Wrap' },
+        { value: 'unwrap', title: 'Unwrap' },
+        { value: 'erc20_transfer', title: 'ERC20 Transfer' },
+      ],
+    },
+    pathname.startsWith('/gmp') && {
       label: 'Status',
       name: 'status',
       type: 'select',
-      placeholder: 'Select poll status',
+      placeholder: 'Select status',
       options: [
-        {
-          value: '',
-          title: 'Any',
-        },
-        {
-          value: 'completed',
-          title: 'Completed',
-        },
-        {
-          value: 'failed',
-          title: 'Failed',
-        },
-        {
-          value: 'confirmed',
-          title: 'Confirmed',
-        },
-        {
-          value: 'pending',
-          title: 'Pending',
-        },
+        { value: '', title: 'Any' },
+        { value: 'called', title: 'Called' },
+        { value: 'confirming', title: 'Wait for Confirmation' },
+        { value: 'express_executed', title: 'Express Executed' },
+        { value: 'approving', title: 'Wait for Approval' },
+        { value: 'approved', title: 'Approved' },
+        { value: 'executing', title: 'Executing' },
+        { value: 'executed', title: 'Executed' },
+        { value: 'error', title: 'Error Execution' },
+        { value: 'insufficient_fee', title: 'Insufficient Fee' },
+        { value: 'not_enough_gas_to_execute', title: 'Not Enough Gas' },
       ],
     },
-    {
-      label: 'EVM Transaction ID',
-      name: 'transactionId',
-      type: 'text',
-      placeholder: 'Transaction ID',
-      className: 'col-span-2',
-    },
-    {
-      label: 'Transfer ID',
-      name: 'transferId',
-      type: 'text',
-      placeholder: 'Transfer ID',
-    },
-    {
-      label: 'Deposit Address',
-      name: 'depositAddress',
-      type: 'text',
-      placeholder: 'Deposit Address',
-    },
-    {
-      label: 'Voter (Broadcaster Address)',
-      name: 'voter',
-      type: 'text',
-      placeholder: 'Voter',
-    },
-    {
-      label: 'Vote',
-      name: 'vote',
+    pathname.startsWith('/transfers') && {
+      label: 'Sort By',
+      name: 'sortBy',
       type: 'select',
-      placeholder: 'Select vote',
+      placeholder: 'Select sort by',
       options: [
-        {
-          value: '',
-          title: 'Any',
-        },
-        {
-          value: 'yes',
-          title: 'Yes',
-        },
-        {
-          value: 'no',
-          title: 'No',
-        },
-        {
-          value: 'unsubmitted',
-          title: 'Unsubmitted',
-        },
+        { value: 'time', title: 'Transfer Time' },
+        { value: 'value', title: 'Transfer Value' },
       ],
+    },
+    ['/gmp', '/transfers'].findIndex(s => pathname.startsWith(s)) > -1 && {
+      label: 'Sender',
+      name: 'senderAddress',
+      type: 'text',
+      placeholder: 'Sender address',
+    },
+    pathname.startsWith('/gmp') && {
+      label: 'Contract',
+      name: 'contractAddress',
+      type: 'text',
+      placeholder: 'Contract address',
+    },
+    pathname.startsWith('/transfers') && {
+      label: 'Recipient',
+      name: 'recipientAddress',
+      type: 'text',
+      placeholder: 'Recipient address',
     },
     {
       label: 'Time',
@@ -181,7 +177,7 @@ export default () => {
       placeholder: 'Select transaction time',
       className: 'col-span-2',
     },
-  ]
+  ])
 
   const filtered = (!!filterTrigger || filterTrigger === undefined) && Object.keys({ ...query }).length > 0
 
@@ -195,7 +191,7 @@ export default () => {
       title={
         <div className="flex items-center justify-between">
           <span>
-            Filter EVM Polls
+            Filter {pathname?.startsWith('/gmp') ? 'GMP' : pathname?.startsWith('/transfers') ? 'Token' : 'Interchain'} Transfers
           </span>
           <div
             onClick={() => setHidden(true)}
@@ -217,8 +213,7 @@ export default () => {
               className,
             } = { ...f }
 
-            const hidden = !(name !== 'vote' || filters?.voter?.startsWith('axelar'))
-            return !hidden && (
+            return (
               <div key={i} className={`form-element ${className || ''}`}>
                 {label && (
                   <div className="form-label text-slate-600 dark:text-slate-200 font-normal">
@@ -254,10 +249,12 @@ export default () => {
                       showTime
                       format="YYYY/MM/DD HH:mm:ss"
                       presets={[
-                        { label: 'Today', value: [moment().startOf('day'), moment().endOf('day')] },
                         { label: 'Last 7 Days', value: [moment().subtract(7, 'days').startOf('day'), moment().endOf('day')] },
                         { label: 'This Month', value: [moment().startOf('month'), moment().endOf('month')] },
                         { label: 'Last 30 Days', value: [moment().subtract(30, 'days').startOf('day'), moment().endOf('day')] },
+                        { label: 'Last 90 Days', value: [moment().subtract(90, 'days').startOf('day'), moment().endOf('day')] },
+                        { label: 'Last 180 Days', value: [moment().subtract(180, 'days').startOf('day'), moment().endOf('day')] },
+                        { label: 'Last 365 Days', value: [moment().subtract(365, 'days').startOf('day'), moment().endOf('day')] },
                       ]}
                       value={filters?.fromTime && filters.toTime ? [createMomentFromUnixtime(filters.fromTime), createMomentFromUnixtime(filters.toTime)] : undefined}
                       onChange={v => setFilters({ ...filters, fromTime: moment(_.head(v)).unix(), toTime: moment(_.last(v)).unix() })}
