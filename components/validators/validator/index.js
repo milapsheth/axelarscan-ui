@@ -4,6 +4,9 @@ import { useSelector, shallowEqual } from 'react-redux'
 import _ from 'lodash'
 
 import Info from './info'
+import Uptimes from './uptimes'
+import Heartbeats from './heartbeats'
+import Votes from './votes'
 import Spinner from '../../spinner'
 import { getBalances } from '../../../lib/api/account'
 import { searchTransactions } from '../../../lib/api/axelar'
@@ -198,6 +201,7 @@ export default () => {
 
               return {
                 ...d,
+                height,
                 status: toArray(validators).findIndex(a => equalsIgnoreCase(a, consensus_address)) > -1,
               }
             })
@@ -239,6 +243,7 @@ export default () => {
 
               return {
                 ...d,
+                period_height: height,
                 status: equalsIgnoreCase(sender, broadcaster_address),
               }
             })
@@ -293,6 +298,11 @@ export default () => {
       {data ?
         <div className="max-w-7xl space-y-4 sm:space-y-6 mt-6 sm:mt-8 mx-auto">
           <Info data={{ ...data, delegations }} />
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            <Uptimes data={uptimes} />
+            <Heartbeats data={heartbeats} />
+            <Votes data={votes} />
+          </div>
         </div> :
         <div className="loading">
           <Spinner name="Blocks" />

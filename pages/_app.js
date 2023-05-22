@@ -26,6 +26,7 @@ import '../styles/components/modals.css'
 import '../styles/components/navbar.css'
 import '../styles/components/nprogress.css'
 import '../styles/components/recharts.css'
+import '../styles/components/skeleton.css'
 import '../styles/components/table.css'
 
 Router.events.on('routeChangeStart', () => NProgress.start())

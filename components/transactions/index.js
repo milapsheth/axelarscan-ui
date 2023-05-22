@@ -81,6 +81,9 @@ export default ({ n }) => {
     () => {
       const trigger = is_interval => {
         if (pathname && filters) {
+          if (height || address) {
+            setTypesFiltered(null)
+          }
           setFetchTrigger(is_interval ? moment().valueOf() : typeof fetchTrigger === 'number' ? null : 0)
         }
       }
@@ -209,13 +212,13 @@ export default ({ n }) => {
   useEffect(
     () => {
       if (data) {
-        setTypes(_.countBy(toArray(_.uniqBy(data, 'txhash').map(d => _.head(d.types)))))
+        setTypes(_.countBy(toArray(_.uniqBy(data, 'txhash').map(d => d.type))))
       }
     },
     [data],
   )
 
-  const dataFiltered = _.slice(toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(_.head(d.types))), 0, n || undefined)
+  const dataFiltered = _.slice(toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(d.type)), 0, n || undefined)
   const isTransactionsPage = includesStringList(pathname, ['/transactions', '/txs'])
 
   return (
@@ -421,12 +424,12 @@ export default ({ n }) => {
                   } = { ...props }
 
                   const {
-                    types,
+                    type,
                   } = { ...row.original }
 
                   return (
                     <div className="flex flex-col space-y-0.5">
-                      {toArray(!includesStringList(_.head(types), ['HeartBeat', 'SubmitSignature', 'SubmitPubKey']) && value).map((v, i) => {
+                      {toArray(!includesStringList(type, ['HeartBeat', 'SubmitSignature', 'SubmitPubKey']) && value).map((v, i) => {
                         const {
                           operator_address,
                           description,
