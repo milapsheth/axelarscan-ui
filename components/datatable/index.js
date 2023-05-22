@@ -167,13 +167,13 @@ export default (
         </tbody>
       </table>
       {!noPagination && data?.length > 0 && (
-        <div className={`flex items-center ${noRecordPerPage || pageCount > 4 ? 'flex-col sm:flex-row justify-center' : 'flex-row sm:grid sm:grid-cols-3 justify-between'} ${size === 'small' ? 'text-xs' : ''} sm:gap-4 sm:my-2`}>
+        <div className={`flex items-center ${noRecordPerPage || pageCount > 4 ? 'flex-col sm:flex-row justify-center' : 'flex-row sm:grid sm:grid-cols-3 justify-between'} ${size === 'small' ? 'text-xs' : 'text-sm'} sm:gap-4 sm:my-2`}>
           {!noRecordPerPage && (
             <select
               disabled={loading}
               value={pageSize}
               onChange={e => setPageSize(Number(e.target.value))}
-              className={`${size === 'small' ? 'w-fit py-1 px-0.5' : 'w-24 py-2 px-3'} form-select bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 outline-none border-zinc-100 dark:border-zinc-900 appearance-none shadow rounded cursor-pointer text-center`}
+              className={`${size === 'small' ? 'w-fit py-1 px-0.5' : 'w-20 py-2 px-1.5'} form-select bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 outline-none border-zinc-100 dark:border-zinc-900 appearance-none shadow rounded cursor-pointer font-medium text-center`}
             >
               {pageSizes.map((s, i) =>
                 <option

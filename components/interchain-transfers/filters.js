@@ -100,7 +100,7 @@ export default () => {
     },
     pathname.startsWith('/gmp') && {
       label: 'Method',
-      name: 'method',
+      name: 'contractMethod',
       type: 'select',
       placeholder: 'Select method',
       options: [

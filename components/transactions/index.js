@@ -21,7 +21,7 @@ import { getTransactions, getTransaction } from '../../lib/api/lcd'
 import { getKeyType } from '../../lib/key'
 import { getType, getSender, getRecipient } from '../../lib/transaction'
 import { formatUnits } from '../../lib/number'
-import { split, toArray, includesStringList, getTitle, ellipse, equalsIgnoreCase, getQueryParams, normalizeQuote, sleep } from '../../lib/utils'
+import { toArray, includesStringList, ellipse, equalsIgnoreCase, getQueryParams, normalizeQuote } from '../../lib/utils'
 
 const PAGE_SIZE = 100
 

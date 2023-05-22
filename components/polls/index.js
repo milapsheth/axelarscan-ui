@@ -95,11 +95,6 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-
-          const {
-            status,
-          } = { ...filters }
-
           const response = await searchPolls({ ...filters, size, from })
 
           if (response) {
