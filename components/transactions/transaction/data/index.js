@@ -225,11 +225,7 @@ export default ({ data }) => {
                               </div>
                             </div>
                           </div> :
-                          <AccountProfile
-                            address={sender}
-                            prefix={sender_chain_data?.prefix_address}
-                            url={sender_chain_data?.explorer && `${sender_chain_data.explorer.url}${sender_chain_data.explorer.address_path?.replace('{address}', sender)}`}
-                          />
+                          <AccountProfile address={sender} prefix={sender_chain_data?.prefix_address} explorer={sender_chain_data?.explorer} />
                         }
                       </div>
                     </div>
@@ -324,11 +320,7 @@ export default ({ data }) => {
                               </div>
                             </div>
                           </div> :
-                          <AccountProfile
-                            address={recipient}
-                            prefix={recipient_chain_data?.prefix_address}
-                            url={recipient_chain_data?.explorer && `${recipient_chain_data.explorer.url}${recipient_chain_data.explorer.address_path?.replace('{address}', recipient)}`}
-                          />
+                          <AccountProfile address={recipient} prefix={recipient_chain_data?.prefix_address} explorer={recipient_chain_data?.explorer} />
                         }
                       </div>
                     </div>
@@ -359,11 +351,7 @@ export default ({ data }) => {
                         Deposit address
                       </div>
                       <div className={valueClassName}>
-                        <AccountProfile
-                          address={deposit_address}
-                          prefix={deposit_address_chain_data?.prefix_address}
-                          url={deposit_address_chain_data?.explorer && `${deposit_address_chain_data.explorer.url}${deposit_address_chain_data.explorer.address_path?.replace('{address}', deposit_address)}`}
-                        />
+                        <AccountProfile address={deposit_address} prefix={deposit_address_chain_data?.prefix_address} explorer={deposit_address_chain_data?.explorer} />
                       </div>
                     </div>
                   )}
@@ -373,11 +361,7 @@ export default ({ data }) => {
                         Burner address
                       </div>
                       <div className={valueClassName}>
-                        <AccountProfile
-                          address={burner_address}
-                          prefix={chain_data?.prefix_address}
-                          url={chain_data?.explorer && `${chain_data.explorer.url}${chain_data.explorer.address_path?.replace('{address}', burner_address)}`}
-                        />
+                        <AccountProfile address={burner_address} prefix={chain_data?.prefix_address} explorer={chain_data?.explorer} />
                       </div>
                     </div>
                   )}

@@ -381,7 +381,7 @@ export default () => {
                           <div className="flex items-center space-x-1">
                             <BsArrowRightShort size={18} />
                             <div className="flex items-center space-x-1">
-                              <AccountProfile address={value} url={explorer && `${explorer.url}${explorer.address_path?.replace('{address}', value)}`} />
+                              <AccountProfile address={value} explorer={explorer} />
                               <ExplorerLink value={value} explorer={explorer} />
                             </div>
                           </div>
@@ -415,7 +415,7 @@ export default () => {
                               <>
                                 <BsArrowRightShort size={18} />
                                 <div className="flex items-center space-x-1">
-                                  <AccountProfile address={contractAddress} url={explorer && `${explorer.url}${explorer.address_path?.replace('{address}', contractAddress)}`} />
+                                  <AccountProfile address={contractAddress} explorer={explorer} />
                                   <ExplorerLink value={contractAddress} explorer={explorer} />
                                 </div>
                               </>
@@ -460,7 +460,7 @@ export default () => {
                                 <div className="max-w-xl flex flex-wrap">
                                   {split(newOwners || newOperators, 'normal', ';').map((a, i) => (
                                     <div key={i} className="flex items-center space-x-1 mb-1 mr-2">
-                                      <AccountProfile address={a} url={explorer && `${explorer.url}${explorer.address_path?.replace('{address}', a)}`} />
+                                      <AccountProfile address={a} explorer={explorer} />
                                       <ExplorerLink value={a} explorer={explorer} />
                                       {newWeights && (
                                         <NumberDisplay

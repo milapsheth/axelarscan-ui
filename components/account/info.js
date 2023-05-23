@@ -561,7 +561,7 @@ export default ({ address, data }) => {
                   </span>
                   {recipient_address && (
                     <div className="flex items-center space-x-1">
-                      <AccountProfile address={recipient_address} url={destination_chain_data.explorer && `${destination_chain_data.explorer.url}${destination_chain_data.explorer.address_path?.replace('{address}', recipient_address)}`} />
+                      <AccountProfile address={recipient_address} explorer={destination_chain_data.explorer} />
                       <ExplorerLink value={recipient_address} explorer={destination_chain_data.explorer} />
                     </div>
                   )}

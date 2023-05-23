@@ -124,10 +124,10 @@ export default () => {
   )
 
   return (
-    <div className="children">
+    <div>
       {data ?
         <div /> :
-        <div className="loading">
+        <div className="loading-in-tab">
           <Spinner name="Blocks" />
         </div>
       }

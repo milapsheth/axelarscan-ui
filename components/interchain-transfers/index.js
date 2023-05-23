@@ -14,6 +14,7 @@ export default () => {
   const router = useRouter()
   const {
     pathname,
+    asPath,
   } = { ...router }
 
   const [menu, setMenu] = useState(null)
@@ -43,21 +44,26 @@ export default () => {
 
   useEffect(
     () => {
+      let path
       switch (menu) {
         case 'overview':
-          router.push('/interchain-transfers')
+          path = '/interchain-transfers'
           break
         case 'gmp_transfers':
-          router.push('/gmp/search')
+          path = '/gmp/search'
           break
         case 'token_transfers':
-          router.push('/transfers/search')
+          path = '/transfers/search'
           break
         default:
           break
       }
+
+      if (path) {
+        router.push(asPath.startsWith(path) ? asPath : path)
+      }
     },
-    [menu],
+    [asPath, menu],
   )
 
   const render = menu => {
@@ -91,7 +97,7 @@ export default () => {
         <Filters />
       </div>
       <TabsBody>
-        {MENUS.map(m => (
+        {MENUS.filter(m => m === menu).map(m => (
           <TabPanel
             key={m}
             value={m}

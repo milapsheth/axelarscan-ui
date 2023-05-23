@@ -448,7 +448,7 @@ export default () => {
                                     <>
                                       <BsArrowRightShort size={18} />
                                       <div className="flex items-center space-x-1">
-                                        <AccountProfile address={contractAddress} url={explorer && `${explorer.url}${explorer.address_path?.replace('{address}', contractAddress)}`} />
+                                        <AccountProfile address={contractAddress} explorer={explorer} />
                                         <ExplorerLink value={contractAddress} explorer={explorer} />
                                       </div>
                                     </>
@@ -496,7 +496,7 @@ export default () => {
                                 <div className="flex items-center space-x-1 mr-2">
                                   <BsArrowRightShort size={18} />
                                   <div className="flex items-center space-x-1">
-                                    <AccountProfile address={account} url={explorer && `${explorer.url}${explorer.address_path?.replace('{address}', account)}`} />
+                                    <AccountProfile address={account} explorer={explorer} />
                                     <ExplorerLink value={account} explorer={explorer} />
                                   </div>
                                 </div> :

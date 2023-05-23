@@ -9,14 +9,14 @@ import moment from 'moment'
 import Spinner from '../../spinner'
 import Datatable from '../../datatable'
 import NumberDisplay from '../../number'
+import Image from '../../image'
 import Copy from '../../copy'
-import ENSProfile from '../../profile/ens'
 import AccountProfile from '../../profile/account'
+import ExplorerLink from '../../explorer/link'
 import TimeAgo from '../../time/timeAgo'
 import { searchGMP } from '../../../lib/api/gmp'
-import { getChainData, getAssetData } from '../../../lib/api/config'
-import { formatUnits } from '../../../lib/number'
-import { toArray, ellipse, equalsIgnoreCase, getQueryParams } from '../../../lib/utils'
+import { getChainData, getAssetData } from '../../../lib/config'
+import { toArray, getTitle, ellipse, equalsIgnoreCase, getQueryParams } from '../../../lib/utils'
 
 const PAGE_SIZE = 25
 
@@ -124,13 +124,14 @@ export default () => {
   useEffect(
     () => {
       if (data) {
-        setTypes(_.countBy(toArray(_.uniqBy(data, 'id').map(d => d.call?.event?.replace('ContractCall', 'callContract')))))
+        setTypes(_.countBy(toArray(_.uniqBy(data, 'id').map(d => normalizeEvent(d.call?.event)))))
       }
     },
     [data],
   )
 
-  const dataFiltered = toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(d.call?.event?.replace('ContractCall', 'callContract')))
+  const normalizeEvent = event => event?.replace('ContractCall', 'callContract')
+  const dataFiltered = toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(normalizeEvent(d.call?.event)))
 
   return (
     <div>
@@ -170,34 +171,201 @@ export default () => {
             columns={[
               {
                 Header: 'Tx Hash',
-                accessor: 'txhash',
+                accessor: 'call.transactionHash',
                 disableSortBy: true,
                 Cell: props => {
                   const {
                     value,
+                    row,
                   } = { ...props }
 
+                  const {
+                    call,
+                  } = { ...row.original }
+
+                  const {
+                    logIndex,
+                    chain,
+                  } = { ...call }
+
+                  const {
+                    explorer,
+                  } = { ...getChainData(chain, chains_data) }
+
                   return value && (
-                    <div className="flex items-center space-x-1 mb-4">
+                    <div className="flex items-center space-x-1">
                       <Link
-                        href={`/tx/${value}`}
+                        href={`/gmp/${value}${typeof logIndex === 'number' ? `:${logIndex}` : ''}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 dark:text-blue-500 font-medium"
+                        className="text-blue-400 dark:text-blue-500 text-sm font-medium"
                       >
-                        {ellipse(value, 6)}
+                        {ellipse(value, 10)}
                       </Link>
                       <Copy value={value} />
+                      <ExplorerLink value={value} explorer={explorer} />
                     </div>
                   )
                 },
-              },{
-                Header: 'Time',
-                accessor: 'timestamp',
+              },
+              {
+                Header: 'Method',
+                accessor: 'call.event',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    call,
+                    amount,
+                  } = { ...row.original }
+
+                  const {
+                    symbol,
+                  } = { ...call?.returnValues }
+
+                  const {
+                    image,
+                  } = { ...getAssetData(symbol, assets_data) }
+
+                  return (
+                    <div className="w-44 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="w-fit h-6 bg-slate-50 dark:bg-slate-900 rounded flex items-center font-medium py-1 px-2">
+                        {normalizeEvent(value)}
+                      </div>
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                          />
+                        )}
+                        {typeof amount === 'number' && (
+                          <NumberDisplay
+                            value={amount}
+                            format="0,0.00"
+                            suffix={` ${symbol}`}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Source',
+                accessor: 'call.chain',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    call,
+                  } = { ...row.original }
+
+                  const {
+                    from,
+                  } = { ...call?.transaction }
+
+                  const {
+                    name,
+                    image,
+                    explorer,
+                  } = { ...getChainData(value, chains_data) }
+
+                  return (
+                    <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
+                        <span className="font-medium">
+                          {name || getTitle(value)}
+                        </span>
+                      </div>
+                      <div className="h-6 flex items-center">
+                        <AccountProfile address={from} noCopy={true} explorer={explorer} />
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Destination',
+                accessor: 'call.returnValues.destinationChain',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    call,
+                  } = { ...row.original }
+
+                  const {
+                    destinationContractAddress,
+                  } = { ...call?.returnValues }
+
+                  const {
+                    name,
+                    image,
+                    explorer,
+                  } = { ...getChainData(value, chains_data) }
+
+                  return (
+                    <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
+                        <span className="font-medium">
+                          {name || getTitle(value)}
+                        </span>
+                      </div>
+                      <div className="h-6 flex items-center">
+                        <AccountProfile address={destinationContractAddress} noCopy={true} explorer={explorer} />
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Status',
+                accessor: 'status',
+                disableSortBy: true,
+                Cell: props => {
+                  return (
+                    <div className="w-40 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                    </div>
+                  )
+                }
+              },
+              {
+                Header: 'Created at',
+                accessor: 'call.block_timestamp',
                 disableSortBy: true,
                 Cell: props => props.value && (
                   <div className="flex justify-end">
-                    <TimeAgo time={moment(props.value).unix()} className="text-slate-400 dark:text-slate-500 text-xs font-medium" />
+                    <TimeAgo time={moment(props.value * 1000).unix()} className="text-slate-400 dark:text-slate-500 text-sm font-medium" />
                   </div>
                 ),
                 headerClassName: 'justify-end text-right',
@@ -227,7 +395,7 @@ export default () => {
             </div>
           )}
         </div> :
-        <div className="loading">
+        <div className="loading-in-tab">
           <Spinner name="Blocks" />
         </div>
       }

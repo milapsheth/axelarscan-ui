@@ -9,16 +9,17 @@ import moment from 'moment'
 import Spinner from '../../spinner'
 import Datatable from '../../datatable'
 import NumberDisplay from '../../number'
+import Image from '../../image'
 import Copy from '../../copy'
-import ENSProfile from '../../profile/ens'
 import AccountProfile from '../../profile/account'
+import ExplorerLink from '../../explorer/link'
 import TimeAgo from '../../time/timeAgo'
 import { searchTransfers } from '../../../lib/api/transfers'
-import { getChainData, getAssetData } from '../../../lib/api/config'
-import { formatUnits } from '../../../lib/number'
+import { getChainData, getAssetData } from '../../../lib/config'
 import { toArray, getTitle, ellipse, equalsIgnoreCase, getQueryParams } from '../../../lib/utils'
 
 const PAGE_SIZE = 25
+const WRAP_PREFIXES = ['w', 'axl']
 
 export default () => {
   const {
@@ -94,7 +95,13 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-          const response = await searchTransfers({ ...filters, size, from })
+
+          const {
+            sortBy,
+          } = { ...filters }
+
+          const sort = sortBy === 'value' ? { 'send.value': 'desc' } : undefined
+          const response = await searchTransfers({ ...filters, size, from, sort })
 
           if (response) {
             const {
@@ -130,7 +137,7 @@ export default () => {
     [data],
   )
 
-  const normalizeType = type => ['wrap', 'unwrap', 'erc20_transfer'].includes(type) ? 'deposit_service' : 'deposit_address'
+  const normalizeType = type => ['wrap', 'unwrap', 'erc20_transfer'].includes(type) ? 'deposit_service' : type || 'deposit_address'
   const dataFiltered = toArray(data).filter(d => toArray(typesFiltered).length < 1 || typesFiltered.includes(normalizeType(d.type)))
 
   return (
@@ -171,34 +178,225 @@ export default () => {
             columns={[
               {
                 Header: 'Tx Hash',
-                accessor: 'txhash',
+                accessor: 'send.txhash',
                 disableSortBy: true,
                 Cell: props => {
                   const {
                     value,
+                    row,
                   } = { ...props }
 
+                  const {
+                    send,
+                  } = { ...row.original }
+
+                  const {
+                    source_chain,
+                  } = { ...send }
+
+                  const {
+                    explorer,
+                  } = { ...getChainData(source_chain, chains_data) }
+
                   return value && (
-                    <div className="flex items-center space-x-1 mb-4">
+                    <div className="flex items-center space-x-1">
                       <Link
-                        href={`/tx/${value}`}
+                        href={`/transfer/${value}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 dark:text-blue-500 font-medium"
+                        className="text-blue-400 dark:text-blue-500 text-sm font-medium"
                       >
-                        {ellipse(value, 6)}
+                        {ellipse(value, 10)}
                       </Link>
                       <Copy value={value} />
+                      <ExplorerLink value={value} explorer={explorer} />
                     </div>
                   )
                 },
-              },{
-                Header: 'Time',
-                accessor: 'timestamp',
+              },
+              {
+                Header: 'Method',
+                accessor: 'type',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    send,
+                  } = { ...row.original }
+
+                  const {
+                    source_chain,
+                    denom,
+                    amount,
+                  } = { ...send }
+
+                  const asset_data = getAssetData(denom, assets_data)
+
+                  const {
+                    addresses,
+                  } = { ...asset_data }
+
+                  let {
+                    symbol,
+                    image,
+                  } = { ...addresses?.[source_chain] }
+
+                  symbol = symbol || asset_data?.symbol
+                  image = image || asset_data?.image
+
+                  if (symbol) {
+                    switch (value) {
+                      case 'wrap':
+                        const index = WRAP_PREFIXES.findIndex(p => symbol.toLowerCase().startsWith(p) && !equalsIgnoreCase(p, symbol))
+                        if (index > -1) {
+                          const prefix = WRAP_PREFIXES[index]
+                          symbol = symbol.substring(prefix.length)
+                        }
+                        break
+                      default:
+                        break
+                    }
+                  }
+
+                  return (
+                    <div className="w-44 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="w-fit h-6 bg-slate-50 dark:bg-slate-900 rounded flex items-center font-medium py-1 px-2">
+                        {getTitle(normalizeType(value))}
+                      </div>
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                          />
+                        )}
+                        {typeof amount === 'number' && (
+                          <NumberDisplay
+                            value={amount}
+                            format="0,0.00"
+                            suffix={` ${symbol}`}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Source',
+                accessor: 'send.source_chain',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    send,
+                  } = { ...row.original }
+
+                  const {
+                    sender_address,
+                  } = { ...send }
+
+                  const {
+                    name,
+                    image,
+                    explorer,
+                  } = { ...getChainData(value, chains_data) }
+
+                  return (
+                    <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
+                        <span className="font-medium">
+                          {name || getTitle(value)}
+                        </span>
+                      </div>
+                      <div className="h-6 flex items-center">
+                        <AccountProfile address={sender_address} noCopy={true} explorer={explorer} />
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Destination',
+                accessor: 'send.destination_chain',
+                disableSortBy: true,
+                Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    link,
+                  } = { ...row.original }
+
+                  const {
+                    recipient_address,
+                  } = { ...link }
+
+                  const {
+                    name,
+                    image,
+                    explorer,
+                  } = { ...getChainData(value, chains_data) }
+
+                  return (
+                    <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className="h-6 flex items-center space-x-2">
+                        {image && (
+                          <Image
+                            src={image}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
+                        <span className="font-medium">
+                          {name || getTitle(value)}
+                        </span>
+                      </div>
+                      <div className="h-6 flex items-center">
+                        <AccountProfile address={recipient_address} noCopy={true} explorer={explorer} />
+                      </div>
+                    </div>
+                  )
+                },
+              },
+              {
+                Header: 'Status',
+                accessor: 'status',
+                disableSortBy: true,
+                Cell: props => {
+                  return (
+                    <div className="w-40 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                    </div>
+                  )
+                }
+              },
+              {
+                Header: 'Created at',
+                accessor: 'send.created_at.ms',
                 disableSortBy: true,
                 Cell: props => props.value && (
                   <div className="flex justify-end">
-                    <TimeAgo time={moment(props.value).unix()} className="text-slate-400 dark:text-slate-500 text-xs font-medium" />
+                    <TimeAgo time={moment(props.value).unix()} className="text-slate-400 dark:text-slate-500 text-sm font-medium" />
                   </div>
                 ),
                 headerClassName: 'justify-end text-right',
@@ -228,7 +426,7 @@ export default () => {
             </div>
           )}
         </div> :
-        <div className="loading">
+        <div className="loading-in-tab">
           <Spinner name="Blocks" />
         </div>
       }

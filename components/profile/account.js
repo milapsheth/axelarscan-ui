@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useSelector, shallowEqual } from 'react-redux'
 import _ from 'lodash'
 
+import ENSProfile from './ens'
 import Image from '../image'
 import Copy from '../copy'
 import { toArray, ellipse, equalsIgnoreCase, toHex } from '../../lib/utils'
@@ -15,6 +16,8 @@ export default (
     address,
     ellipseLength = 10,
     prefix = 'axelar',
+    noCopy = false,
+    explorer,
     url,
   },
 ) => {
@@ -42,6 +45,12 @@ export default (
     address,
   }
 
+  const {
+    address_path,
+  } = { ...explorer }
+
+  url = !url && explorer ? `${explorer.url}${address_path?.replace('{address}', address)}` : url
+
   const nameComponent = (
     <>
       <span className="xl:hidden">
@@ -53,7 +62,7 @@ export default (
     </>
   )
 
-  return (
+  return address && (
     name ?
       <div className="min-w-max flex items-start space-x-2">
         {image && (
@@ -78,10 +87,48 @@ export default (
               {nameComponent}
             </div>
           }
+          {!noCopy && (
+            <Copy
+              value={address}
+              title={
+                <div className="cursor-pointer text-slate-400 dark:text-slate-600">
+                  <div className="sm:hidden">
+                    {ellipse(address, parseInt(ellipseLength / 2), prefix)}
+                  </div>
+                  <div className="hidden sm:block">
+                    {ellipse(address, ellipseLength, prefix)}
+                  </div>
+                </div>
+              }
+            />
+          )}
+        </div>
+      </div> :
+      address?.startsWith('0x') ?
+        <ENSProfile address={address} url={url} /> :
+        url ?
+          <div className="flex items-center space-x-1">
+            <Link
+              href={typeof url === 'string' ? url : `/account/${address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+            >
+              <div>
+                <div className="sm:hidden">
+                  {ellipse(address, parseInt(ellipseLength / 2), prefix)}
+                </div>
+                <div className="hidden sm:block">
+                  {ellipse(address, ellipseLength, prefix)}
+                </div>
+              </div>
+            </Link>
+            <Copy value={address} />
+          </div> :
           <Copy
             value={address}
             title={
-              <div className="cursor-pointer text-slate-400 dark:text-slate-600">
+              <div className="cursor-pointer">
                 <div className="sm:hidden">
                   {ellipse(address, parseInt(ellipseLength / 2), prefix)}
                 </div>
@@ -90,40 +137,6 @@ export default (
                 </div>
               </div>
             }
-          />
-        </div>
-      </div> :
-      url ?
-        <div className="flex items-center space-x-1">
-          <Link
-            href={typeof url === 'string' ? url : `/account/${address}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
-          >
-            <div>
-              <div className="sm:hidden">
-                {ellipse(address, parseInt(ellipseLength / 2), prefix)}
-              </div>
-              <div className="hidden sm:block">
-                {ellipse(address, ellipseLength, prefix)}
-              </div>
-            </div>
-          </Link>
-          <Copy value={address} />
-        </div> :
-        <Copy
-          value={address}
-          title={
-            <div className="cursor-pointer">
-              <div className="sm:hidden">
-                {ellipse(address, parseInt(ellipseLength / 2), prefix)}
-              </div>
-              <div className="hidden sm:block">
-                {ellipse(address, ellipseLength, prefix)}
-              </div>
-            </div>
-          }
-        />
+          />     
   )
 }
