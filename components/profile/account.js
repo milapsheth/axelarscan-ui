@@ -5,7 +5,7 @@ import _ from 'lodash'
 import ENSProfile from './ens'
 import Image from '../image'
 import Copy from '../copy'
-import { toArray, ellipse, equalsIgnoreCase, toHex } from '../../lib/utils'
+import { split, toArray, ellipse, equalsIgnoreCase, toHex } from '../../lib/utils'
 import accounts from '../../data/accounts'
 import broadcasters from '../../data/broadcasters'
 
@@ -29,7 +29,7 @@ export default (
   } = { ..._accounts }
 
   address = Array.isArray(address) ? toHex(address) : address
-  prefix = address ? address.startsWith('axelar') ? 'axelar' : address.startsWith('0x') ? '0x' : address.includes('1') ? address.substring(0, address.indexOf('1')) : prefix : prefix
+  prefix = address ? address.startsWith('axelar') ? 'axelar' : address.startsWith('0x') ? '0x' : _.head(split(address, 'normal', '').filter(c => !isNaN(c))) === '1' ? address.substring(0, address.indexOf('1')) : prefix : prefix
 
   const {
     name,
@@ -64,7 +64,7 @@ export default (
 
   return address && (
     name ?
-      <div className="min-w-max flex items-start space-x-2">
+      <div className={`min-w-max flex ${noCopy ? 'items-center' : 'items-start'} space-x-2`}>
         {image && (
           <Image
             src={image}

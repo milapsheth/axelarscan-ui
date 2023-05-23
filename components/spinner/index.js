@@ -1,5 +1,5 @@
 import { useSelector, shallowEqual } from 'react-redux'
-import { Blocks, ProgressBar, Oval } from 'react-loader-spinner'
+import { Blocks, ProgressBar, Rings, Oval } from 'react-loader-spinner'
 
 import { loaderColor } from '../../lib/utils'
 
@@ -26,6 +26,8 @@ export default (
       return <Blocks />
     case 'ProgressBar':
       return <ProgressBar width={width} height={height} borderColor={color} />
+    case 'Rings':
+      return <Rings width={width} height={height} color={color} />
     case 'Oval':
     default:
       return <Oval width={width} height={height} color={color} />

@@ -13,7 +13,7 @@ export default (
     placement = 'top',
     title = 'Time',
     titleClassName = 'normal-case text-xs font-semibold',
-    className = 'normal-case text-slate-400 dark:text-slate-600 font-medium',
+    className = 'normal-case text-slate-400 dark:text-slate-500 font-medium',
   },
 ) => {
   const [trigger, setTrigger] = useState(false)

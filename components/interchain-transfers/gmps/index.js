@@ -5,6 +5,9 @@ import { useSelector, shallowEqual } from 'react-redux'
 import { Tooltip } from '@material-tailwind/react'
 import _ from 'lodash'
 import moment from 'moment'
+import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
+import { TbGasStationOff } from 'react-icons/tb'
+import { RiErrorWarningLine, RiTimerFlashLine, RiTimerLine } from 'react-icons/ri'
 
 import Spinner from '../../spinner'
 import Datatable from '../../datatable'
@@ -13,6 +16,7 @@ import Image from '../../image'
 import Copy from '../../copy'
 import AccountProfile from '../../profile/account'
 import ExplorerLink from '../../explorer/link'
+import TimeSpent from '../../time/timeSpent'
 import TimeAgo from '../../time/timeAgo'
 import { searchGMP } from '../../../lib/api/gmp'
 import { getChainData, getAssetData } from '../../../lib/config'
@@ -350,11 +354,122 @@ export default () => {
               },
               {
                 Header: 'Status',
-                accessor: 'status',
+                accessor: 'simplified_status',
                 disableSortBy: true,
                 Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    call,
+                    express_executed,
+                    approved,
+                    executed,
+                    error,
+                    is_insufficient_fee,
+                    not_enough_gas_to_execute,
+                  } = { ...row.original }
+
+                  const {
+                    destinationChain,
+                  } = { ...call?.returnValues }
+
+                  const destination_chain_data = getChainData(destinationChain, chains_data)
+
+                  let color
+                  let icon
+                  let transactionHash
+                  let explorer
+                  let extra
+                  let timeSpent
+
+                  switch (value) {
+                    case 'failed':
+                      color = 'text-red-400 dark:text-red-500'
+                      icon = <IoCloseCircleOutline size={18} />
+                      transactionHash = error?.receipt?.transactionHash
+                      explorer = destination_chain_data?.explorer
+                      break
+                    case 'received':
+                      color = 'text-green-500 dark:text-green-400'
+                      icon = <IoCheckmarkCircleOutline size={18} />
+                      transactionHash = express_executed?.receipt?.transactionHash || executed?.receipt?.transactionHash
+                      explorer = destination_chain_data?.explorer
+                      if (call) {
+                        if (express_executed) {
+                          timeSpent = (
+                            <Tooltip placement="top-start" content="Express">
+                              <div className="h-6 flex items-center text-blue-500 dark:text-yellow-500 space-x-1">
+                                <RiTimerFlashLine size={18} />
+                                <TimeSpent
+                                  fromTime={call.block_timestamp}
+                                  toTime={express_executed.block_timestamp}
+                                  noTooltip={true}
+                                  className="font-medium"
+                                />
+                              </div>
+                            </Tooltip>
+                          )
+                        }
+                        else if (executed) {
+                          timeSpent = (
+                            <Tooltip placement="top-start" content="Total time spent">
+                              <div className="h-6 flex items-center text-slate-300 dark:text-slate-600 space-x-1">
+                                <RiTimerLine size={18} />
+                                <TimeSpent
+                                  fromTime={call.block_timestamp}
+                                  toTime={executed.block_timestamp}
+                                  noTooltip={true}
+                                  className="font-medium"
+                                />
+                              </div>
+                            </Tooltip>
+                          )
+                        }
+                      }
+                      break
+                    case 'approved':
+                      if (not_enough_gas_to_execute) {
+                        extra = (
+                          <Tooltip content="Not enough gas to execute">
+                            <div className="flex items-center text-slate-300 dark:text-slate-600 font-medium space-x-1">
+                              <span>Execute Gas</span>
+                              <TbGasStationOff size={18} />
+                            </div>
+                          </Tooltip>
+                        )
+                      }
+                    default:
+                      color = 'text-blue-400 dark:text-blue-500'
+                      if (!extra && is_insufficient_fee && !approved) {
+                        extra = (
+                          <Tooltip content="Insufficient base fee">
+                            <div className="flex items-center text-slate-300 dark:text-slate-600 font-medium space-x-1">
+                              <span>Base Fee</span>
+                              <RiErrorWarningLine size={18} />
+                            </div>
+                          </Tooltip>
+                        )
+                      }
+                      if (!extra) {
+                        icon = <Spinner name="Rings" />
+                      }
+                      break
+                  }
+
                   return (
                     <div className="w-40 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className={`h-6 flex items-center ${color} space-x-1`}>
+                        <span className="font-medium">
+                          {getTitle(value)}
+                        </span>
+                        {icon}
+                        <ExplorerLink value={transactionHash} explorer={explorer} />
+                      </div>
+                      {extra}
+                      {timeSpent}
                     </div>
                   )
                 }
@@ -364,7 +479,7 @@ export default () => {
                 accessor: 'call.block_timestamp',
                 disableSortBy: true,
                 Cell: props => props.value && (
-                  <div className="flex justify-end">
+                  <div className="h-6 flex items-center justify-end">
                     <TimeAgo time={moment(props.value * 1000).unix()} className="text-slate-400 dark:text-slate-500 text-sm font-medium" />
                   </div>
                 ),

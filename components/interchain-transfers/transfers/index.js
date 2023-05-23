@@ -5,6 +5,8 @@ import { useSelector, shallowEqual } from 'react-redux'
 import { Tooltip } from '@material-tailwind/react'
 import _ from 'lodash'
 import moment from 'moment'
+import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5'
+import { RiErrorWarningLine, RiTimerLine } from 'react-icons/ri'
 
 import Spinner from '../../spinner'
 import Datatable from '../../datatable'
@@ -13,6 +15,7 @@ import Image from '../../image'
 import Copy from '../../copy'
 import AccountProfile from '../../profile/account'
 import ExplorerLink from '../../explorer/link'
+import TimeSpent from '../../time/timeSpent'
 import TimeAgo from '../../time/timeAgo'
 import { searchTransfers } from '../../../lib/api/transfers'
 import { getChainData, getAssetData } from '../../../lib/config'
@@ -381,11 +384,95 @@ export default () => {
               },
               {
                 Header: 'Status',
-                accessor: 'status',
+                accessor: 'simplified_status',
                 disableSortBy: true,
                 Cell: props => {
+                  const {
+                    value,
+                    row,
+                  } = { ...props }
+
+                  const {
+                    send,
+                    command,
+                    ibc_send,
+                    axelar_transfer,
+                    unwrap,
+                  } = { ...row.original }
+
+                  const {
+                    destination_chain,
+                    insufficient_fee,
+                  } = { ...send }
+
+                  const destination_chain_data = getChainData(destination_chain, chains_data)
+
+                  let color
+                  let icon
+                  let transactionHash
+                  let explorer
+                  let extra
+                  let timeSpent
+
+                  switch (value) {
+                    case 'failed':
+                      color = 'text-red-400 dark:text-red-500'
+                      icon = <IoCloseCircleOutline size={18} />
+                      break
+                    case 'received':
+                      color = 'text-green-500 dark:text-green-400'
+                      icon = <IoCheckmarkCircleOutline size={18} />
+                      transactionHash = unwrap?.tx_hash_unwrap || axelar_transfer?.txhash || ibc_send?.recv_txhash || command?.transactionHash
+                      explorer = destination_chain_data?.explorer
+                      if (send) {
+                        const toTime = (unwrap?.created_at?.ms / 1000) || (axelar_transfer?.created_at?.ms / 1000) || (ibc_send?.received_at?.ms / 1000) || (command?.transactionHash && command.block_timestamp)
+                        if (toTime) {
+                          timeSpent = (
+                            <Tooltip placement="top-start" content="Total time spent">
+                              <div className="h-6 flex items-center text-slate-300 dark:text-slate-600 space-x-1">
+                                <RiTimerLine size={18} />
+                                <TimeSpent
+                                  fromTime={send.created_at?.ms / 1000}
+                                  toTime={toTime}
+                                  noTooltip={true}
+                                  className="font-medium"
+                                />
+                              </div>
+                            </Tooltip>
+                          )
+                        }
+                      }
+                      break
+                    case 'approved':
+                    default:
+                      color = 'text-blue-400 dark:text-blue-500'
+                      if (!extra && insufficient_fee) {
+                        extra = (
+                          <Tooltip content="Insufficient transfer fee">
+                            <div className="flex items-center text-slate-300 dark:text-slate-600 font-medium space-x-1">
+                              <span>Transfer Fee</span>
+                              <RiErrorWarningLine size={18} />
+                            </div>
+                          </Tooltip>
+                        )
+                      }
+                      if (!extra) {
+                        icon = <Spinner name="Rings" />
+                      }
+                      break
+                  }
+
                   return (
                     <div className="w-40 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
+                      <div className={`h-6 flex items-center ${color} space-x-1`}>
+                        <span className="font-medium">
+                          {getTitle(value)}
+                        </span>
+                        {icon}
+                        <ExplorerLink value={transactionHash} explorer={explorer} />
+                      </div>
+                      {extra}
+                      {timeSpent}
                     </div>
                   )
                 }
