@@ -51,7 +51,7 @@ export default (
 
   url = !url && explorer ? `${explorer.url}${address_path?.replace('{address}', address)}` : url
 
-  const nameComponent = (
+  const nameComponent = name && (
     <>
       <span className="xl:hidden">
         {ellipse(name, ellipseLength * 2)}
@@ -74,19 +74,22 @@ export default (
           />
         )}
         <div className="flex flex-col">
-          {url ?
-            <Link
-              href={typeof url === 'string' ? url : `/account/${address}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
-            >
-              {nameComponent}
-            </Link> :
-            <div className="tracking-wider text-blue-500 dark:text-blue-500 font-medium">
-              {nameComponent}
-            </div>
-          }
+          <div className="flex items-center space-x-1">
+            {url ?
+              <Link
+                href={typeof url === 'string' ? url : `/account/${address}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tracking-wider text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 font-medium"
+              >
+                {nameComponent}
+              </Link> :
+              <div className="tracking-wider text-blue-500 dark:text-blue-500 font-medium">
+                {nameComponent}
+              </div>
+            }
+            {noCopy && <Copy value={address} />}
+          </div>
           {!noCopy && (
             <Copy
               value={address}

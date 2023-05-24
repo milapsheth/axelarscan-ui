@@ -105,8 +105,8 @@ export default () => {
       placeholder: 'Select method',
       options: [
         { value: '', title: 'Any' },
-        { value: 'callContract', title: 'callContract' },
-        { value: 'callContractWithToken', title: 'callContractWithToken' },
+        { value: 'callContract', title: 'CallContract' },
+        { value: 'callContractWithToken', title: 'CallContractWithToken' },
       ],
     },
     pathname.startsWith('/transfers') && {
@@ -158,11 +158,12 @@ export default () => {
       type: 'text',
       placeholder: 'Sender address',
     },
-    pathname.startsWith('/gmp') && {
+    ['/interchain-transfers', '/gmp'].findIndex(s => pathname.startsWith(s)) > -1 && {
       label: 'Contract',
       name: 'contractAddress',
       type: 'text',
       placeholder: 'Contract address',
+      className: pathname.startsWith('/interchain-transfers') ? 'col-span-2' : '',
     },
     pathname.startsWith('/transfers') && {
       label: 'Recipient',

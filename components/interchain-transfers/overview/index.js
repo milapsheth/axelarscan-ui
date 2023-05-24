@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 
+import Summary from './summary'
 import Spinner from '../../spinner'
 import { GMPStats, GMPChart, GMPTotalVolume } from '../../../lib/api/gmp'
 import { transfersStats, transfersChart, transfersTotalVolume } from '../../../lib/api/transfers'
@@ -126,7 +127,9 @@ export default () => {
   return (
     <div>
       {data ?
-        <div /> :
+        <div className="space-y-6">
+          <Summary data={data} filters={filters} />
+        </div> :
         <div className="loading-in-tab">
           <Spinner name="Blocks" />
         </div>
