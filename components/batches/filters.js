@@ -169,7 +169,12 @@ export default () => {
             Filter EVM Batches
           </span>
           <div
-            onClick={() => setHidden(true)}
+            onClick={
+              () => {
+                setHidden(true)
+                setFilters({ ...getQueryParams(asPath) })
+              }
+            }
             className="hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer rounded-full p-2"
           >
             <BiX size={18} />
