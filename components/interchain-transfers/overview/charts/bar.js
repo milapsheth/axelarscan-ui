@@ -88,7 +88,7 @@ export default (
             )}
           </div>
           {typeof value === 'number' && (
-            <div className="flex flex-col items-end">
+            <div className="flex flex-col items-end space-y-0.5">
               <NumberDisplay
                 value={value}
                 format="0,0"
