@@ -7,7 +7,7 @@ import moment from 'moment'
 import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
-import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
+import { toArray, getQueryParams, createDayJSFromUnixtime } from '../../lib/utils'
 
 export default () => {
   const {
@@ -276,8 +276,8 @@ export default () => {
                         { label: 'Last 180 Days', value: [moment().subtract(180, 'days').startOf('day'), moment().endOf('day')] },
                         { label: 'Last 365 Days', value: [moment().subtract(365, 'days').startOf('day'), moment().endOf('day')] },
                       ]}
-                      value={filters?.fromTime && filters.toTime ? [createMomentFromUnixtime(filters.fromTime), createMomentFromUnixtime(filters.toTime)] : undefined}
-                      onChange={v => setFilters({ ...filters, fromTime: moment(_.head(v)).unix(), toTime: moment(_.last(v)).unix() })}
+                      value={filters?.fromTime && filters.toTime ? [createDayJSFromUnixtime(filters.fromTime), createDayJSFromUnixtime(filters.toTime)] : undefined}
+                      onChange={v => setFilters({ ...filters, fromTime: _.head(v) && moment(_.head(v).valueOf()).unix(), toTime: _.last(v) && moment(_.last(v).valueOf()).unix() })}
                       className="form-input"
                       style={{ display: 'flex' }}
                     /> :

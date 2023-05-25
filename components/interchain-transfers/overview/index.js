@@ -3,10 +3,27 @@ import { useState, useEffect } from 'react'
 import moment from 'moment'
 
 import Summary from './summary'
+import Charts from './charts'
 import Spinner from '../../spinner'
 import { GMPStats, GMPChart, GMPTotalVolume } from '../../../lib/api/gmp'
 import { transfersStats, transfersChart, transfersTotalVolume } from '../../../lib/api/transfers'
 import { toArray, getQueryParams, createMomentFromUnixtime } from '../../../lib/utils'
+
+const getGranularity = (fromTime, toTime) => {
+  if (fromTime) {
+    const diff = createMomentFromUnixtime(toTime).diff(createMomentFromUnixtime(fromTime), 'days')
+    if (diff >= 180) {
+      return 'month'
+    }
+    else if (diff >= 60) {
+      return 'week'
+    }
+    else {
+      return 'day'
+    }
+  }
+  return 'month'
+}
 
 export default () => {
   const router = useRouter()
@@ -53,27 +70,6 @@ export default () => {
 
           if (!fetchTrigger) {
             setData(null)
-          }
-
-          const {
-            fromTime,
-            toTime,
-          } = { ...filters }
-
-          let granularity
-
-          if (fromTime) {
-            const diff = createMomentFromUnixtime(toTime).diff(createMomentFromUnixtime(fromTime), 'days')
-
-            if (diff > 180) {
-              granularity = 'month'
-            }
-            else if (diff > 60) {
-              granularity = 'week'
-            }
-            else {
-              granularity = 'day'
-            }
           }
 
           setData(
@@ -124,11 +120,19 @@ export default () => {
     [fetchTrigger],
   )
 
+  const {
+    fromTime,
+    toTime,
+  } = { ...filters }
+
+  const granularity = getGranularity(fromTime, toTime)
+
   return (
     <div>
       {data ?
         <div className="space-y-6">
           <Summary data={data} filters={filters} />
+          <Charts data={data} granularity={granularity} />
         </div> :
         <div className="loading-in-tab">
           <Spinner name="Blocks" />

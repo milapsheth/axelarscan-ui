@@ -8,7 +8,7 @@ import { BiX } from 'react-icons/bi'
 
 import Modal from '../modal'
 import { searchBatches } from '../../lib/api/batches'
-import { toArray, getQueryParams, createMomentFromUnixtime } from '../../lib/utils'
+import { toArray, getQueryParams, createDayJSFromUnixtime } from '../../lib/utils'
 
 export default () => {
   const {
@@ -244,8 +244,8 @@ export default () => {
                         { label: 'This Month', value: [moment().startOf('month'), moment().endOf('month')] },
                         { label: 'Last 30 Days', value: [moment().subtract(30, 'days').startOf('day'), moment().endOf('day')] },
                       ]}
-                      value={filters?.fromTime && filters.toTime ? [createMomentFromUnixtime(filters.fromTime), createMomentFromUnixtime(filters.toTime)] : undefined}
-                      onChange={v => setFilters({ ...filters, fromTime: moment(_.head(v)).unix(), toTime: moment(_.last(v)).unix() })}
+                      value={filters?.fromTime && filters.toTime ? [createDayJSFromUnixtime(filters.fromTime), createDayJSFromUnixtime(filters.toTime)] : undefined}
+                      onChange={v => setFilters({ ...filters, fromTime: _.head(v) && moment(_.head(v).valueOf()).unix(), toTime: _.last(v) && moment(_.last(v).valueOf()).unix() })}
                       className="form-input"
                       style={{ display: 'flex' }}
                     /> :
