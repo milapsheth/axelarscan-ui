@@ -2,8 +2,33 @@
   font-family: 'Lexend Deca', sans-serif !important;
 }
 
+.ant-select-selection-item,
+.ant-select-item-option-content,
 .ant-picker-panel-layout {
   @apply custom-font;
+}
+
+.ant-select {
+  @apply custom-font text-black dark:text-white text-base;
+}
+
+.ant-select-selector {
+  @apply bg-slate-50 dark:bg-slate-800 border-0 rounded-none py-1 !important;
+}
+
+.ant-select-clear,
+.ant-select-selection-item-remove,
+.ant-select-item-option-state {
+  @apply bg-transparent flex items-center !important;
+}
+
+.ant-select-clear,
+.ant-select-selection-item-remove {
+  @apply text-slate-400 !important;
+}
+
+.ant-select-selection-item-content {
+  @apply custom-font text-black dark:text-white;
 }
 
 .ant-picker-input input,

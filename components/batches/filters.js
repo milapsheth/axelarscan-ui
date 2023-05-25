@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import { DatePicker } from 'antd'
+import { DatePicker, Select } from 'antd'
 import _ from 'lodash'
 import moment from 'moment'
 import { BiX } from 'react-icons/bi'
@@ -84,7 +84,7 @@ export default () => {
       type: 'select',
       placeholder: 'Select chain',
       options: _.concat(
-        { value: '', title: 'Any' },
+        // { value: '', title: 'Any' },
         _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc']).map(c => {
           const {
             id,
@@ -97,13 +97,15 @@ export default () => {
           }
         }),
       ),
+      multiple: true,
+      className: 'col-span-2',
     },
-    {
+    /*{
       label: 'Key ID',
       name: 'keyId',
       type: 'text',
       placeholder: 'Key ID',
-    },
+    },*/
     {
       label: 'Command Type',
       name: 'type',
@@ -183,6 +185,7 @@ export default () => {
               type,
               placeholder,
               options,
+              multiple,
               className,
             } = { ...f }
 
@@ -194,29 +197,38 @@ export default () => {
                   </div>
                 )}
                 {type === 'select' ?
-                  <select
-                    placeholder={placeholder}
-                    value={filters?.[name]}
-                    onChange={e => setFilters({ ...filters, [name]: e.target.value })}
-                    className="form-select bg-slate-50"
-                  >
-                    {toArray(options).map((o, i) => {
-                      const {
-                        title,
-                        value,
-                      } = { ...o }
+                  multiple ?
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      placeholder={placeholder}
+                      value={toArray(filters?.[name])}
+                      onChange={v => setFilters({ ...filters, [name]: toArray(v).join(',') })}
+                      options={toArray(options).map(o => { return { ...o, label: o.title } })}
+                    /> :
+                    <select
+                      placeholder={placeholder}
+                      value={filters?.[name]}
+                      onChange={e => setFilters({ ...filters, [name]: e.target.value })}
+                      className="form-select bg-slate-50"
+                    >
+                      {toArray(options).map((o, i) => {
+                        const {
+                          title,
+                          value,
+                        } = { ...o }
 
-                      return (
-                        <option
-                          key={i}
-                          title={title}
-                          value={value}
-                        >
-                          {title}
-                        </option>
-                      )
-                    })}
-                  </select> :
+                        return (
+                          <option
+                            key={i}
+                            title={title}
+                            value={value}
+                          >
+                            {title}
+                          </option>
+                        )
+                      })}
+                    </select> :
                   type === 'datetime-range' ?
                     <DatePicker.RangePicker
                       showTime
