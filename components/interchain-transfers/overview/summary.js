@@ -74,7 +74,7 @@ export default ({ data, filters }) => {
 
         return (
           <Card key={metric} className="card">
-            <CardBody className="pb-2">
+            <CardBody className="mt-1 pb-2">
               <NumberDisplay
                 value={total}
                 format="0,0"
@@ -111,7 +111,7 @@ export default ({ data, filters }) => {
 
         return (
           <Card key={metric} className="card">
-            <CardBody className="pb-2">
+            <CardBody className="mt-1 pb-2">
               <NumberDisplay
                 value={total}
                 format="0,0"
@@ -161,7 +161,7 @@ export default ({ data, filters }) => {
 
         return (
           <Card key={metric} className="card">
-            <CardBody className="space-y-1.5 pb-2">
+            <CardBody className="space-y-1.5 mt-1 pb-2">
               {gmpMethods.length > 0 && (
                 <div className="grid grid-cols-2 2xl:grid-cols-3 gap-y-1.5 gap-x-4">
                   {gmpMethods.map((d, i) => (
@@ -225,7 +225,7 @@ export default ({ data, filters }) => {
 
         return (
           <Card key={metric} className="card">
-            <CardBody className="pb-2">
+            <CardBody className="mt-1 pb-2">
               <NumberDisplay
                 value={contracts.length}
                 format="0,0"

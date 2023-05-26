@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useSelector, shallowEqual } from 'react-redux'
 import { ResponsiveContainer, BarChart, XAxis, Bar, Tooltip } from 'recharts'
 import { Card, CardBody } from '@material-tailwind/react'
 import _ from 'lodash'
@@ -7,7 +6,7 @@ import moment from 'moment'
 
 import Spinner from '../../../spinner'
 import NumberDisplay from '../../../number'
-import { split, toArray, getTitle, chartColor } from '../../../../lib/utils'
+import { split, toArray, getTitle } from '../../../../lib/utils'
 
 export default (
   {
@@ -25,13 +24,6 @@ export default (
     prefix = '',
   },
 ) => {
-  const {
-    preferences,
-  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
-  const {
-    theme,
-  } = { ...preferences }
-
   const [chartData, setChartData] = useState(null)
   const [x, setX] = useState(null)
 
@@ -138,6 +130,7 @@ export default (
                 value={value}
                 format={numberFormat}
                 prefix={prefix}
+                noTooltip={true}
                 className="text-black dark:text-white text-base font-medium"
               />
               <span className="whitespace-nowrap text-slate-400 dark:text-slate-500 text-sm text-right">

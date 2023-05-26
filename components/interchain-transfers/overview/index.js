@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import Summary from './summary'
 import Charts from './charts'
+import Tops from './tops'
 import Spinner from '../../spinner'
 import { GMPStats, GMPChart, GMPTotalVolume } from '../../../lib/api/gmp'
 import { transfersStats, transfersChart, transfersTotalVolume } from '../../../lib/api/transfers'
@@ -133,6 +134,7 @@ export default () => {
         <div className="space-y-6">
           <Summary data={data} filters={filters} />
           <Charts data={data} granularity={granularity} />
+          <Tops data={data} />
         </div> :
         <div className="loading-in-tab">
           <Spinner name="Blocks" />
