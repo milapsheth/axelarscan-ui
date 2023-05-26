@@ -5,12 +5,14 @@ import _ from 'lodash'
 import Spinner from '../../../spinner'
 import NumberDisplay from '../../../number'
 import Image from '../../../image'
+import AccountProfile from '../../../profile/account'
 import { getChainData } from '../../../../lib/config'
 import { split, toArray } from '../../../../lib/utils'
 
 export default (
   {
     data,
+    type = 'chain',
     field = 'num_txs',
     title = '',
     description = '',
@@ -43,25 +45,42 @@ export default (
             <div className="space-y-1">
               {toArray(data).map((d, i) => (
                 <div key={i} className="flex items-center justify-between space-x-2">
-                  <div className="flex items-center space-x-1">
+                  <div className={`${type === 'contract' ? 'h-8' : 'h-6'} flex items-center space-x-1`}>
                     {split(d.key, 'normal', '_').map((k, j) => {
-                      const {
-                        name,
-                        image,
-                      } = { ...getChainData(k, chains_data) }
-
-                      return (
-                        <Tooltip key={j} content={name}>
-                          <div>
-                            <Image
-                              src={image}
+                      switch (type) {
+                        case 'contract':
+                          return (
+                            <AccountProfile
+                              key={j}
+                              address={k}
+                              ellipseLength={6}
+                              copyAddress={true}
                               width={20}
                               height={20}
-                              className="rounded-full"
+                              noCopy={true}
+                              className="normal-case text-slate-600 dark:text-slate-200 text-xs font-medium"
                             />
-                          </div>
-                        </Tooltip>
-                      )
+                          )
+                        case 'chain':
+                        default:
+                          const {
+                            name,
+                            image,
+                          } = { ...getChainData(k, chains_data) }
+
+                          return (
+                            <Tooltip key={j} content={name}>
+                              <div>
+                                <Image
+                                  src={image}
+                                  width={20}
+                                  height={20}
+                                  className="rounded-full"
+                                />
+                              </div>
+                            </Tooltip>
+                          ) 
+                      }
                     })}
                   </div>
                   <NumberDisplay

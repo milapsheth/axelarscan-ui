@@ -25,11 +25,9 @@ export default ({ data }) => {
       }
     })
 
-  const getTopData = (data, field = 'num_txs') => _.slice(_.orderBy(toArray(data), [field], ['desc']), 0, TOP_N)
+  const getTopData = (data, field = 'num_txs', n = TOP_N) => _.slice(_.orderBy(toArray(data), [field], ['desc']), 0, n)
 
   const render = id => {
-    const className = 'grid sm:grid-cols-2 xl:grid-cols-3 gap-3'
-
     const chainPairs = groupData(
       _.concat(
         toArray(messages).flatMap(m =>
@@ -132,11 +130,32 @@ export default ({ data }) => {
         }),
       )
     )
+    const contracts = groupData(
+      toArray(messages).flatMap(m =>
+        toArray(m.source_chains).flatMap(s =>
+          toArray(s.destination_chains).flatMap(d =>
+            toArray(d.contracts).flatMap(c => {
+              const {
+                key,
+                num_txs,
+                volume,
+              } = { ...c }
+
+              return {
+                key: key?.toLowerCase(),
+                num_txs,
+                volume,
+              }
+            })
+          )
+        )
+      ),
+    )
 
     switch (id) {
       case 'chains':
         return (
-          <div key={id} className={className}>
+          <div key={id} className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
             <Top
               data={getTopData(chainPairs)}
               title="Top Paths"
@@ -177,7 +196,21 @@ export default ({ data }) => {
         )
       case 'contracts':
         return (
-          <div key={id} className={className}>
+          <div key={id} className="grid sm:grid-cols-2 gap-3">
+            <Top
+              data={getTopData(contracts, 'num_txs', 10)}
+              type="contract"
+              title="Top Contracts"
+              description="Top contracts by transactions"
+            />
+            <Top
+              data={getTopData(contracts, 'volume', 10)}
+              type="contract"
+              field="volume"
+              title="Top Contracts"
+              description="Top contracts by volumes"
+              prefix="$"
+            />
           </div>
         )
       default:

@@ -16,6 +16,10 @@ export default (
     address,
     ellipseLength = 10,
     prefix = 'axelar',
+    copyAddress = false,
+    width = 24,
+    height = 24,
+    className = '',
     noCopy = false,
     explorer,
     url,
@@ -64,13 +68,13 @@ export default (
 
   return address && (
     name ?
-      <div className={`min-w-max flex ${noCopy ? 'items-center' : 'items-start'} space-x-2`}>
+      <div className={`min-w-max flex ${noCopy ? 'items-center' : 'items-start'} space-x-2 ${className}`}>
         {image && (
           <Image
             src={image}
-            width={24}
-            height={24}
-            className="w-6 3xl:w-8 h-6 3xl:h-8 rounded-full"
+            width={width}
+            height={height}
+            className={`${width === 24 ? 'w-6 3xl:w-8 h-6 3xl:h-8' : ''} rounded-full`}
           />
         )}
         <div className="flex flex-col">
@@ -108,9 +112,16 @@ export default (
         </div>
       </div> :
       address?.startsWith('0x') ?
-        <ENSProfile address={address} url={url} /> :
+        <ENSProfile
+          address={address}
+          copyAddress={copyAddress}
+          width={width}
+          height={height}
+          url={url}
+          className={className}
+        /> :
         url ?
-          <div className="flex items-center space-x-1">
+          <div className={`flex items-center space-x-1 ${className}`}>
             <Link
               href={typeof url === 'string' ? url : `/account/${address}`}
               target="_blank"
@@ -131,7 +142,7 @@ export default (
           <Copy
             value={address}
             title={
-              <div className="cursor-pointer">
+              <div className={`cursor-pointer ${className}`}>
                 <div className="sm:hidden">
                   {ellipse(address, parseInt(ellipseLength / 2), prefix)}
                 </div>

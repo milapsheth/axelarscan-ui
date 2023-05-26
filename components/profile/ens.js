@@ -11,6 +11,9 @@ export default (
   {
     address,
     copySize = 18,
+    copyAddress = false,
+    width = 24,
+    height = 24,
     noCopy = false,
     noImage = false,
     url,
@@ -97,16 +100,16 @@ export default (
           typeof imageUnavailable === 'boolean' ?
             <Image
               src={imageUnavailable ? '/logos/others/ens.png' : src}
-              width={24}
-              height={24}
-              className="w-6 3xl:w-8 h-6 3xl:h-8 rounded-full mr-2 3xl:mr-3"
+              width={width}
+              height={height}
+              className={`${width === 24 ? 'w-6 3xl:w-8 h-6 3xl:h-8' : ''} rounded-full mr-2 3xl:mr-3`}
             /> :
             <img
               src={src}
               alt=""
               onLoad={() => setImageUnavailable(false)}
               onError={() => setImageUnavailable(true)}
-              className="w-6 3xl:w-8 h-6 3xl:h-8 rounded-full mr-2 3xl:mr-3"
+              className={`${width === 24 ? 'w-6 3xl:w-8 h-6 3xl:h-8' : 'w-5 h-5'} rounded-full mr-2 3xl:mr-3`}
             />
         )}
         {url ?
@@ -122,7 +125,7 @@ export default (
             {!noCopy && (
               <Copy
                 size={copySize}
-                value={name}
+                value={copyAddress ? address : name}
               />
             )}
           </div> :
@@ -130,7 +133,7 @@ export default (
             ensComponent :
             <Copy
               size={copySize}
-              value={name}
+              value={copyAddress ? address : name}
               title={ensComponent}
             />
         }
