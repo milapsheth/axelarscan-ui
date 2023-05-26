@@ -68,6 +68,7 @@ export default (
                     value={d[field]}
                     format={numberFormat}
                     prefix={prefix}
+                    noTooltip={true}
                     className="text-black dark:text-white text-xs font-medium"
                   />
                 </div>

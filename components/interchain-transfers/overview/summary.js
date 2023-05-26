@@ -27,10 +27,22 @@ const Detail = ({ title, children }) => {
 export default ({ data, filters }) => {
   const {
     chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+    assets,
+  } = useSelector(
+    state => (
+      {
+        chains: state.chains,
+        assets: state.assets,
+      }
+    ),
+    shallowEqual,
+  )
   const {
     chains_data,
   } = { ...chains }
+  const {
+    assets_data,
+  } = { ...assets }
 
   const [seeMoreChain, setSeeMoreChain] = useState(false)
 
@@ -43,6 +55,7 @@ export default ({ data, filters }) => {
 
   const {
     contractAddress,
+    asset,
     fromTime,
     toTime,
   } = { ...filters }
@@ -276,18 +289,46 @@ export default ({ data, filters }) => {
   }
 
   const diff = createMomentFromUnixtime(toTime).diff(createMomentFromUnixtime(fromTime), 'days')
+  const displayFilter = toArray(asset).length > 0 || (fromTime && toTime)
 
   return (
     <div className="space-y-3">
-      {(contractAddress || (fromTime && toTime)) && (
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
+      {(contractAddress || displayFilter) && (
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
           <div>
             <AccountProfile address={contractAddress} />
           </div>
-          {fromTime && toTime && (
-            <span className="whitespace-nowrap text-slate-400 dark:text-slate-500 text-sm font-medium">
-              {[fromTime, toTime].map(t => createMomentFromUnixtime(t)).map(t => t.format(`${TIME_FORMAT}${diff < 1 ? ' h:mm:ss A' : ''}`)).join(' - ')}
-            </span>
+          {displayFilter && (
+            <div className="flex flex-col space-y-2 sm:space-y-0">
+              {toArray(asset).length > 0 && (
+                <div className="flex items-center sm:justify-end">
+                  {toArray(asset).map((a, i) => {
+                    const {
+                      symbol,
+                      image,
+                    } = { ...toArray(assets_data).find(_a => _a.denom === a) }
+
+                    return (
+                      <div key={i} className="bg-slate-100 dark:bg-slate-900 rounded flex items-center space-x-1 mb-1 sm:ml-2 mr-2 sm:mr-0 py-1 px-2">
+                        <Image
+                          src={image}
+                          width={18}
+                          height={18}
+                        />
+                        <span className="text-black dark:text-white text-xs font-medium">
+                          {symbol}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+              {fromTime && toTime && (
+                <span className="whitespace-nowrap text-slate-400 dark:text-slate-500 text-sm font-medium">
+                  {[fromTime, toTime].map(t => createMomentFromUnixtime(t)).map(t => t.format(`${TIME_FORMAT}${diff < 1 ? ' h:mm:ss A' : ''}`)).join(' - ')}
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}

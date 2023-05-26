@@ -11,7 +11,7 @@ export default ({ data }) => {
     GMPStats,
     transfersStats,
   } = { ...data }
-console.log(data)
+
   const {
     messages,
   } = { ...GMPStats }

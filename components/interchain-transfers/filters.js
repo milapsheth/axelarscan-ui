@@ -12,10 +12,22 @@ import { toArray, getQueryParams, createDayJSFromUnixtime } from '../../lib/util
 export default () => {
   const {
     chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+    assets,
+  } = useSelector(
+    state => (
+      {
+        chains: state.chains,
+        assets: state.assets,
+      }
+    ),
+    shallowEqual,
+  )
   const {
     chains_data,
   } = { ...chains }
+  const {
+    assets_data,
+  } = { ...assets }
 
   const router = useRouter()
   const {
@@ -56,6 +68,18 @@ export default () => {
       name: 'txHash',
       type: 'text',
       placeholder: 'Transaction Hash',
+      className: 'col-span-2',
+    },
+    pathname.startsWith('/interchain-transfers') && {
+      label: 'Transfers Type',
+      name: 'transfersType',
+      type: 'select',
+      placeholder: 'Select transfers type',
+      options: [
+        { value: '', title: 'Any' },
+        { value: 'gmp', title: 'GMP' },
+        { value: 'token_transfers', title: 'Token Transfers' },
+      ],
       className: 'col-span-2',
     },
     {
@@ -176,6 +200,28 @@ export default () => {
       placeholder: 'Recipient address',
     },
     {
+      label: 'Asset',
+      name: 'asset',
+      type: 'select',
+      placeholder: 'Select asset',
+      options: _.concat(
+        // { value: '', title: 'Any' },
+        toArray(assets_data).map(a => {
+          const {
+            denom,
+            symbol,
+          } = { ...a }
+
+          return {
+            value: denom,
+            title: symbol,
+          }
+        }),
+      ),
+      multiple: true,
+      className: 'col-span-2',
+    },
+    {
       label: 'Time',
       name: 'time',
       type: 'datetime-range',
@@ -189,7 +235,7 @@ export default () => {
   return (
     <Modal
       hidden={hidden}
-      disabled={!chains_data}
+      disabled={!(chains_data && assets_data)}
       onClick={() => setHidden(false)}
       buttonTitle={`Filter${filtered ? 'ed' : ''}`}
       buttonClassName={`max-w-min ${filtered ? 'border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 font-semibold py-0.5 px-2' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 font-normal py-1 px-2.5'} rounded text-sm sm:text-base`}

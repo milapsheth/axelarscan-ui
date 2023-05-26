@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
+import { useSelector, shallowEqual } from 'react-redux'
 import { useState, useEffect } from 'react'
+import _ from 'lodash'
 import moment from 'moment'
 
 import Summary from './summary'
@@ -8,6 +10,7 @@ import Tops from './tops'
 import Spinner from '../../spinner'
 import { GMPStats, GMPChart, GMPTotalVolume } from '../../../lib/api/gmp'
 import { transfersStats, transfersChart, transfersTotalVolume } from '../../../lib/api/transfers'
+import { getAssetData } from '../../../lib/config'
 import { toArray, getQueryParams, createMomentFromUnixtime } from '../../../lib/utils'
 
 const getGranularity = (fromTime, toTime) => {
@@ -27,6 +30,13 @@ const getGranularity = (fromTime, toTime) => {
 }
 
 export default () => {
+  const {
+    assets,
+  } = useSelector(state => ({ assets: state.assets }), shallowEqual)
+  const {
+    assets_data,
+  } = { ...assets }
+
   const router = useRouter()
   const {
     asPath,
@@ -49,7 +59,7 @@ export default () => {
   useEffect(
     () => {
       const trigger = is_interval => {
-        if (filters) {
+        if (assets_data && filters) {
           setFetchTrigger(is_interval ? moment().valueOf() : typeof fetchTrigger === 'number' ? null : 0)
         }
       }
@@ -58,7 +68,7 @@ export default () => {
       const interval = setInterval(() => trigger(true), 5 * 60 * 1000)
       return () => clearInterval(interval)
     },
-    [filters],
+    [assets_data, filters],
   )
 
   useEffect(
@@ -73,6 +83,14 @@ export default () => {
             setData(null)
           }
 
+          const {
+            transfersType,
+            asset,
+          } = { ...filters }
+
+          const types = toArray(transfersType || ['gmp', 'token_transfers'])
+          const symbol = _.uniq(toArray(toArray(asset).map(a => getAssetData(a, assets_data))).flatMap(a => _.uniq(toArray(_.concat(a.symbol, Object.values({ ...a.addresses }).map(_a => _a.symbol))))))
+
           setData(
             Object.fromEntries(
               await Promise.all(
@@ -82,25 +100,25 @@ export default () => {
                       async resolve => {
                         switch (m) {
                           case 'GMPStats':
-                            resolve([m, await GMPStats({ ...filters })])
+                            resolve([m, types.includes('gmp') && await GMPStats({ ...filters, symbol })])
                             break
                           case 'GMPStatsAVGTimes':
-                            resolve([m, await GMPStats({ ...filters, avg_times: true })])
+                            resolve([m, types.includes('gmp') && await GMPStats({ ...filters, symbol, avg_times: true })])
                             break
                           case 'GMPChart':
-                            resolve([m, await GMPChart({ ...filters, granularity })])
+                            resolve([m, types.includes('gmp') && await GMPChart({ ...filters, symbol, granularity })])
                             break
                           case 'GMPTotalVolume':
-                            resolve([m, await GMPTotalVolume({ ...filters })])
+                            resolve([m, types.includes('gmp') && await GMPTotalVolume({ ...filters, symbol })])
                             break
                           case 'transfersStats':
-                            resolve([m, await transfersStats({ ...filters })])
+                            resolve([m, types.includes('token_transfers') && await transfersStats({ ...filters })])
                             break
                           case 'transfersChart':
-                            resolve([m, await transfersChart({ ...filters, granularity })])
+                            resolve([m, types.includes('token_transfers') && await transfersChart({ ...filters, granularity })])
                             break
                           case 'transfersTotalVolume':
-                            resolve([m, await transfersTotalVolume({ ...filters })])
+                            resolve([m, types.includes('token_transfers') && await transfersTotalVolume({ ...filters })])
                             break
                           default:
                             resolve()

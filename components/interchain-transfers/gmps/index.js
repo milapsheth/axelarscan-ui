@@ -71,7 +71,7 @@ export default () => {
   useEffect(
     () => {
       const trigger = is_interval => {
-        if (pathname && filters) {
+        if (pathname && assets_data && filters) {
           setFetchTrigger(is_interval ? moment().valueOf() : typeof fetchTrigger === 'number' ? null : 0)
         }
       }
@@ -80,7 +80,7 @@ export default () => {
       const interval = setInterval(() => trigger(true), 15 * 1000)
       return () => clearInterval(interval)
     },
-    [pathname, filters],
+    [pathname, assets_data, filters],
   )
 
   useEffect(
@@ -98,7 +98,13 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-          const response = await searchGMP({ ...filters, size, from })
+
+          const {
+            asset,
+          } = { ...filters }
+
+          const symbol = _.uniq(toArray(toArray(asset).map(a => getAssetData(a, assets_data))).flatMap(a => _.uniq(toArray(_.concat(a.symbol, Object.values({ ...a.addresses }).map(_a => _a.symbol))))))
+          const response = await searchGMP({ ...filters, symbol, size, from })
 
           if (response) {
             const {
