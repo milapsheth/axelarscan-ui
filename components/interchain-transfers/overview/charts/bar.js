@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import { ResponsiveContainer, BarChart, XAxis, Bar, Cell } from 'recharts'
+import { ResponsiveContainer, BarChart, XAxis, Bar, Tooltip } from 'recharts'
 import { Card, CardBody } from '@material-tailwind/react'
 import _ from 'lodash'
 import moment from 'moment'
 
 import Spinner from '../../../spinner'
 import NumberDisplay from '../../../number'
-import { split, toArray, chartColor } from '../../../../lib/utils'
+import { split, toArray, getTitle, chartColor } from '../../../../lib/utils'
 
 export default (
   {
@@ -15,10 +15,13 @@ export default (
     data,
     totalValue,
     field = 'num_txs',
+    stacks = ['gmp', 'transfers'],
+    colors = { gmp: '#ff7d20', transfers: '#009ef7' },
     title = '',
     description = '',
     dateFormat = 'D MMM',
     granularity = 'day',
+    numberFormat = '0,0',
     prefix = '',
   },
 ) => {
@@ -69,6 +72,48 @@ export default (
     [data],
   )
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active) {
+      const data = _.head(payload)?.payload
+      const values =
+        toArray(_.concat(stacks, 'total')).map(s => {
+          return {
+            key: s,
+            value: data[`${s !== 'total' ? `${s}_` : ''}${field}`],
+          }
+        })
+
+      return (
+        <div className="bg-white dark:bg-black bg-opacity-75 dark:bg-opacity-75 rounded flex flex-col space-y-1 p-2">
+          {toArray(values).map((v, i) => {
+            const {
+              key,
+              value,
+            } = { ...v }
+
+            return (
+              <div key={i} className="flex items-center justify-between space-x-4">
+                <span className="text-xs font-semibold">
+                  {getTitle(key)}
+                </span>
+                <NumberDisplay
+                  value={value}
+                  format={numberFormat}
+                  prefix={prefix}
+                  noToolip={true}
+                  className="text-xs font-medium"
+                />
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+    else {
+      return null
+    }
+  }
+
   const d = toArray(chartData).find(d => d.timestamp === x)
   const value = d ? d[field] : chartData ? totalValue || _.sumBy(chartData, field) : null
   const time_string = d ? d.focus_time_string : chartData ? toArray([_.head(split(_.head(chartData)?.focus_time_string, 'normal', ' - ')), _.last(split(_.last(chartData)?.focus_time_string, 'normal', ' - '))]).join(' - ') : null
@@ -91,7 +136,7 @@ export default (
             <div className="flex flex-col items-end space-y-0.5">
               <NumberDisplay
                 value={value}
-                format="0,0"
+                format={numberFormat}
                 prefix={prefix}
                 className="text-black dark:text-white text-base font-medium"
               />
@@ -112,9 +157,15 @@ export default (
                 margin={{ top: 12, right: 0, bottom: 0, left: 0 }}
               >
                 <XAxis dataKey="time_string" axisLine={false} tickLine={false} />
-                <Bar dataKey={field} minPointSize={5}>
-                  {chartData.map((d, i) => <Cell key={i} fill={chartColor(theme)} />)}
-                </Bar>
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                {_.reverse(_.cloneDeep(stacks)).map((s, i) => (
+                  <Bar
+                    key={i}
+                    stackId={id}
+                    dataKey={`${s}_${field}`}
+                    fill={colors[s]}
+                  />
+                ))}
               </BarChart>
             </ResponsiveContainer> :
             <div className="w-full h-full flex items-center justify-center">

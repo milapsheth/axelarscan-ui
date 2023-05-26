@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Card, CardBody, CardFooter, Tooltip } from '@material-tailwind/react'
 import _ from 'lodash'
+import moment from 'lodash'
 
 import NumberDisplay from '../../number'
 import Image from '../../image'
 import AccountProfile from '../../profile/account'
-import { toArray, getTitle } from '../../../lib/utils'
+import { toArray, getTitle, createMomentFromUnixtime } from '../../../lib/utils'
 
+const TIME_FORMAT = 'MMM D, YYYY'
 const METRICS = ['transactions', 'volumes', 'methods', 'contracts']
 const NUM_CHAINS_TRUNCATE = 7
 
@@ -41,6 +43,8 @@ export default ({ data, filters }) => {
 
   const {
     contractAddress,
+    fromTime,
+    toTime,
   } = { ...filters }
 
   const {
@@ -271,9 +275,22 @@ export default ({ data, filters }) => {
     }
   }
 
+  const diff = createMomentFromUnixtime(toTime).diff(createMomentFromUnixtime(fromTime), 'days')
+
   return (
     <div className="space-y-3">
-      {contractAddress && <AccountProfile address={contractAddress} />}
+      {(contractAddress || (fromTime && toTime)) && (
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
+          <div>
+            <AccountProfile address={contractAddress} />
+          </div>
+          {fromTime && toTime && (
+            <span className="whitespace-nowrap text-slate-400 dark:text-slate-500 text-sm font-medium">
+              {[fromTime, toTime].map(t => createMomentFromUnixtime(t)).map(t => t.format(`${TIME_FORMAT}${diff < 1 ? ' h:mm:ss A' : ''}`)).join(' - ')}
+            </span>
+          )}
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {METRICS.map(m => render(m))}
       </div>
