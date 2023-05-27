@@ -85,11 +85,9 @@ export default () => {
           }
 
           const {
-            transfersType,
             asset,
           } = { ...filters }
 
-          const types = toArray(transfersType || ['gmp', 'token_transfers'])
           const symbol = _.uniq(toArray(toArray(asset).map(a => getAssetData(a, assets_data))).flatMap(a => _.uniq(toArray(_.concat(a.symbol, Object.values({ ...a.addresses }).map(_a => _a.symbol))))))
 
           setData(
@@ -141,10 +139,12 @@ export default () => {
   )
 
   const {
+    transfersType,
     fromTime,
     toTime,
   } = { ...filters }
 
+  const types = toArray(transfersType || ['gmp', 'token_transfers'])
   const granularity = getGranularity(fromTime, toTime)
 
   return (
@@ -153,8 +153,8 @@ export default () => {
         <div className="space-y-6">
           <Summary data={data} filters={filters} />
           <Charts data={data} granularity={granularity} />
-          <Tops data={data} />
-          <TimeSpents data={data} />
+          <Tops data={data} types={types} />
+          {types.includes('gmp') && <TimeSpents data={data} />}
         </div> :
         <div className="loading-in-tab">
           <Spinner name="Blocks" />

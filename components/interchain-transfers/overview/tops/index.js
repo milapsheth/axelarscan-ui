@@ -8,7 +8,7 @@ import { toArray } from '../../../../lib/utils'
 const TOPS = ['chains', 'contracts']
 const TOP_N = 5
 
-export default ({ data }) => {
+export default ({ data, types }) => {
   const {
     chains,
   } = useSelector(state => ({ chains: state.chains }), shallowEqual)
@@ -166,7 +166,7 @@ export default ({ data }) => {
     switch (id) {
       case 'chains':
         return (
-          <div key={id} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div key={id} className={`grid grid-cols-2 sm:grid-cols-3 ${!hasGMP ? 'lg:grid-cols-6' : ''} gap-3`}>
             <Top
               data={getTopData(chainPairs)}
               title="Top Paths"
@@ -229,9 +229,11 @@ export default ({ data }) => {
     }
   }
 
+  const hasGMP = toArray(types).includes('gmp')
+
   return (
-    <div className="grid lg:grid-cols-2 gap-4">
-      {TOPS.map(t => render(t))}
+    <div className={`grid ${hasGMP ? 'lg:grid-cols-2' : ''} gap-4`}>
+      {TOPS.filter(t => !['contracts'].includes(t) || hasGMP).map(t => render(t))}
     </div>
   )
 }
