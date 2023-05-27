@@ -30,9 +30,8 @@ export default (
   const to_time = createMomentFromUnixtime(toTime)
   const time_string = totalTimeString(fromTime, toTime || moment().unix())
 
-  return (
-    from_time && to_time &&
-    (!noTooltip ?
+  return from_time && to_time && (
+    !noTooltip ?
       <Tooltip
         placement={placement}
         content={
@@ -62,6 +61,5 @@ export default (
       <div className={className}>
         {time_string}
       </div>
-    )
   )
 }

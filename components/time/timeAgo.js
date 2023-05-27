@@ -29,9 +29,8 @@ export default (
   const second_diff = moment().diff(_time, 'seconds')
   const time_string = second_diff > 59 || second_diff <= 0 ? _time.fromNow() : `${second_diff}s ago`
 
-  return (
-    _time &&
-    (!noTooltip ?
+  return _time && (
+    !noTooltip ?
       <Tooltip
         placement={placement}
         content={
@@ -57,6 +56,5 @@ export default (
       <div className={className}>
         {time_string}
       </div>
-    )
   )
 }

@@ -71,7 +71,7 @@ export default (
         toArray(_.concat(stacks, 'total')).map(s => {
           return {
             key: s,
-            value: data[`${s !== 'total' ? `${s}_` : ''}${field}`],
+            value: data?.[`${s !== 'total' ? `${s}_` : ''}${field}`],
           }
         })
 
