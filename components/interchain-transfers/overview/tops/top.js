@@ -49,6 +49,10 @@ export default (
                     {split(d.key, 'normal', '_').map((k, j) => {
                       switch (type) {
                         case 'contract':
+                          const {
+                            explorer,
+                          } = { ...toArray(d.chain).length > 0 && getChainData(_.head(toArray(d.chain)), chains_data) }
+
                           return (
                             <AccountProfile
                               key={j}
@@ -58,6 +62,7 @@ export default (
                               width={20}
                               height={20}
                               noCopy={true}
+                              explorer={explorer}
                               className="normal-case text-slate-600 dark:text-slate-200 text-xs font-medium"
                             />
                           )

@@ -1,12 +1,21 @@
+import { useSelector, shallowEqual } from 'react-redux'
 import _ from 'lodash'
 
 import Top from './top'
+import { getChainData } from '../../../../lib/config'
 import { toArray } from '../../../../lib/utils'
 
 const TOPS = ['chains', 'contracts']
 const TOP_N = 5
 
 export default ({ data }) => {
+  const {
+    chains,
+  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const {
+    chains_data,
+  } = { ...chains }
+
   const {
     GMPStats,
     transfersStats,
@@ -22,6 +31,7 @@ export default ({ data }) => {
         key: k,
         num_txs: _.sumBy(v, 'num_txs'),
         volume: _.sumBy(v, 'volume'),
+        chain: _.orderBy(_.uniq(toArray(v.map(_v => _v.chain))).map(c => getChainData(c, chains_data)), ['i'], ['asc']).map(c => c.id),
       }
     })
 
@@ -134,7 +144,7 @@ export default ({ data }) => {
       toArray(messages).flatMap(m =>
         toArray(m.source_chains).flatMap(s =>
           toArray(s.destination_chains).flatMap(d =>
-            toArray(d.contracts).flatMap(c => {
+            toArray(d.contracts).map(c => {
               const {
                 key,
                 num_txs,
@@ -145,6 +155,7 @@ export default ({ data }) => {
                 key: key?.toLowerCase(),
                 num_txs,
                 volume,
+                chain: d.key,
               }
             })
           )
@@ -155,7 +166,7 @@ export default ({ data }) => {
     switch (id) {
       case 'chains':
         return (
-          <div key={id} className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          <div key={id} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Top
               data={getTopData(chainPairs)}
               title="Top Paths"
@@ -201,14 +212,14 @@ export default ({ data }) => {
               data={getTopData(contracts, 'num_txs', 10)}
               type="contract"
               title="Top Contracts"
-              description="Top contracts by transactions"
+              description="Top contracts by GMP transactions"
             />
             <Top
               data={getTopData(contracts, 'volume', 10)}
               type="contract"
               field="volume"
               title="Top Contracts"
-              description="Top contracts by volumes"
+              description="Top contracts by GMP volumes"
               prefix="$"
             />
           </div>

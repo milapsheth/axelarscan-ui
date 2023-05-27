@@ -37,6 +37,7 @@
   @apply custom-font text-black dark:text-white;
 }
 
+.ant-select-selection-placeholder,
 .ant-picker-input input::placeholder {
   @apply custom-font text-slate-400 dark:text-slate-500 text-base;
 }

@@ -65,7 +65,7 @@ export default () => {
       disabled={!types}
       onClick={() => setHidden(false)}
       buttonTitle={`Filter${filtered ? 'ed' : ''}`}
-      buttonClassName={`max-w-min ${filtered ? 'border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 font-semibold py-0.5 px-2' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 font-normal py-1 px-2.5'} rounded text-sm sm:text-base`}
+      buttonClassName={`max-w-min ${filtered ? 'border-2 border-blue-500 dark:border-slate-200 text-blue-500 dark:text-slate-200 font-semibold py-0.5 px-2' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 font-normal py-1 px-2.5'} rounded text-sm sm:text-base`}
       title={
         <div className="flex items-center justify-between">
           <span>

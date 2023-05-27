@@ -19,10 +19,10 @@ export default (
     copyAddress = false,
     width = 24,
     height = 24,
-    className = '',
     noCopy = false,
     explorer,
     url,
+    className = '',
   },
 ) => {
   const {

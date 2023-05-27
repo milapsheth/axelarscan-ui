@@ -7,6 +7,7 @@ import moment from 'lodash'
 import NumberDisplay from '../../number'
 import Image from '../../image'
 import AccountProfile from '../../profile/account'
+import { getChainData, getAssetData } from '../../../lib/config'
 import { toArray, getTitle, createMomentFromUnixtime } from '../../../lib/utils'
 
 const TIME_FORMAT = 'MMM D, YYYY'
@@ -245,11 +246,11 @@ export default ({ data, filters }) => {
                 className={valueClassName}
               />
               <div className="flex flex-wrap items-center mt-4">
-                {_.slice(chains, 0, seeMoreChain ? chains.length : NUM_CHAINS_TRUNCATE).map((chain, i) => {
+                {_.slice(chains, 0, seeMoreChain ? chains.length : NUM_CHAINS_TRUNCATE).map((c, i) => {
                   const {
                     name,
                     image,
-                  } = { ...toArray(chains_data).find(c => c.id === chain) }
+                  } = { ...getChainData(c, chains_data) }
 
                   return (
                     <div key={i} className="mb-1.5 mr-1.5">
@@ -306,7 +307,7 @@ export default ({ data, filters }) => {
                     const {
                       symbol,
                       image,
-                    } = { ...toArray(assets_data).find(_a => _a.denom === a) }
+                    } = { ...getAssetData(a, assets_data) }
 
                     return (
                       <div key={i} className="bg-slate-100 dark:bg-slate-900 rounded flex items-center space-x-1 mb-1 sm:ml-2 mr-2 sm:mr-0 py-1 px-2">
