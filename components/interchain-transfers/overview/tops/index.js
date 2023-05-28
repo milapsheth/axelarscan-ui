@@ -212,14 +212,14 @@ export default ({ data, types }) => {
               data={getTopData(contracts, 'num_txs', 10)}
               type="contract"
               title="Top Contracts"
-              description="Top contracts by GMP transactions"
+              description="Top destination contracts by GMP transactions"
             />
             <Top
               data={getTopData(contracts, 'volume', 10)}
               type="contract"
               field="volume"
               title="Top Contracts"
-              description="Top contracts by GMP volumes"
+              description="Top destination contracts by GMP volumes"
               prefix="$"
             />
           </div>

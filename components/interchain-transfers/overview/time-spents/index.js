@@ -33,7 +33,7 @@ export default (
           )}
         </div>
         <div className="w-full">
-          {time_spents ?
+          {data ?
             <div className="grid lg:grid-cols-2 gap-4">
               {toArray(time_spents).map((t, i) => <TimeSpent key={i} data={t} />)}
             </div> :
