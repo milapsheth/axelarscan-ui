@@ -384,7 +384,7 @@ export default () => {
                               href={event_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-fit min-w-max bg-slate-50 dark:bg-slate-900 rounded flex items-center space-x-2 py-1 px-2"
+                              className="w-fit min-w-max bg-slate-50 dark:bg-slate-900 rounded flex flex-col space-y-0.5 py-1 px-2"
                             >
                               <span className="capitalize text-xs font-medium">
                                 {split(getTitle(_type), 'normal', ' ').join('')}

@@ -230,7 +230,7 @@ export default () => {
                           rel="noopener noreferrer"
                           className="text-blue-400 text-sm font-medium"
                         >
-                          {ellipse(moniker, 16)}
+                          {ellipse(moniker, 12)}
                         </Link>
                         <div className="flex items-center space-x-1">
                           <Link
