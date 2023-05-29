@@ -129,6 +129,7 @@ export default ({ id = 'network', data }) => {
                 label: name,
                 labelCfg,
                 clipCfg: { show: true, type: 'circle', r: size / 2 },
+                num_txs: _.sumBy(_data.filter(d => [d.source_chain, d.destination_chain].includes(id)), 'num_txs'),
               })
             }
           })
@@ -167,13 +168,13 @@ export default ({ id = 'network', data }) => {
                     const { x, y } = { ...shape.getPoint(ratio) }
                     return { x, y }
                   },
-                  { repeat: true, duration: 3000 },
+                  { repeat: true, duration: 5000 },
                 )
               },
             },
             'quadratic',
           )
-          graph.data({ nodes, edges })
+          graph.data({ nodes: _.orderBy(nodes, ['num_txs'], ['desc']), edges })
           graph.render()
         })
       }

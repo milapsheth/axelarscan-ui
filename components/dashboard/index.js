@@ -135,8 +135,8 @@ export default () => {
                           volume,
                         } = { ...d }
 
-                        const source_chain = normalizeQuote(s.key)
-                        const destination_chain = normalizeQuote(d.key)
+                        const source_chain = getChainData(normalizeQuote(s.key), chains_data)?.id
+                        const destination_chain = getChainData(normalizeQuote(d.key), chains_data)?.id
 
                         return {
                           id: toArray([source_chain, destination_chain]).join('_'),
@@ -150,12 +150,12 @@ export default () => {
                   ),
                   toArray(data).map(d => {
                     const {
-                      id,
-                      source_chain,
-                      destination_chain,
                       num_txs,
                       volume,
                     } = { ...d }
+
+                    const source_chain = getChainData(d.source_chain, chains_data)?.id
+                    const destination_chain = getChainData(d.destination_chain, chains_data)?.id
 
                     return {
                       id: toArray([source_chain, destination_chain]).join('_'),
@@ -166,7 +166,7 @@ export default () => {
                     }
                   }),
                 )
-                .filter(d => getChainData(d.source_chain, chains_data) && getChainData(d.destination_chain, chains_data)),
+                .filter(d => d.source_chain && d.destination_chain),
                 'id',
               )
             )
