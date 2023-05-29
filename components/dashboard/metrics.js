@@ -3,6 +3,7 @@ import { Card, CardBody, CardFooter, Tooltip } from '@material-tailwind/react'
 import _ from 'lodash'
 import moment from 'moment'
 
+import NetworkGraph from './network-graph'
 import Spinner from '../spinner'
 import NumberDisplay from '../number'
 import Image from '../image'
@@ -33,6 +34,7 @@ export default ({ data }) => {
     GMPTotalVolume,
     transfersStats,
     transfersTotalVolume,
+    networkGraph,
     chains_data,
   } = { ...data }
 
@@ -248,10 +250,17 @@ export default ({ data }) => {
           <div>
             <NumberDisplay
               value={total_transfers}
+              format="0,0.00a"
+              prefix="$"
+              noTooltip={true}
+              className={`sm:hidden ${valueClassName}`}
+            />
+            <NumberDisplay
+              value={total_transfers}
               format="0,0"
               prefix="$"
               noTooltip={true}
-              className={valueClassName}
+              className={`hidden sm:block ${valueClassName}`}
             />
           </div>
         )
@@ -420,8 +429,13 @@ export default ({ data }) => {
             Interchain Transfers
           </span>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {INTERCHAIN_METRICS.map(m => render(m))}
+        <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-1 gap-4">
+            {INTERCHAIN_METRICS.map(m => render(m))}
+          </div>
+          <div className="sm:col-span-2 lg:col-span-3">
+            <NetworkGraph data={networkGraph} />
+          </div>
         </div>
       </div>
     </>
