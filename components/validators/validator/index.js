@@ -38,7 +38,7 @@ export default () => {
     shallowEqual,
   )
   const { assets_data } = { ...assets }
-  const { tatus_data } = { ...status }
+  const { status_data } = { ...status }
   const { maintainers_data } = { ...maintainers }
   const { validators_data } = { ...validators }
 

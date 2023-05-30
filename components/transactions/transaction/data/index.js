@@ -208,7 +208,7 @@ export default ({ data }) => {
                         <Chip
                           color={status === 'STATUS_COMPLETED' ? 'green' : 'red'}
                           value={status.replace('STATUS_', '')}
-                          className="rounded select-auto custom-font text-2xs font-medium py-0 px-1.5"
+                          className="rounded select-auto custom-font text-2xs font-medium py-0.5 px-1.5"
                         />
                         <div className="text-xs font-medium">
                           Status
