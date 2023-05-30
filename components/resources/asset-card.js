@@ -46,7 +46,7 @@ export default (
   } = { ...data }
   let { addresses } = { ...data }
   const { id, explorer, chain_type } = { ...(focusId === denom ? toArray(chains_data).find(c => c.id === chainSelected) : null) }
-  const { url, contract_path asset_path } = { ...explorer }
+  const { url, contract_path, asset_path } = { ...explorer }
   addresses = toArray(_.uniqBy(_.concat({ chain: native_chain, ...addresses?.[native_chain] }, Object.entries({ ...addresses }).map(([k, v]) => { return { chain: k, ...v } } )), 'chain'))
   const token_data = addresses.find(a => a.chain === id)
   const { address, ibc_denom } = { ...token_data }
