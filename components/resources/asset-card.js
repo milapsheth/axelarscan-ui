@@ -19,12 +19,8 @@ export default (
     focus,
   },
 ) => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
   const [seeMoreChain, setSeeMoreChain] = useState(false)
   const [chainSelected, setChainSelected] = useState(null)
@@ -48,31 +44,12 @@ export default (
     image,
     coingecko_id,
   } = { ...data }
-  let {
-    addresses,
-  } = { ...data }
-
-  const {
-    id,
-    explorer,
-    chain_type,
-  } = { ...(focusId === denom ? toArray(chains_data).find(c => c.id === chainSelected) : null) }
-
-  const {
-    url,
-    contract_path,
-    asset_path,
-  } = { ...explorer }
-
+  let { addresses } = { ...data }
+  const { id, explorer, chain_type } = { ...(focusId === denom ? toArray(chains_data).find(c => c.id === chainSelected) : null) }
+  const { url, contract_path asset_path } = { ...explorer }
   addresses = toArray(_.uniqBy(_.concat({ chain: native_chain, ...addresses?.[native_chain] }, Object.entries({ ...addresses }).map(([k, v]) => { return { chain: k, ...v } } )), 'chain'))
-
   const token_data = addresses.find(a => a.chain === id)
-
-  const {
-    address,
-    ibc_denom,
-  } = { ...token_data }
-
+  const { address, ibc_denom } = { ...token_data }
   const token_symbol = token_data?.symbol || symbol
 
   return (
@@ -116,18 +93,8 @@ export default (
               </span>
               <div className="flex flex-wrap items-center">
                 {_.slice(addresses, 0, focusId === denom && seeMoreChain ? addresses.length : NUM_CHAINS_TRUNCATE).map((a, i) => {
-                  const {
-                    chain,
-                    address,
-                    ibc_denom,
-                    symbol,
-                  } = { ...a }
-
-                  const {
-                    name,
-                    image,
-                  } = { ...toArray(chains_data).find(c => c.id === chain) }
-
+                  const { chain, address, ibc_denom, symbol } = { ...a }
+                  const { name, image } = { ...toArray(chains_data).find(c => c.id === chain) }
                   return (
                     <div key={i} className="mb-1.5 mr-1.5">
                       <Tooltip content={`${name}${chain === native_chain ? ' (Native Chain)' : ''}`}>

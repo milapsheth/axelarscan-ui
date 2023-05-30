@@ -27,30 +27,12 @@ const PENDING_STATUSES = ['signing', 'unexecuted']
 const NUM_COMMANDS_TRUNCATE = 10
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-  } = { ...router }
+  const { pathname, asPath } = { ...router }
 
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -100,21 +82,12 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-
-          const {
-            status,
-          } = { ...filters }
-
+          const { status } = { ...filters }
           const response = await searchBatches({ ...filters, size, from })
 
           if (response) {
-            const {
-              total,
-            } = { ...response }
-            let {
-              data,
-            } = { ...response }
-
+            const { total } = { ...response }
+            let { data } = { ...response }
             setTotal(total)
             if (PENDING_STATUSES.includes(status)) {
               updateBatches(data)
@@ -151,16 +124,8 @@ export default () => {
     const _data = _.cloneDeep(toArray(data)).filter(d => d.status === 'BATCHED_COMMANDS_STATUS_SIGNING' || (d.status === 'BATCHED_COMMANDS_STATUS_SIGNED' && toArray(d.commands).findIndex(c => !c.executed) > -1) || toArray(d.commands).length < 1)
 
     for (const d of _data) {
-      const {
-        batch_id,
-        chain,
-        created_at,
-      } = { ...d }
-
-      const {
-        ms,
-      } = { ...created_at }
-
+      const { batch_id, chain, created_at } = { ...d }
+      const { ms } = { ...created_at }
       await sleep(0.5 * 1000)
       const response = await batchedCommands(chain, batch_id, { index: true, created_at: ms ? Number(ms) / 1000 : undefined })
 
@@ -222,16 +187,8 @@ export default () => {
                 accessor: 'batch_id',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    chain,
-                    commands,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { chain, commands } = { ...row.original }
                   const types = _.countBy(toArray(_.uniqBy(toArray(commands), 'id').map(c => c.type)))
                   return (
                     <div className="flex flex-col mb-4">
@@ -268,15 +225,8 @@ export default () => {
                 accessor: 'chain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
-                  const {
-                    name,
-                    image,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value } = { ...props }
+                  const { name, image } = { ...getChainData(value, chains_data) }
                   return (
                     <Tooltip content={name}>
                       <div className="w-fit">
@@ -313,25 +263,10 @@ export default () => {
                 accessor: 'commands',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    batch_id,
-                    chain,
-                  } = { ...row.original }
-
-                  const {
-                    explorer,
-                  } = { ...getChainData(chain, chains_data) }
-
-                  const {
-                    url,
-                    transaction_path,
-                  } = { ...explorer }
-
+                  const { value, row } = { ...props }
+                  const { batch_id, chain } = { ...row.original }
+                  const { explorer } = { ...getChainData(chain, chains_data) }
+                  const { url, transaction_path } = { ...explorer }
                   return assets_data && (
                     toArray(value).length > 0 ?
                       <div className="min-w-max flex flex-col space-y-2.5 mb-4">
@@ -344,7 +279,6 @@ export default () => {
                             transactionHash,
                             executed,
                           } = { ...c }
-
                           const {
                             amount,
                             name,
@@ -359,17 +293,11 @@ export default () => {
                             sourceTxHash,
                             contractAddress,
                           } = { ...params }
-                          let {
-                            symbol,
-                            decimals,
-                          } = { ...params }
+                          let { symbol, decimals } = { ...params }
 
                           const transfer_id = parseInt(id, 16)
                           const asset_data = getAssetData(symbol, assets_data)
-
-                          const {
-                            addresses,
-                          } = { ...asset_data }
+                          const { addresses } = { ...asset_data }
 
                           const token_data = addresses?.[chain]
                           symbol = token_data?.symbol || asset_data?.symbol || symbol
@@ -592,15 +520,8 @@ export default () => {
                 accessor: 'status',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    commands,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { commands } = { ...row.original }
                   const executed = toArray(commands).length === toArray(commands).filter(c => c.executed).length
                   return value && (
                     <Chip

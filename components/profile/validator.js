@@ -17,21 +17,13 @@ export default (
   },
 ) => {
   const dispatch = useDispatch()
-  const {
-    profiles,
-  } = useSelector(state => ({ profiles: state.profiles }), shallowEqual)
-  const {
-    profiles_data,
-  } = { ...profiles }
+  const { profiles } = useSelector(state => ({ profiles: state.profiles }), shallowEqual)
+  const { profiles_data } = { ...profiles }
 
   const [image, setImage] = useState(null)
 
   const getKey = () => {
-    const {
-      moniker,
-      identity,
-    } = { ...description }
-
+    const { moniker, identity } = { ...description }
     return identity || split(moniker, 'normal', ' ').join('_')
   }
 
@@ -39,11 +31,7 @@ export default (
     () => {
       const getData = async () => {
         if (description) {
-          const {
-            moniker,
-            identity,
-          } = { ...description }
-
+          const { moniker, identity } = { ...description }
           const key = getKey()
           let _image
 
@@ -52,11 +40,7 @@ export default (
           }
           else if (identity) {
             const response = await getProfile({ key_suffix: identity })
-
-            const {
-              url,
-            } = { ..._.head(response?.them)?.pictures?.primary }
-
+            const { url } = { ..._.head(response?.them)?.pictures?.primary }
             _image = url
           }
 

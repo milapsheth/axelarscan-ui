@@ -9,12 +9,8 @@ import { equalsIgnoreCase } from '../../../lib/utils'
 
 export default () => {
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  const {
-    tx,
-  } = { ...query }
+  const { query } = { ...router }
+  const { tx } = { ...query }
 
   const [data, setData] = useState(null)
 

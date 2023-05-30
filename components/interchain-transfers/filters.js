@@ -10,31 +10,12 @@ import Modal from '../modal'
 import { toArray, getQueryParams, createDayJSFromUnixtime } from '../../lib/utils'
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
+  const { pathname, asPath, query } = { ...router }
 
   const [filters, setFilters] = useState(null)
   const [filterTrigger, setFilterTrigger] = useState(undefined)
@@ -90,11 +71,7 @@ export default () => {
       options: _.concat(
         // { value: '', title: 'Any' },
         _.orderBy(toArray(chains_data).filter(c => !c.no_inflation || c.deprecated), ['deprecated'], ['desc']).map(c => {
-          const {
-            id,
-            name,
-          } = { ...c }
-
+          const { id, name } = { ...c }
           return {
             value: id,
             title: name,
@@ -112,11 +89,7 @@ export default () => {
       options: _.concat(
         // { value: '', title: 'Any' },
         _.orderBy(toArray(chains_data).filter(c => !c.no_inflation || c.deprecated), ['deprecated'], ['desc']).map(c => {
-          const {
-            id,
-            name,
-          } = { ...c }
-
+          const { id, name } = { ...c }
           return {
             value: id,
             title: name,
@@ -207,11 +180,7 @@ export default () => {
       options: _.concat(
         // { value: '', title: 'Any' },
         toArray(assets_data).map(a => {
-          const {
-            denom,
-            symbol,
-          } = { ...a }
-
+          const { denom, symbol } = { ...a }
           return {
             value: denom,
             title: symbol,
@@ -294,11 +263,7 @@ export default () => {
                       className="form-select bg-slate-50"
                     >
                       {toArray(options).map((o, i) => {
-                        const {
-                          title,
-                          value,
-                        } = { ...o }
-
+                        const { title, value } = { ...o }
                         return (
                           <option
                             key={i}

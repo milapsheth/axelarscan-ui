@@ -14,12 +14,7 @@ export default ({ data }) => {
       </div>
       <div className="flex flex-wrap items-center my-1 -ml-0.5">
         {(data || _.range(0, PAGE_SIZE).map(i => { return { skeleton: true } })).map((d, i) => {
-          const {
-            height,
-            status,
-            skeleton,
-          } = { ...d }
-
+          const { height, status, skeleton } = { ...d }
           return (
             !skeleton ?
               <Link

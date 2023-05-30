@@ -18,29 +18,10 @@ export default (
   },
 ) => {
   const dispatch = useDispatch()
-  const {
-    chains,
-    assets,
-    _web3,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-        _web3: state.web3,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    web3_chain_id,
-  } = { ..._web3 }
+  const { chains, assets, _web3 } = useSelector(state => ({ chains: state.chains, assets: state.assets, _web3: state.web3 }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { web3_chain_id } = { ..._web3 }
 
   const [web3, setWeb3] = useState(null)
   const [chainId, setChainId] = useState(null)
@@ -88,13 +69,7 @@ export default (
     if (web3 && token_data) {
       if (chain_id === chainId) {
         try {
-          const {
-            address,
-            decimals,
-            symbol,
-            image,
-          } = { ...token_data }
-
+          const { address, decimals, symbol, image } = { ...token_data }
           await web3.currentProvider.request(
             {
               method: 'wallet_watchAsset',
@@ -127,16 +102,10 @@ export default (
         }
       )
     } catch (error) {
-      const {
-        code,
-      } = { ...error }
-
+      const { code } = { ...error }
       if (code === 4902) {
         try {
-          const {
-            provider_params,
-          } = { ...toArray(chains_data).find(c => c.chain_id === chain_id) }
-
+          const { provider_params } = { ...toArray(chains_data).find(c => c.chain_id === chain_id) }
           await web3.currentProvider.request(
             {
               method: 'wallet_addEthereumChain',
@@ -152,18 +121,8 @@ export default (
     }
   }
 
-  const {
-    id,
-    chain_id,
-    name,
-  } = { ...getChainData(chain, chains_data, false) }
-
-  const {
-    symbol,
-    decimals,
-    image,
-    addresses,
-  } = { ...getAssetData(asset, assets_data) }
+  const { id, chain_id, name } = { ...getChainData(chain, chains_data, false) }
+  const { symbol, decimals, image, addresses } = { ...getAssetData(asset, assets_data) }
 
   const token_data = { symbol, decimals, image, ...addresses?.[id] }
   const already_on = chain_id === web3_chain_id

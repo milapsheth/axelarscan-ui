@@ -20,18 +20,8 @@ export default ({ data }) => {
     voting_end_time,
     total_deposit,
   } = { ...data }
-
-  const {
-    plan,
-    title,
-    description,
-    changes,
-  } = { ...content }
-
-  const {
-    height,
-    info,
-  } = { ...plan }
+  const { plan, title, description, changes } = { ...content }
+  const { height, info } = { ...plan }
 
   const rowClassName = 'flex flex-col md:flex-row items-start space-y-2 md:space-y-0 space-x-0 md:space-x-2'
   const titleClassName = 'w-40 lg:w-64 tracking-wider text-slate-600 dark:text-slate-400 text-sm lg:text-base font-medium'
@@ -116,12 +106,7 @@ export default ({ data }) => {
         </>
       )}
       {toArray(changes).filter(c => c.subspace).map((c, i) => {
-        const {
-          key,
-          value,
-          subspace,
-        } = { ...c }
-
+        const { key, value, subspace } = { ...c }
         return (
           <div key={i} className={rowClassName}>
             <span className={titleClassName}>{getTitle(subspace)}:</span>
@@ -195,11 +180,7 @@ export default ({ data }) => {
           <div className="flex flex-col space-y-1">
             {total_deposit ?
               toArray(total_deposit).map((d, i) => {
-                const {
-                  symbol,
-                  amount,
-                } = { ...d }
-
+                const { symbol, amount } = { ...d }
                 return (
                   <NumberDisplay
                     key={i}

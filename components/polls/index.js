@@ -22,30 +22,12 @@ import { split, toArray, includesStringList, getTitle, ellipse, equalsIgnoreCase
 const PAGE_SIZE = 25
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-  } = { ...router }
+  const { pathname, asPath } = { ...router }
 
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -98,13 +80,8 @@ export default () => {
           const response = await searchPolls({ ...filters, size, from })
 
           if (response) {
-            const {
-              total,
-            } = { ...response }
-            let {
-              data,
-            } = { ...response }
-
+            const { total } = { ...response }
+            let { data } = { ...response }
             setTotal(total)
             data = _.orderBy(
               _.uniqBy(
@@ -117,16 +94,8 @@ export default () => {
                     event,
                     participants,
                   } = { ...d }
-
-                  const {
-                    explorer,
-                  } = { ...getChainData(sender_chain, chains_data) }
-
-                  const {
-                    url,
-                    transaction_path,
-                  } = { ...explorer }
-
+                  const { explorer } = { ...getChainData(sender_chain, chains_data) }
+                  const { url, transaction_path } = { ...explorer }
                   const _d = {}
                   const votes = []
 
@@ -151,10 +120,7 @@ export default () => {
                       })
                       .filter(v => v.value)
                       .map(v => {
-                        const {
-                          option,
-                        } = { ...v }
-
+                        const { option } = { ...v }
                         return {
                           ...v,
                           i: option === 'yes' ? 0 : option === 'no' ? 1 : 2,
@@ -164,13 +130,9 @@ export default () => {
                     vote_options.push({ option: 'unsubmitted', value: participants.length - _.sumBy(vote_options, 'value') })
                   }
                   vote_options = _.orderBy(vote_options, ['i'], ['asc'])
+
                   const _event = split(event, 'lower', '_').join('_')
-
-                  const {
-                    id,
-                    height,
-                  } = { ..._d }
-
+                  const { id, height } = { ..._d }
                   return {
                     ...d,
                     id_number: !isNaN(id) ? Number(id) : id,
@@ -256,10 +218,7 @@ export default () => {
                 accessor: 'id',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return (
                     <div className="flex items-center space-x-1 mb-4">
                       <Link
@@ -281,15 +240,8 @@ export default () => {
                 accessor: 'sender_chain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
-                  const {
-                    name,
-                    image,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value } = { ...props }
+                  const { name, image } = { ...getChainData(value, chains_data) }
                   return (
                     <Tooltip content={name}>
                       <div className="w-fit">
@@ -309,36 +261,16 @@ export default () => {
                 accessor: 'event',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    sender_chain,
-                    confirmation_events,
-                  } = { ...row.original }
-                  let {
-                    _url,
-                  } = { ...row.original }
-
-                  const {
-                    id,
-                  } = { ...getChainData(sender_chain, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { sender_chain, confirmation_events } = { ...row.original }
+                  let { _url } = { ...row.original }
+                  const { id } = { ...getChainData(sender_chain, chains_data) }
                   return (
                     toArray(confirmation_events).length > 0 ?
                       <div className="flex flex-col space-y-1">
                         {toArray(confirmation_events).map((e, i) => {
-                          const {
-                            type,
-                            txID,
-                          } = { ...e }
-                          let {
-                            asset,
-                            symbol,
-                            amount,
-                          } = { ...e }
+                          const { type, txID } = { ...e }
+                          let { asset, symbol, amount } = { ...e }
 
                           let _type
                           switch (type) {
@@ -365,14 +297,8 @@ export default () => {
                           }
 
                           const asset_data = getAssetData(asset || symbol, assets_data)
-
-                          const {
-                            decimals,
-                            addresses,
-                          } = { ...asset_data }
-                          let {
-                            image,
-                          } = { ...asset_data }
+                          const { decimals, addresses } = { ...asset_data }
+                          let { image } = { ...asset_data }
 
                           const token_data = addresses?.[id]
                           symbol = token_data?.symbol || asset_data?.symbol || symbol
@@ -432,24 +358,10 @@ export default () => {
                 accessor: 'transaction_id',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    sender_chain,
-                  } = { ...row.original }
-
-                  const {
-                    explorer,
-                  } = { ...getChainData(sender_chain, chains_data) }
-
-                  const {
-                    url,
-                    transaction_path,
-                  } = { ...explorer }
-
+                  const { value, row } = { ...props }
+                  const { sender_chain } = { ...row.original }
+                  const { explorer } = { ...getChainData(sender_chain, chains_data) }
+                  const { url, transaction_path } = { ...explorer }
                   return value && (
                     url ?
                       <div className="flex items-center space-x-1">
@@ -481,19 +393,9 @@ export default () => {
                 accessor: 'height',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    confirmation_vote,
-                  } = { ...row.original }
-
-                  const {
-                    id,
-                  } = { ...confirmation_vote }
-
+                  const { value, row } = { ...props }
+                  const { confirmation_vote } = { ...row.original }
+                  const { id } = { ...confirmation_vote }
                   return value && (
                     <div>
                       <Link
@@ -529,13 +431,7 @@ export default () => {
                 accessor: 'status',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    success,
-                    failed,
-                    confirmation,
-                    votes,
-                  } = { ...props.row.original }
-
+                  const { success, failed, confirmation, votes } = { ...props.row.original }
                   const status = success ? 'completed' : failed ? 'failed' : confirmation || toArray(votes).findIndex(v => v.confirmed) > -1 ? 'confirmed' : 'pending'
                   return (
                     <Chip
@@ -551,15 +447,8 @@ export default () => {
                 accessor: 'vote_options',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    id,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { id } = { ...row.original }
                   return value && (
                     <Link
                       href={`/evm-poll/${id}`}
@@ -568,11 +457,7 @@ export default () => {
                       className="flex items-center"
                     >
                       {value.map((v, i) => {
-                        const {
-                          option,
-                          value,
-                        } = { ...v }
-
+                        const { option, value } = { ...v }
                         return (
                           <NumberDisplay
                             key={i}

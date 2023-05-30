@@ -15,12 +15,8 @@ export default (
     prefix = '',
   },
 ) => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
   const {
     key,
@@ -30,11 +26,7 @@ export default (
     approve,
     total,
   } = { ...data }
-
-  const {
-    name,
-    image,
-  } = { ...getChainData(key, chains_data) }
+  const { name, image } = { ...getChainData(key, chains_data) }
 
   const Point = ({ title, name, noTooltip = false }) => {
     const point = (
@@ -66,12 +58,8 @@ export default (
   if (total) {
     points =
       points.map((p, i) => {
-        const {
-          time_spent,
-        } = { ...p }
-
+        const { time_spent } = { ...p }
         const value = time_spent - (i > 0 ? points[i - 1].time_spent : 0)
-
         return {
           ...p,
           value,
@@ -106,13 +94,7 @@ export default (
           <div className="w-full flex items-center justify-between">
             <Point title="S" name="Start" />
             {points.map((p, i) => {
-              const {
-                title,
-                name,
-                value,
-                width,
-              } = { ...p }
-
+              const { title, name, value, width } = { ...p }
               return (
                 <Tooltip
                   key={i}
@@ -139,14 +121,7 @@ export default (
           </div>
           <div className="w-full flex items-center justify-between ml-2">
             {points.map((p, i) => {
-              const {
-                id,
-                name,
-                label,
-                time_spent,
-                width,
-              } = { ...p }
-
+              const { id, name, label, time_spent, width } = { ...p }
               return (
                 <div key={i} className="flex justify-end ml-2" style={{ width: `${width}%` }}>
                   {['express_execute', 'execute'].includes(id) ?

@@ -9,24 +9,9 @@ import { toArray, numberFormat, equalsIgnoreCase } from '../../lib/utils'
 const AXELAR = 'axelarnet'
 
 export default ({ id = 'network', data }) => {
-  const {
-    preferences,
-    chains,
-  } = useSelector(
-    state => (
-      {
-        preferences: state.preferences,
-        chains: state.chains,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    theme,
-  } = { ...preferences }
-  const {
-    chains_data,
-  } = { ...chains }
+  const { preferences, chains } = useSelector(state => ({ preferences: state.preferences, chains: state.chains }), shallowEqual)
+  const { theme } = { ...preferences }
+  const { chains_data } = { ...chains }
 
   const [rendered, setRendered] = useState(null)
   const [graph, setGraph] = useState(null)
@@ -64,11 +49,7 @@ export default ({ id = 'network', data }) => {
           Object.entries(
             _.groupBy(
               data.flatMap(d => {
-                const {
-                  source_chain,
-                  destination_chain,
-                } = { ...d }
-
+                const { source_chain, destination_chain } = { ...d }
                 if (![source_chain, destination_chain].includes(AXELAR)) {
                   return [[source_chain, AXELAR], [AXELAR, destination_chain]].map((ids, i) => { return { ...d, id: ids.join('_'), [i === 0 ? 'destination_chain' : 'source_chain']: AXELAR } })
                 }
@@ -115,11 +96,7 @@ export default ({ id = 'network', data }) => {
           ['source', 'destination'].forEach(s => {
             const id = d[`${s}_chain`]
             if (id && nodes.findIndex(n => equalsIgnoreCase(n.id, id)) < 0) {
-              const {
-                name,
-                image,
-              } = { ...getChainData(id, chains_data) }
-
+              const { name, image } = { ...getChainData(id, chains_data) }
               const size = id === AXELAR ? 80 : 64
               nodes.push({
                 id,
@@ -134,13 +111,7 @@ export default ({ id = 'network', data }) => {
             }
           })
 
-          const {
-            id,
-            source_chain,
-            destination_chain,
-            num_txs,
-          } = { ...d }
-
+          const { id, source_chain, destination_chain, num_txs } = { ...d }
           edges.push({
             data: d,
             id,

@@ -32,14 +32,10 @@ export default (
       if (data) {
         setChartData(
           toArray(data).map(d => {
-            const {
-              timestamp,
-            } = { ...d }
-
+            const { timestamp } = { ...d }
             const time = moment(timestamp).utc()
             const time_string = time.format(dateFormat)
             let focus_time_string
-
             switch (granularity) {
               case 'month':
                 focus_time_string = time.format('MMM YY')
@@ -51,7 +47,6 @@ export default (
                 focus_time_string = time_string
                 break
             }
-
             return {
               ...d,
               time_string,
@@ -78,11 +73,7 @@ export default (
       return (
         <div className="bg-white dark:bg-black bg-opacity-75 dark:bg-opacity-75 rounded flex flex-col space-y-1 p-2">
           {toArray(values).map((v, i) => {
-            const {
-              key,
-              value,
-            } = { ...v }
-
+            const { key, value } = { ...v }
             return (
               <div key={i} className="flex items-center justify-between space-x-4">
                 <span className="text-xs font-semibold">

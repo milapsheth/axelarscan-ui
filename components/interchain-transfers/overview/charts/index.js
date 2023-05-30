@@ -14,11 +14,7 @@ export default ({ data, granularity }) => {
     transfersChart,
     transfersTotalVolume,
   } = { ...data }
-
-  const {
-    messages,
-  } = { ...GMPStats }
-
+  const { messages } = { ...GMPStats }
   const dateFormat = granularity === 'month' ? 'MMM' : undefined
 
   const render = id => {
@@ -27,11 +23,7 @@ export default ({ data, granularity }) => {
         _.groupBy(
           _.concat(
             toArray(GMPChart?.data).map(d => {
-              const {
-                num_txs,
-                volume,
-              } = { ...d }
-
+              const { num_txs, volume } = { ...d }
               return {
                 ...d,
                 gmp_num_txs: num_txs,
@@ -39,11 +31,7 @@ export default ({ data, granularity }) => {
               }
             }),
             toArray(transfersChart?.data).map(d => {
-              const {
-                num_txs,
-                volume,
-              } = { ...d }
-
+              const { num_txs, volume } = { ...d }
               return {
                 ...d,
                 transfers_num_txs: num_txs,

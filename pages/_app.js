@@ -55,7 +55,12 @@ export default (
     [router.events],
   )
 
-  useEffect(() => setRendered(true), [])
+  useEffect(
+    () => {
+      setRendered(true)
+    },
+    [],
+  )
 
   useEffect(
     () => {
@@ -74,9 +79,7 @@ export default (
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        <meta
-          charSet="utf-8"
-        />
+        <meta charSet="utf-8" />
         <link
           rel="manifest"
           href="/manifest.json"

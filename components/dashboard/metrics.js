@@ -37,32 +37,11 @@ export default ({ data }) => {
     networkGraph,
     chains_data,
   } = { ...data }
-
-  const {
-    latest_block_height,
-    latest_block_time,
-    avg_block_time,
-  } = { ...block_data }
-
-  const {
-    active,
-    total,
-  } = { ...validators_data }
-
-  const {
-    symbol,
-    staked,
-    total_supply,
-  } = { ...token_data }
-
-  const {
-    communityTax,
-    inflation,
-  } = { ...inflation_data }
-
-  const {
-    messages,
-  } = { ...GMPStats }
+  const { latest_block_height, latest_block_time, avg_block_time } = { ...block_data }
+  const { active, total } = { ...validators_data }
+  const { symbol, staked, total_supply } = { ...token_data }
+  const { communityTax, inflation } = { ...inflation_data }
+  const { messages } = { ...GMPStats }
 
   const render = id => {
     const valueClassName = 'text-black dark:text-white text-3xl lg:text-2xl 2xl:text-3xl font-medium'
@@ -312,11 +291,7 @@ export default ({ data }) => {
         tooltip = (
           <div className="w-64 flex flex-wrap items-center mt-1">
             {chains.map((c, i) => {
-              const {
-                name,
-                image,
-              } = { ...c }
-
+              const { name, image } = { ...c }
               return (
                 <div key={i} className="mb-1 mr-1">
                   <Tooltip content={name}>

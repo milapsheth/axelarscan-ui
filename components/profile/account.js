@@ -25,34 +25,13 @@ export default (
     className = '',
   },
 ) => {
-  const {
-    _accounts,
-  } = useSelector(state => ({ _accounts: state.accounts }), shallowEqual)
-  const {
-    accounts_data,
-  } = { ..._accounts }
+  const { _accounts } = useSelector(state => ({ _accounts: state.accounts }), shallowEqual)
+  const { accounts_data } = { ..._accounts }
 
   address = Array.isArray(address) ? toHex(address) : address
   prefix = address ? address.startsWith('axelar') ? 'axelar' : address.startsWith('0x') ? '0x' : _.head(split(address, 'normal', '').filter(c => !isNaN(c))) === '1' ? address.substring(0, address.indexOf('1')) : prefix : prefix
-
-  const {
-    name,
-    image,
-  } = {
-    ...(
-      toArray(_.concat(accounts, accounts_data)).find(a => equalsIgnoreCase(a.address, address) && (!a.environment || equalsIgnoreCase(a.environment, ENVIRONMENT))) ||
-      (broadcasters[ENVIRONMENT]?.[address?.toLowerCase()] && {
-        name: 'Axelar Relayer', // broadcasters[ENVIRONMENT][address.toLowerCase()],
-        image: '/logos/accounts/axelarnet.svg',
-      })
-    ),
-    address,
-  }
-
-  const {
-    address_path,
-  } = { ...explorer }
-
+  const { name, image } = { ...toArray(_.concat(accounts, accounts_data)).find(a => equalsIgnoreCase(a.address, address) && (!a.environment || equalsIgnoreCase(a.environment, ENVIRONMENT))) || (broadcasters[ENVIRONMENT]?.[address?.toLowerCase()] && { name: 'Axelar Relayer', image: '/logos/accounts/axelarnet.svg' }), address }
+  const { address_path } = { ...explorer }
   url = !url && explorer ? `${explorer.url}${address_path?.replace('{address}', address)}` : url
 
   const nameComponent = name && (

@@ -26,37 +26,14 @@ import { toArray, includesStringList, ellipse, equalsIgnoreCase, getQueryParams,
 const PAGE_SIZE = 100
 
 export default ({ n }) => {
-  const {
-    assets,
-    validators,
-  } = useSelector(
-    state => (
-      {
-        assets: state.assets,
-        validators: state.validators,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { assets, validators } = useSelector(state => ({ assets: state.assets, validators: state.validators }), shallowEqual)
+  const { assets_data } = { ...assets }
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
-  const {
-    height,
-  } = { ...query }
-  let {
-    address,
-  } = { ...query }
+  const { pathname, asPath, query } = { ...router }
+  const { height } = { ...query }
+  let { address } = { ...query }
   address = normalizeQuote(address)
 
   const [data, setData] = useState(null)
@@ -115,27 +92,17 @@ export default ({ n }) => {
           let total_data
 
           if (height) {
-            const {
-              tx_responses,
-              pagination,
-            } = { ...await getTransactions({ index: true, events: `tx.height=${height}` }) }
-
+            const { tx_responses, pagination } = { ...await getTransactions({ index: true, events: `tx.height=${height}` }) }
             transactions_data = toArray(tx_responses)
             total_data = pagination?.total
           }
           else if (address?.length >= 65 || getKeyType(address) === 'evmAddress') {
-            const {
-              data,
-            } = { ...await searchDepositAddresses({ depositAddress: address }, { size: 10, sort: [{ height: 'desc' }] }) }
-
+            const { data } = { ...await searchDepositAddresses({ depositAddress: address }, { size: 10, sort: [{ height: 'desc' }] }) }
             if (toArray(data).length > 0 || getKeyType(address) === 'evmAddress') {
-              const {
-                deposit_address,
-              } = { ..._.head(data) }
-
+              const { deposit_address } = { ..._.head(data) }
               address = equalsIgnoreCase(address, deposit_address) ? deposit_address : address
-              let response
 
+              let response
               switch (getKeyType(address)) {
                 case 'axelarAddress':
                   response = await getTransactions({ index: true, events: `transfer.sender='${address}'` })
@@ -154,26 +121,17 @@ export default ({ n }) => {
               transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
               response = await getTransactions({ index: true, events: `transfer.recipient='${address}'` })
               transactions_data = _.concat(toArray(response?.tx_responses), toArray(transactions_data))
-
               transactions_data = _.orderBy(_.uniqBy(transactions_data, 'txhash'), ['timestamp'], ['desc'])
               total_data = transactions_data.length
             }
             else {
-              const {
-                data,
-                total,
-              } = { ...await searchTransactions({ ...filters, address, size, from }) }
-
+              const { data, total } = { ...await searchTransactions({ ...filters, address, size, from }) }
               transactions_data = data
               total_data = total
             }
           }
           else {
-            const {
-              data,
-              total,
-            } = { ...await searchTransactions({ ...filters, address, size, from }) }
-
+            const { data, total } = { ...await searchTransactions({ ...filters, address, size, from }) }
             transactions_data = data
             total_data = total
           }
@@ -268,10 +226,7 @@ export default ({ n }) => {
                 accessor: 'txhash',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return value && (
                     <div className="flex items-center space-x-1 mb-4">
                       <Link
@@ -292,10 +247,7 @@ export default ({ n }) => {
                 accessor: 'height',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return value && (
                     <Link
                       href={`/block/${value}`}
@@ -316,10 +268,7 @@ export default ({ n }) => {
                 accessor: 'type',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return value && (
                     <div className="max-w-min bg-slate-50 dark:bg-slate-900 rounded capitalize text-xs font-medium py-1 px-2">
                       {value.replace('Request', '')}
@@ -332,10 +281,7 @@ export default ({ n }) => {
                 accessor: 'code',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return (
                     <Chip
                       color={!value ? 'green' : 'red'}
@@ -350,19 +296,9 @@ export default ({ n }) => {
                 accessor: 'sender',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
-                  const {
-                    operator_address,
-                    description,
-                  } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower'))) }
-
-                  const {
-                    moniker,
-                  } = { ...description }
-
+                  const { value } = { ...props }
+                  const { operator_address, description } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower'))) }
+                  const { moniker } = { ...description }
                   return (
                     description ?
                       <div className="min-w-max flex items-start space-x-2">
@@ -418,27 +354,13 @@ export default ({ n }) => {
                 accessor: 'recipient',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    type,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { type } = { ...row.original }
                   return (
                     <div className="flex flex-col space-y-0.5">
                       {toArray(!includesStringList(type, ['HeartBeat', 'SubmitSignature', 'SubmitPubKey']) && value).map((v, i) => {
-                        const {
-                          operator_address,
-                          description,
-                        } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower') )) }
-
-                        const {
-                          moniker,
-                        } = { ...description }
-
+                        const { operator_address, description } = { ...toArray(validators_data).find(v => includesStringList(value, toArray([v.broadcaster_address, v.operator_address, v.delegator_address], 'lower') )) }
+                        const { moniker } = { ...description }
                         return (
                           <div key={i}>
                             {description ?
@@ -500,14 +422,8 @@ export default ({ n }) => {
                 accessor: 'tx.auth_info.fee',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
-                  const {
-                    amount,
-                  } = { ...value }
-
+                  const { value } = { ...props }
+                  const { amount } = { ...value }
                   const _amount = formatUnits(_.head(amount)?.amount || '0')
                   return _amount && (
                     <NumberDisplay

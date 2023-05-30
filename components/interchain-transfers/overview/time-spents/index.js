@@ -11,13 +11,8 @@ export default (
     description = 'The median time spent of General Message Passing from each chain',
   },
 ) => {
-  const {
-    GMPStatsAVGTimes,
-  } = { ...data }
-
-  const {
-    time_spents,
-  } = { ...GMPStatsAVGTimes }
+  const { GMPStatsAVGTimes } = { ...data }
+  const { time_spents } = { ...GMPStatsAVGTimes }
 
   return (
     <Card className="card">

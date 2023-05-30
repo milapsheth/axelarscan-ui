@@ -10,12 +10,8 @@ import { getChainData } from '../../../lib/config'
 const PAGE_SIZE = 200
 
 export default ({ data }) => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
   return (
     <div className="space-y-2">
@@ -31,11 +27,7 @@ export default ({ data }) => {
             vote,
             skeleton,
           } = { ...d }
-
-          const {
-            image,
-          } = { ...getChainData(sender_chain, chains_data) }
-
+          const { image } = { ...getChainData(sender_chain, chains_data) }
           return (
             !skeleton ?
               <Link

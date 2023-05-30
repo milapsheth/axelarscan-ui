@@ -11,29 +11,10 @@ import { toArray, equalsIgnoreCase, loaderColor } from '../../lib/utils'
 const PAGE_SIZE = 100
 
 export default () => {
-  const {
-    chains,
-    assets,
-    tvl,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-        tvl: state.tvl,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    tvl_data,
-  } = { ...tvl }
+  const { chains, assets, tvl } = useSelector(state => ({ chains: state.chains, assets: state.assets, tvl: state.tvl }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { tvl_data } = { ...tvl }
 
   const [data, setData] = useState(null)
 
@@ -44,15 +25,8 @@ export default () => {
           _.orderBy(
             _.orderBy(
               Object.entries(tvl_data).map(([k, v]) => {
-                const {
-                  total_on_evm,
-                  total_on_cosmos,
-                  total,
-                  tvl,
-                } = { ...v }
-                let {
-                  price,
-                } = { ...v }
+                const { total_on_evm, total_on_cosmos, total, tvl } = { ...v }
+                let { price } = { ...v }
 
                 const asset_data = getAssetData(k, assets_data)
                 price = typeof asset_data?.price === 'number' ? asset_data.price : typeof price === 'number' ? price : -1
@@ -89,12 +63,7 @@ export default () => {
                   accessor: 'asset_data',
                   sortType: (a, b) => a.original.i < b.original.i ? 1 : -1,
                   Cell: props => {
-                    const {
-                      name,
-                      symbol,
-                      image,
-                    } = { ...props.value }
-
+                    const { name, symbol, image } = { ...props.value }
                     return (
                       <div className="min-w-max flex items-start space-x-2">
                         <Image
@@ -121,11 +90,7 @@ export default () => {
                   accessor: 'native',
                   sortType: (a, b) => a.original.native?.chain > b.original.native?.chain ? 1 : -1,
                   Cell: props => {
-                    const {
-                      name,
-                      image,
-                    } = { ...props.value?.chain_data }
-
+                    const { name, image } = { ...props.value?.chain_data }
                     return (
                       <div className="min-w-max flex items-start space-x-2">
                         <Image
@@ -162,20 +127,9 @@ export default () => {
                   accessor: 'value',
                   sortType: (a, b) => a.original.value > b.original.value ? 1 : -1,
                   Cell: props => {
-                    const {
-                      asset_data,
-                      native,
-                      total,
-                      value,
-                    } = { ...props.row.original }
-
-                    const {
-                      symbol,
-                    } = { ...asset_data }
-
-                    const {
-                      url,
-                    } = { ...native }
+                    const { asset_data, native, total, value } = { ...props.row.original }
+                    const { symbol } = { ...asset_data }
+                    const { url } = { ...native }
 
                     const totalComponent = (
                       <NumberDisplay
@@ -234,15 +188,8 @@ export default () => {
                   accessor: 'value_on_evm',
                   sortType: (a, b) => a.original.value_on_evm > b.original.value_on_evm ? 1 : -1,
                   Cell: props => {
-                    const {
-                      asset_data,
-                      total_on_evm,
-                      value_on_evm,
-                    } = { ...props.row.original }
-
-                    const {
-                      symbol,
-                    } = { ...asset_data }
+                    const { asset_data, total_on_evm, value_on_evm } = { ...props.row.original }
+                    const { symbol } = { ...asset_data }
 
                     const totalComponent = (
                       <NumberDisplay
@@ -291,15 +238,8 @@ export default () => {
                   accessor: 'value_on_cosmos',
                   sortType: (a, b) => a.original.value_on_cosmos > b.original.value_on_cosmos ? 1 : -1,
                   Cell: props => {
-                    const {
-                      asset_data,
-                      total_on_cosmos,
-                      value_on_cosmos,
-                    } = { ...props.row.original }
-
-                    const {
-                      symbol,
-                    } = { ...asset_data }
+                    const { asset_data, total_on_cosmos, value_on_cosmos } = { ...props.row.original }
+                    const { symbol } = { ...asset_data }
 
                     const totalComponent = (
                       <NumberDisplay
@@ -333,24 +273,13 @@ export default () => {
                 _.orderBy(
                   _.uniqBy(
                     chains_data.filter(c => !c.no_inflation || c.deprecated).map(c => {
-                      const {
-                        id,
-                      } = { ...c }
-
+                      const { id } = { ...c }
                       return {
                         ...c,
                         total_value: _.sumBy(
                           data.map(d => {
-                            const {
-                              price,
-                              tvl,
-                            } = { ...d }
-
-                            const {
-                              supply,
-                              total,
-                            } = { ...tvl?.[id] }
-
+                            const { price, tvl } = { ...d }
+                            const { supply, total } = { ...tvl?.[id] }
                             const amount = supply || total
                             const value = (amount * price) || 0
                             return { ...d, value }
@@ -365,13 +294,7 @@ export default () => {
                   ['total_value'], ['desc'],
                 )
                 .map((c, i) => {
-                  const {
-                    id,
-                    name,
-                    image,
-                    total_value,
-                  } = { ...c }
-
+                  const { id, name, image, total_value } = { ...c }
                   return {
                     Header: (
                       <div>
@@ -398,17 +321,8 @@ export default () => {
                     accessor: `tvl.${id}`,
                     sortType: (a, b) => (a.original.tvl?.[id]?.supply || a.original.tvl?.[id]?.total || -1) * a.original.price > (b.original.tvl?.[id]?.supply || b.original.tvl?.[id]?.total || -1) * b.original.price ? 1 : -1,
                     Cell: props => {
-                      const {
-                        price,
-                        tvl,
-                      } = { ...props.row.original }
-
-                      const {
-                        supply,
-                        total,
-                        url,
-                      } = { ...tvl?.[id] }
-
+                      const { price, tvl } = { ...props.row.original }
+                      const { supply, total, url } = { ...tvl?.[id] }
                       const amount = supply || total
                       const value = amount * price
 

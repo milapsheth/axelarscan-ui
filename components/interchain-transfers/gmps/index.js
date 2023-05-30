@@ -25,30 +25,12 @@ import { toArray, getTitle, ellipse, equalsIgnoreCase, getQueryParams } from '..
 const PAGE_SIZE = 25
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-  } = { ...router }
+  const { pathname, asPath } = { ...router }
 
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -98,22 +80,13 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-
-          const {
-            asset,
-          } = { ...filters }
-
+          const { asset } = { ...filters }
           const symbol = _.uniq(toArray(toArray(asset).map(a => getAssetData(a, assets_data))).flatMap(a => _.uniq(toArray(_.concat(a.symbol, Object.values({ ...a.addresses }).map(_a => _a.symbol))))))
           const response = await searchGMP({ ...filters, symbol, size, from })
 
           if (response) {
-            const {
-              total,
-            } = { ...response }
-            let {
-              data,
-            } = { ...response }
-
+            const { total } = { ...response }
+            let { data } = { ...response }
             setTotal(total)
             data = _.orderBy(_.uniqBy(_.concat(toArray(data), _data), 'id'), ['call.block_timestamp'], ['desc'])
             setData(data)
@@ -184,24 +157,10 @@ export default () => {
                 accessor: 'call.transactionHash',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    call,
-                  } = { ...row.original }
-
-                  const {
-                    logIndex,
-                    chain,
-                  } = { ...call }
-
-                  const {
-                    explorer,
-                  } = { ...getChainData(chain, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { call } = { ...row.original }
+                  const { logIndex, chain } = { ...call }
+                  const { explorer } = { ...getChainData(chain, chains_data) }
                   return value && (
                     <div className="flex items-center space-x-1">
                       <Link
@@ -223,24 +182,10 @@ export default () => {
                 accessor: 'call.event',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    call,
-                    amount,
-                  } = { ...row.original }
-
-                  const {
-                    symbol,
-                  } = { ...call?.returnValues }
-
-                  const {
-                    image,
-                  } = { ...getAssetData(symbol, assets_data) }
-
+                  const { value, row } = { ...props }
+                  const { call, amount } = { ...row.original }
+                  const { symbol } = { ...call?.returnValues }
+                  const { image } = { ...getAssetData(symbol, assets_data) }
                   return (
                     <div className="w-44 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
                       <div className="w-fit h-6 bg-slate-50 dark:bg-slate-900 rounded flex items-center font-medium py-1 px-2">
@@ -271,25 +216,10 @@ export default () => {
                 accessor: 'call.chain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    call,
-                  } = { ...row.original }
-
-                  const {
-                    from,
-                  } = { ...call?.transaction }
-
-                  const {
-                    name,
-                    image,
-                    explorer,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { call } = { ...row.original }
+                  const { from } = { ...call?.transaction }
+                  const { name, image, explorer } = { ...getChainData(value, chains_data) }
                   return (
                     <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
                       <div className="h-6 flex items-center space-x-2">
@@ -317,25 +247,10 @@ export default () => {
                 accessor: 'call.returnValues.destinationChain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    call,
-                  } = { ...row.original }
-
-                  const {
-                    destinationContractAddress,
-                  } = { ...call?.returnValues }
-
-                  const {
-                    name,
-                    image,
-                    explorer,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { call } = { ...row.original }
+                  const { destinationContractAddress } = { ...call?.returnValues }
+                  const { name, image, explorer } = { ...getChainData(value, chains_data) }
                   return (
                     <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
                       <div className="h-6 flex items-center space-x-2">
@@ -363,11 +278,7 @@ export default () => {
                 accessor: 'simplified_status',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
+                  const { value, row } = { ...props }
                   const {
                     call,
                     express_executed,
@@ -377,11 +288,7 @@ export default () => {
                     is_insufficient_fee,
                     not_enough_gas_to_execute,
                   } = { ...row.original }
-
-                  const {
-                    destinationChain,
-                  } = { ...call?.returnValues }
-
+                  const { destinationChain } = { ...call?.returnValues }
                   const destination_chain_data = getChainData(destinationChain, chains_data)
 
                   let color

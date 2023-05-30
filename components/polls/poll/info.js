@@ -14,24 +14,9 @@ import { split, toArray, includesStringList, getTitle, ellipse, toJson } from '.
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'
 
 export default ({ data }) => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const {
     id,
@@ -49,17 +34,8 @@ export default ({ data }) => {
     created_at,
     updated_at,
   } = { ...data }
-
-  const {
-    name,
-    image,
-    explorer,
-  } = { ...getChainData(sender_chain, chains_data) }
-
-  const {
-    url,
-    transaction_path,
-  } = { ...explorer }
+  const { name, image, explorer } = { ...getChainData(sender_chain, chains_data) }
+  const { url, transaction_path } = { ...explorer }
 
   const status = success ? 'completed' : failed ? 'failed' : confirmation || toArray(votes).findIndex(v => v.confirmed) > -1 ? 'confirmed' : 'pending'
   const _url = includesStringList(event, ['operator', 'token_deployed']) ? `${url}${transaction_path?.replace('{tx}', transaction_id)}` : `/${includesStringList(event, ['contract_call']) || !(includesStringList(event, ['transfer']) || deposit_address) ? 'gmp' : 'transfer'}/${transaction_id ? transaction_id : transfer_id ? `?transfer_id=${transfer_id}` : ''}`
@@ -110,15 +86,8 @@ export default ({ data }) => {
           toArray(confirmation_events).length > 0 ?
             <div className="flex flex-col space-y-1">
               {toArray(confirmation_events).map((e, i) => {
-                const {
-                  type,
-                  txID,
-                } = { ...e }
-                let {
-                  asset,
-                  symbol,
-                  amount,
-                } = { ...e }
+                const { type, txID } = { ...e }
+                let { asset, symbol, amount } = { ...e }
 
                 let _type
                 switch (type) {
@@ -145,14 +114,8 @@ export default ({ data }) => {
                 }
 
                 const asset_data = getAssetData(asset || symbol, assets_data)
-
-                const {
-                  decimals,
-                  addresses,
-                } = { ...asset_data }
-                let {
-                  image,
-                } = { ...asset_data }
+                const { decimals, addresses } = { ...asset_data }
+                let { image } = { ...asset_data }
 
                 const token_data = addresses?.[id]
                 symbol = token_data?.symbol || asset_data?.symbol || symbol

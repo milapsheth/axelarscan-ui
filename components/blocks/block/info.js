@@ -17,12 +17,8 @@ import { toArray, includesStringList, ellipse, equalsIgnoreCase } from '../../..
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'
 
 export default ({ data }) => {
-  const {
-    _validators,
-  } = useSelector(state => ({ _validators: state.validators }), shallowEqual)
-  const {
-    validators_data,
-  } = { ..._validators }
+  const { _validators } = useSelector(state => ({ _validators: state.validators }), shallowEqual)
+  const { validators_data } = { ..._validators }
 
   const [validatorSets, setValidatorSets] = useState(null)
 
@@ -31,17 +27,10 @@ export default ({ data }) => {
       const getData = async () => {
         if (height && validators_data) {
           const response = await getValidatorSets(height)
-
-          const {
-            validators,
-          } = { ...response?.result }
-
+          const { validators } = { ...response?.result }
           setValidatorSets(
             toArray(validators).map(v => {
-              const {
-                address,
-              } = { ...v }
-
+              const { address } = { ...v }
               return {
                 ...v,
                 ...validators_data.find(_v => equalsIgnoreCase(_v.consensus_address, address)),
@@ -55,35 +44,12 @@ export default ({ data }) => {
     [data, validators_data],
   )
 
-  const {
-    block,
-    block_id,
-    round,
-    validators,
-  } = { ...data }
-
-  const {
-    height,
-    proposer_address,
-    time,
-  } = { ...block?.header }
-
-  const {
-    txs,
-  } = { ...block?.data }
-
-  const {
-    hash,
-  } = { ...block_id }
-
-  const {
-    operator_address,
-    description,
-  } = { ...(proposer_address && toArray(validators_data).find(v => includesStringList(proposer_address, toArray(v.consensus_address, 'lower')))) }
-
-  const {
-    moniker,
-  } = { ...description }
+  const { block, block_id, round, validators } = { ...data }
+  const { height, proposer_address, time } = { ...block?.header }
+  const { txs } = { ...block?.data }
+  const { hash } = { ...block_id }
+  const { operator_address, description } = { ...(proposer_address && toArray(validators_data).find(v => includesStringList(proposer_address, toArray(v.consensus_address, 'lower')))) }
+  const { moniker } = { ...description }
 
   const signed_validators_data = toArray(validatorSets).filter(v => toArray(validators).includes(v.address))
   const unsigned_validators_data = toArray(validatorSets).filter(v => !toArray(validators).includes(v.address))
@@ -93,15 +59,8 @@ export default ({ data }) => {
       <div className="overflow-y-auto grid grid-flow-row grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {toArray(data).length > 0 ?
           toArray(data).map((d, i) => {
-            const {
-              operator_address,
-              description,
-            } = { ...d }
-
-            const {
-              moniker,
-            } = { ...description }
-
+            const { operator_address, description } = { ...d }
+            const { moniker } = { ...description }
             return (
               <div key={i}>
                 {description ?

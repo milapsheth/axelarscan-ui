@@ -20,12 +20,8 @@ export default (
     prefix = '',
   },
 ) => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
   return (
     <Card className="card">
@@ -49,10 +45,7 @@ export default (
                     {split(d.key, 'normal', '_').map((k, j) => {
                       switch (type) {
                         case 'contract':
-                          const {
-                            explorer,
-                          } = { ...toArray(d.chain).length > 0 && getChainData(_.head(toArray(d.chain)), chains_data) }
-
+                          const { explorer } = { ...toArray(d.chain).length > 0 && getChainData(_.head(toArray(d.chain)), chains_data) }
                           return (
                             <AccountProfile
                               key={j}
@@ -68,11 +61,7 @@ export default (
                           )
                         case 'chain':
                         default:
-                          const {
-                            name,
-                            image,
-                          } = { ...getChainData(k, chains_data) }
-
+                          const { name, image } = { ...getChainData(k, chains_data) }
                           return (
                             <Tooltip key={j} content={name}>
                               <div>

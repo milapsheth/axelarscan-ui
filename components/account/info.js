@@ -27,24 +27,9 @@ const STAKING_FIELDS = [
 ]
 
 export default ({ address, data }) => {
-  const {
-    assets,
-    validators,
-  } = useSelector(
-    state => (
-      {
-        assets: state.assets,
-        validators: state.validators,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { assets, validators } = useSelector(state => ({ assets: state.assets, validators: state.validators }), shallowEqual )
+  const { assets_data } = { ...assets }
+  const { validators_data } = { ...validators }
 
   const [stakingField, setStakingField] = useState(_.head(STAKING_FIELDS)?.id)
 
@@ -57,7 +42,6 @@ export default ({ address, data }) => {
     commissions,
     depositAddressData,
   } = { ...data }
-
   const {
     sender_chain,
     recipient_chain,
@@ -70,10 +54,7 @@ export default ({ address, data }) => {
     asset_data,
     transfer_data,
   } = { ...depositAddressData }
-
-  const {
-    txhash,
-  } = { ...transfer_data?.send }
+  const { txhash } = { ...transfer_data?.send }
 
   const isDepositAddress = (address && (address.length >= 65 || getKeyType(address) === 'evmAddress')) || depositAddressData
   const reward = !isDepositAddress && toArray(rewards?.rewards).find(d => equalsIgnoreCase(d.denom, 'uaxl'))
@@ -86,10 +67,7 @@ export default ({ address, data }) => {
     broadcaster_address,
     description,
   } = { ...validator_data }
-
-  const {
-    moniker,
-  } = { ...description }
+  const { moniker } = { ...description }
 
   const renderStaking = stakingField => {
     switch (stakingField) {
@@ -113,19 +91,9 @@ export default ({ address, data }) => {
                   accessor: 'validator_data',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                    } = { ...props }
-
-                    const {
-                      operator_address,
-                      description,
-                    } = { ...value }
-
-                    const {
-                      moniker,
-                    } = { ...description }
-
+                    const { value } = { ...props }
+                    const { operator_address, description } = { ...value }
+                    const { moniker } = { ...description }
                     return (
                       description ?
                         <div className="min-w-max flex items-start space-x-2">
@@ -179,15 +147,8 @@ export default ({ address, data }) => {
                   accessor: 'amount',
                   sortType: (a, b) => a.original.amount > b.original.amount ? 1 : -1,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      symbol,
-                    } = { ...row.original }
-
+                    const { value, row } = { ...props }
+                    const { symbol } = { ...row.original }
                     return (
                       <div className="text-left sm:text-right">
                         <NumberDisplay
@@ -230,16 +191,8 @@ export default ({ address, data }) => {
                   accessor: 'validator_src_address',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      source_validator_data,
-                      destination_validator_data,
-                      validator_dst_address,
-                    } = { ...row.original }
+                    const { value, row } = { ...props }
+                    const { source_validator_data, destination_validator_data, validator_dst_address } = { ...row.original }
 
                     const source_operator_address = source_validator_data?.operator_address
                     const source_description = source_validator_data?.description
@@ -329,15 +282,8 @@ export default ({ address, data }) => {
                   accessor: 'amount',
                   sortType: (a, b) => a.original.amount > b.original.amount ? 1 : -1,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      symbol,
-                    } = { ...row.original }
-
+                    const { value, row } = { ...props }
+                    const { symbol } = { ...row.original }
                     return (
                       <div className="text-left sm:text-right">
                         <NumberDisplay
@@ -380,19 +326,9 @@ export default ({ address, data }) => {
                   accessor: 'validator_data',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                    } = { ...props }
-
-                    const {
-                      operator_address,
-                      description,
-                    } = { ...value }
-
-                    const {
-                      moniker,
-                    } = { ...description }
-
+                    const { value } = { ...props }
+                    const { operator_address, description } = { ...value }
+                    const { moniker } = { ...description }
                     return (
                       description ?
                         <div className="min-w-max flex items-start space-x-2">
@@ -446,11 +382,7 @@ export default ({ address, data }) => {
                   accessor: 'amount',
                   sortType: (a, b) => a.original.amount > b.original.amount ? 1 : -1,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
+                    const { value } = { ...props }
                     return (
                       <div className="text-left sm:text-right">
                         <NumberDisplay
@@ -808,17 +740,8 @@ export default ({ address, data }) => {
                   accessor: 'denom',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                    } = { ...props }
-
-                    const {
-                      symbol,
-                      name,
-                      image,
-                      price,
-                    } = { ...getAssetData(value, assets_data) }
-
+                    const { value } = { ...props }
+                    const { symbol, name, image, price } = { ...getAssetData(value, assets_data) }
                     return (
                       <div className="min-w-max flex items-start space-x-2">
                         {image && (
@@ -866,10 +789,7 @@ export default ({ address, data }) => {
                   accessor: 'amount',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                    } = { ...props }
-
+                    const { value } = { ...props }
                     return (
                       <div className="text-left sm:text-right">
                         <NumberDisplay
@@ -886,10 +806,7 @@ export default ({ address, data }) => {
                   accessor: 'value',
                   sortType: (a, b) => a.original.value > b.original.value ? 1 : -1,
                   Cell: props => {
-                    const {
-                      value,
-                    } = { ...props }
-
+                    const { value } = { ...props }
                     return (
                       <div className="text-left sm:text-right">
                         <NumberDisplay

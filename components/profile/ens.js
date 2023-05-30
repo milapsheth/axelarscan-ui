@@ -22,12 +22,8 @@ export default (
   },
 ) => {
   const dispatch = useDispatch()
-  const {
-    ens,
-  } = useSelector(state => ({ ens: state.ens }), shallowEqual)
-  const {
-    ens_data,
-  } = { ...ens }
+  const { ens } = useSelector(state => ({ ens: state.ens }), shallowEqual)
+  const { ens_data } = { ...ens }
 
   const [imageUnavailable, setImageUnavailable] = useState(null)
 
@@ -62,10 +58,7 @@ export default (
     [address, ens_data],
   )
 
-  const {
-    name,
-  } = { ...ens_data?.[address?.toLowerCase()] }
-
+  const { name } = { ...ens_data?.[address?.toLowerCase()] }
   const src = `https://metadata.ens.domains/mainnet/avatar/${name}`
 
   const ensComponent = name && (

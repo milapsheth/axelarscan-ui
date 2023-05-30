@@ -26,24 +26,9 @@ const Detail = ({ title, children }) => {
 }
 
 export default ({ data, filters }) => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const [seeMoreChain, setSeeMoreChain] = useState(false)
 
@@ -53,21 +38,9 @@ export default ({ data, filters }) => {
     transfersStats,
     transfersTotalVolume,
   } = { ...data }
-
-  const {
-    contractAddress,
-    asset,
-    fromTime,
-    toTime,
-  } = { ...filters }
-
-  const {
-    messages,
-  } = { ...GMPStats }
-
-  const {
-    types,
-  } = { ...transfersStats }
+  const { contractAddress, asset, fromTime, toTime } = { ...filters }
+  const { messages } = { ...GMPStats }
+  const { types } = { ...transfersStats }
 
   const normalizeEvent = event => event?.replace('ContractCall', 'callContract')
   const normalizeType = type => ['wrap', 'unwrap', 'erc20_transfer'].includes(type) ? 'deposit_service' : type || 'deposit_address'
@@ -247,11 +220,7 @@ export default ({ data, filters }) => {
               />
               <div className="flex flex-wrap items-center mt-4">
                 {_.slice(chains, 0, seeMoreChain ? chains.length : NUM_CHAINS_TRUNCATE).map((c, i) => {
-                  const {
-                    name,
-                    image,
-                  } = { ...getChainData(c, chains_data) }
-
+                  const { name, image } = { ...getChainData(c, chains_data) }
                   return (
                     <div key={i} className="mb-1.5 mr-1.5">
                       <Tooltip content={name}>
@@ -304,11 +273,7 @@ export default ({ data, filters }) => {
               {toArray(asset).length > 0 && (
                 <div className="flex items-center sm:justify-end">
                   {toArray(asset).map((a, i) => {
-                    const {
-                      symbol,
-                      image,
-                    } = { ...getAssetData(a, assets_data) }
-
+                    const { symbol, image } = { ...getAssetData(a, assets_data) }
                     return (
                       <div key={i} className="bg-slate-100 dark:bg-slate-900 rounded flex items-center space-x-1 mb-1 sm:ml-2 mr-2 sm:mr-0 py-1 px-2">
                         <Image

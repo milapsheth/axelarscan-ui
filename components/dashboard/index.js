@@ -26,18 +26,10 @@ export default () => {
     ),
     shallowEqual,
   )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    chain_data,
-  } = { ...chain }
-  const {
-    status_data,
-  } = { ...status }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { chains_data } = { ...chains }
+  const { chain_data } = { ...chain }
+  const { status_data } = { ...status }
+  const { validators_data } = { ...validators }
 
   const [inflationData, setInflationData] = useState(null)
   const [metrics, setMetrics] = useState(null)
@@ -54,20 +46,9 @@ export default () => {
   useEffect(
     () => {
       if (chain_data && status_data) {
-        const {
-          bank_supply,
-          staking_pool,
-        } = { ...chain_data }
-
-        const {
-          symbol,
-          amount,
-        } = { ...bank_supply }
-
-        const {
-          bonded_tokens,
-        } = { ...staking_pool }
-
+        const { bank_supply, staking_pool } = { ...chain_data }
+        const { symbol, amount } = { ...bank_supply }
+        const { bonded_tokens } = { ...staking_pool }
         setMetrics({
           block_data: status_data,
           validators_data: validators_data && { active: validators_data.filter(v => v.status === 'BOND_STATUS_BONDED').length, total: validators_data.length },
@@ -115,14 +96,8 @@ export default () => {
             )
           )
 
-          const {
-            messages,
-          } = { ...interchainData?.GMPStats }
-
-          const {
-            data,
-          } = { ...interchainData?.transfersStats }
-
+          const { messages } = { ...interchainData?.GMPStats }
+          const { data } = { ...interchainData?.transfersStats }
           interchainData.networkGraph = _.orderBy(
             Object.entries(
               _.groupBy(
@@ -130,14 +105,9 @@ export default () => {
                   toArray(messages).flatMap(m =>
                     toArray(m.source_chains).flatMap(s =>
                       toArray(s.destination_chains).map(d => {
-                        const {
-                          num_txs,
-                          volume,
-                        } = { ...d }
-
+                        const { num_txs, volume } = { ...d }
                         const source_chain = getChainData(normalizeQuote(s.key), chains_data)?.id
                         const destination_chain = getChainData(normalizeQuote(d.key), chains_data)?.id
-
                         return {
                           id: toArray([source_chain, destination_chain]).join('_'),
                           source_chain,
@@ -149,14 +119,9 @@ export default () => {
                     )
                   ),
                   toArray(data).map(d => {
-                    const {
-                      num_txs,
-                      volume,
-                    } = { ...d }
-
+                    const { num_txs, volume } = { ...d }
                     const source_chain = getChainData(d.source_chain, chains_data)?.id
                     const destination_chain = getChainData(d.destination_chain, chains_data)?.id
-
                     return {
                       id: toArray([source_chain, destination_chain]).join('_'),
                       source_chain,

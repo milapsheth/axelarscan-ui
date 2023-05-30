@@ -12,20 +12,12 @@ import { getProposal } from '../../../lib/api/proposals'
 import { toArray, equalsIgnoreCase, getTitle } from '../../../lib/utils'
 
 export default () => {
-  const {
-    validators,
-  } = useSelector(state => ({ validators: state.validators }), shallowEqual)
-  const {
-    validators_data,
-  } = { ...validators }
+  const { validators } = useSelector(state => ({ validators: state.validators }), shallowEqual)
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  const {
-    id,
-  } = { ...query }
+  const { query } = { ...router }
+  const { id } = { ...query }
 
   const [data, setData] = useState(null)
 
@@ -58,10 +50,7 @@ export default () => {
     if (validators_data) {
       votes = _.orderBy(
         toArray(votes).map(v => {
-          const {
-            voter,
-          } = { ...v }
-
+          const { voter } = { ...v }
           return { ...v, validator_data: validators_data.find(_v => equalsIgnoreCase(_v.delegator_address, voter)) }
         }),
         ['validator_data.tokens', 'validator_data.description.moniker'], ['desc', 'asc'],
@@ -71,13 +60,7 @@ export default () => {
     return votes
   }
 
-  const {
-    proposal_id,
-    voting_end_time,
-    final_tally_result,
-    votes,
-  } = { ...data }
-
+  const { proposal_id, voting_end_time, final_tally_result, votes } = { ...data }
   const end = voting_end_time && voting_end_time < moment().valueOf()
   const vote_options = Object.entries(_.groupBy(toArray(votes), 'option')).map(([k, v]) => { return { option: k, value: toArray(v).length } }).filter(d => d.value)
 
@@ -105,11 +88,7 @@ export default () => {
                     />
                   )) :
                 vote_options.map((v, i) => {
-                  const {
-                    option,
-                    value,
-                  } = { ...v }
-
+                  const { option, value } = { ...v }
                   return (
                     <NumberDisplay
                       key={i}

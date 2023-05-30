@@ -13,12 +13,8 @@ const BLOCK_EVENTS_FIELDS = ['begin_block_events', 'end_block_events']
 
 export default () => {
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  const {
-    height,
-  } = { ...query }
+  const { query } = { ...router }
+  const { height } = { ...query }
 
   const [data, setData] = useState(null)
 
@@ -28,18 +24,9 @@ export default () => {
         if (height) {
           const response = await getBlock(height)
           if (response) {
-            const {
-              block,
-            } = { ...await getBlock(Number(height) + 1) }
-
-            const {
-              last_commit,
-            } = { ...block }
-
-            const {
-              round,
-              validators,
-            } = { ...last_commit }
+            const { block } = { ...await getBlock(Number(height) + 1) }
+            const { last_commit } = { ...block }
+            const { round, validators } = { ...last_commit }
 
             if (typeof round === 'number') {
               response.round = round
@@ -62,10 +49,7 @@ export default () => {
     [height],
   )
 
-  const {
-    header,
-  } = { ...data?.block }
-
+  const { header } = { ...data?.block }
   const matched = equalsIgnoreCase(height?.toString(), header?.height)
 
   return (

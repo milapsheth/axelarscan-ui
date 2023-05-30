@@ -11,30 +11,12 @@ import { split, toArray, includesStringList, equalsIgnoreCase } from '../../lib/
 const BYS = ['chains', 'assets']
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    query,
-  } = { ...router }
+  const { pathname, query } = { ...router }
 
   const [rendered, setRendered] = useState(false)
   const [by, setBy] = useState(query.by)

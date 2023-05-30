@@ -36,24 +36,13 @@ export default () => {
     ),
     shallowEqual,
   )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    chain_data,
-  } = { ...chain }
-  const {
-    maintainers_data,
-  } = { ...maintainers }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { chains_data } = { ...chains }
+  const { chain_data } = { ...chain }
+  const { maintainers_data } = { ...maintainers }
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    pathname,
-    query,
-  } = { ...router }
+  const { pathname, query } = { ...router }
 
   const [status, setStatus] = useState(query.status || _.head(STATUSES))
   const [inflationData, setInflationData] = useState(null)
@@ -87,16 +76,10 @@ export default () => {
 
   useEffect(
     () => {
-      const {
-        staking_pool,
-        bank_supply,
-      } = { ...chain_data }
+      const { staking_pool, bank_supply } = { ...chain_data }
 
       if (validators_data && maintainers_data && staking_pool && bank_supply && inflationData) {
-        const {
-          bonded_tokens,
-        } = { ...staking_pool }
-
+        const { bonded_tokens } = { ...staking_pool }
         const total_supply = bank_supply.amount;
 
         const {
@@ -116,10 +99,7 @@ export default () => {
                 heartbeats_uptime,
                 votes,
               } = { ...v }
-
-              const {
-                rate,
-              } = { ...commission?.commission_rates }
+              const { rate } = { ...commission?.commission_rates }
 
               const supported_chains = Object.entries(maintainers_data).filter(([k, _v]) => _v.includes(operator_address)).map(([k, _v]) => k)
               const inflation = fixDecimals(
@@ -129,11 +109,7 @@ export default () => {
                   (externalChainVotingInflationRate || 0) *
                   _.sum(
                     supported_chains.map(c => {
-                      const {
-                        total,
-                        total_polls,
-                      } = { ...votes?.chains?.[c] }
-
+                      const { total, total_polls } = { ...votes?.chains?.[c] }
                       return 1 - (total_polls ? (total_polls - total) / total_polls : 0)
                     })
                   )
@@ -157,20 +133,9 @@ export default () => {
     [validators_data, maintainers_data, inflationData],
   )
 
-  const {
-    staking_params,
-    slashing_params,
-  } = { ...chain_data }
-
-  const {
-    max_validators,
-    unbonding_time,
-  } = { ...staking_params }
-
-  const {
-    slash_fraction_downtime,
-    downtime_jail_duration,
-  } = { ...slashing_params }
+  const { staking_params, slashing_params } = { ...chain_data }
+  const { max_validators, unbonding_time } = { ...staking_params }
+  const { slash_fraction_downtime, downtime_jail_duration } = { ...slashing_params }
 
   const filterByStatus = status => toArray(data || validators_data).filter(v => status === 'inactive' ? v.status !== 'BOND_STATUS_BONDED' : v.status === 'BOND_STATUS_BONDED' && !v.jailed)
 
@@ -194,24 +159,10 @@ export default () => {
             accessor: 'operator_address',
             sortType: (a, b) => a.original.description?.moniker > b.original.description?.moniker ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-                row,
-              } = { ...props }
-
-              const {
-                description,
-                commission,
-              } = { ...row.original }
-
-              const {
-                moniker,
-              } = { ...description }
-
-              const {
-                rate,
-              } = { ...commission?.commission_rates }
-
+              const { value, row } = { ...props }
+              const { description, commission } = { ...row.original }
+              const { moniker } = { ...description }
+              const { rate } = { ...commission?.commission_rates }
               return (
                 <div>
                   {description ?
@@ -295,14 +246,9 @@ export default () => {
             accessor: 'voting_power',
             sortType: (a, b) => a.original.quadratic_voting_power > b.original.quadratic_voting_power ? 1 : a.original.quadratic_voting_power < b.original.quadratic_voting_power ? -1 : a.original.tokens > b.original.tokens ? 1 : -1,
             Cell: props => {
-              const {
-                tokens,
-                quadratic_voting_power,
-              } = { ...props.row.original }
-
+              const { tokens, quadratic_voting_power } = { ...props.row.original }
               const total_voting_power = _.sumBy(filterByStatus('active'), 'tokens')
               const total_quadratic_voting_power = _.sumBy(filterByStatus('active'), 'quadratic_voting_power')
-
               return (
                 <div className="w-32 grid grid-cols-2 gap-2 sm:ml-auto">
                   <div className="flex flex-col items-center text-center">
@@ -347,12 +293,8 @@ export default () => {
             accessor: 'tokens',
             sortType: (a, b) => a.original.tokens > b.original.tokens ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-              } = { ...props }
-
+              const { value } = { ...props }
               const total_voting_power = _.sumBy(filterByStatus('active'), 'tokens')
-
               return (
                 <div className="flex flex-col items-start sm:items-end text-left sm:text-right">
                   <NumberDisplay
@@ -393,16 +335,8 @@ export default () => {
             accessor: 'cumulative_share',
             disableSortBy: true,
             Cell: props => {
-              const {
-                flatRows,
-                row,
-              } = { ...props }
-
-              const {
-                tokens,
-                quadratic_voting_power,
-              } = { ...row.original }
-
+              const { flatRows, row } = { ...props }
+              const { tokens, quadratic_voting_power } = { ...row.original }
               const index = flatRows?.indexOf(row)
               const total_voting_power = _.sumBy(filterByStatus('active'), 'tokens')
               const total_quadratic_voting_power = _.sumBy(filterByStatus('active'), 'quadratic_voting_power')
@@ -410,15 +344,8 @@ export default () => {
               const _data = toArray(
                 index > -1 && _.slice(
                   flatRows.map(d => {
-                    const {
-                      original,
-                    } = { ...d }
-
-                    const {
-                      tokens,
-                      quadratic_voting_power,
-                    } = { ...original }
-
+                    const { original } = { ...d }
+                    const { tokens, quadratic_voting_power } = { ...original }
                     return {
                       ...original,
                       consensus_share: tokens * 100 / total_voting_power,
@@ -430,11 +357,7 @@ export default () => {
                 )
               )
 
-              const {
-                consensus_share,
-                quadratic_share,
-              } = { ..._.last(_data) }
-
+              const { consensus_share, quadratic_share } = { ..._.last(_data) }
               const total_consensus_share = _.sumBy(_data, 'consensus_share')
               const total_quadratic_share = _.sumBy(_data, 'quadratic_share')
 
@@ -512,15 +435,8 @@ export default () => {
             accessor: 'apr',
             sortType: (a, b) => a.original.apr > b.original.apr ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-                row,
-              } = { ...props }
-
-              const {
-                inflation,
-              } = { ...row.original }
-
+              const { value, row } = { ...props }
+              const { inflation } = { ...row.original }
               return inflation > 0 && (
                 <div className="flex flex-col items-start sm:items-end text-left sm:text-right">
                   <NumberDisplay
@@ -557,15 +473,8 @@ export default () => {
             accessor: 'uptime',
             sortType: (a, b) => a.original.uptime > b.original.uptime ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-                row,
-              } = { ...props }
-
-              const {
-                start_height,
-              } = { ...row.original }
-
+              const { value, row } = { ...props }
+              const { start_height } = { ...row.original }
               return (
                 <div className="w-28 flex flex-col items-start sm:items-end text-left sm:text-right space-y-0.5 sm:ml-auto">
                   {typeof value === 'number' ?
@@ -623,16 +532,8 @@ export default () => {
             accessor: 'heartbeats_uptime',
             sortType: (a, b) => a.original.heartbeats_uptime > b.original.heartbeats_uptime ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-                row,
-              } = { ...props }
-
-              const {
-                start_proxy_height,
-                stale_heartbeats,
-              } = { ...row.original }
-
+              const { value, row } = { ...props }
+              const { start_proxy_height, stale_heartbeats } = { ...row.original }
               return (
                 <div className="w-28 flex flex-col items-start sm:items-end text-left sm:text-right space-y-0.5 sm:ml-auto">
                   {typeof value === 'number' ?
@@ -695,26 +596,14 @@ export default () => {
             accessor: 'votes',
             sortType: (a, b) => a.original.total_yes_votes > b.original.total_yes_votes ? 1 : a.original.total_yes_votes < b.original.total_yes_votes ? -1 : a.original.total_no_votes < b.original.total_no_votes ? 1 : a.original.total_no_votes > b.original.total_no_votes ? 1 : a.original.total_unsubmitted_votes <= b.original.total_unsubmitted_votes ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-              } = { ...props }
-
+              const { value } = { ...props }
               return (
                 <div className="flex flex-col space-y-0.5">
                   {value ?
                     Object.keys({ ...value.chains }).length > 0 ?
                       Object.entries(value.chains).map(([k, v]) => {
-                        const {
-                          name,
-                          image,
-                        } = { ...getChainData(k, chains_data) }
-
-                        const {
-                          votes,
-                          total_polls,
-                          total,
-                        } = { ...v }
-
+                        const { name, image } = { ...getChainData(k, chains_data) }
+                        const { votes, total_polls, total } = { ...v }
                         return (
                           <div key={k} className="min-w-max flex items-center justify-between space-x-2">
                             <div className="flex items-center space-x-2">
@@ -790,20 +679,13 @@ export default () => {
             accessor: 'supported_chains',
             sortType: (a, b) => toArray(a.original.supported_chains).length > toArray(b.original.supported_chains).length ? 1 : -1,
             Cell: props => {
-              const {
-                value,
-              } = { ...props }
-
+              const { value } = { ...props }
               return (
                 <div className="max-w-fit flex flex-wrap items-center">
                   {maintainers_data && data ?
                     toArray(value).length > 0 ?
                       _.orderBy(toArray(value).map(c => getChainData(c, chains_data)), ['i'], ['asc']).map((c, i) => {
-                        const {
-                          name,
-                          image,
-                        } = { ...c }
-
+                        const { name, image } = { ...c }
                         return (
                           <div key={i} className="mb-1 mr-0.5">
                             <Tooltip content={name}>
@@ -834,16 +716,8 @@ export default () => {
             accessor: 'status',
             sortType: (a, b) => a.original.tombstoned > b.original.tombstoned ? -1 : a.original.tombstoned < b.original.tombstoned ? 1 : a.original.jailed > b.original.jailed ? -1 : a.original.jailed < b.original.jailed ? 1 : a.original.status > b.original.status ? 1 : a.original.status < b.original.status ? -1 : -1,
             Cell: props => {
-              const {
-                value,
-                row,
-              } = { ...props }
-
-              const {
-                tombstoned,
-                jailed,
-              } = { ...row.original }
-
+              const { value, row } = { ...props }
+              const { tombstoned, jailed } = { ...row.original }
               return (
                 <div className="flex flex-col items-start sm:items-end text-left sm:text-right space-y-1">
                   {value ?

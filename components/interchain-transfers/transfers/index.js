@@ -25,30 +25,12 @@ const PAGE_SIZE = 25
 const WRAP_PREFIXES = ['w', 'axl']
 
 export default () => {
-  const {
-    chains,
-    assets,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
+  const { chains, assets } = useSelector(state => ({ chains: state.chains, assets: state.assets }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-  } = { ...router }
+  const { pathname, asPath } = { ...router }
 
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -98,22 +80,13 @@ export default () => {
           const _data = toArray(fetchTrigger && data)
           const size = PAGE_SIZE
           const from = [true, 1].includes(fetchTrigger) ? _data.length : 0
-
-          const {
-            sortBy,
-          } = { ...filters }
-
+          const { sortBy } = { ...filters }
           const sort = sortBy === 'value' ? { 'send.value': 'desc' } : undefined
           const response = await searchTransfers({ ...filters, size, from, sort })
 
           if (response) {
-            const {
-              total,
-            } = { ...response }
-            let {
-              data,
-            } = { ...response }
-
+            const { total } = { ...response }
+            let { data } = { ...response }
             setTotal(total)
             data = _.orderBy(_.uniqBy(_.concat(toArray(data), _data), 'id'), ['send.created_at.ms'], ['desc'])
             setData(data)
@@ -184,23 +157,10 @@ export default () => {
                 accessor: 'send.txhash',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    send,
-                  } = { ...row.original }
-
-                  const {
-                    source_chain,
-                  } = { ...send }
-
-                  const {
-                    explorer,
-                  } = { ...getChainData(source_chain, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { send } = { ...row.original }
+                  const { source_chain } = { ...send }
+                  const { explorer } = { ...getChainData(source_chain, chains_data) }
                   return value && (
                     <div className="flex items-center space-x-1">
                       <Link
@@ -222,31 +182,12 @@ export default () => {
                 accessor: 'type',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    send,
-                  } = { ...row.original }
-
-                  const {
-                    source_chain,
-                    denom,
-                    amount,
-                  } = { ...send }
-
+                  const { value, row } = { ...props }
+                  const { send } = { ...row.original }
+                  const { source_chain, denom, amount } = { ...send }
                   const asset_data = getAssetData(denom, assets_data)
-
-                  const {
-                    addresses,
-                  } = { ...asset_data }
-
-                  let {
-                    symbol,
-                    image,
-                  } = { ...addresses?.[source_chain] }
+                  const { addresses } = { ...asset_data }
+                  let { symbol, mage } = { ...addresses?.[source_chain] }
 
                   symbol = symbol || asset_data?.symbol
                   image = image || asset_data?.image
@@ -295,25 +236,10 @@ export default () => {
                 accessor: 'send.source_chain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    send,
-                  } = { ...row.original }
-
-                  const {
-                    sender_address,
-                  } = { ...send }
-
-                  const {
-                    name,
-                    image,
-                    explorer,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { send } = { ...row.original }
+                  const { sender_address } = { ...send }
+                  const { name, image, explorer } = { ...getChainData(value, chains_data) }
                   return (
                     <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
                       <div className="h-6 flex items-center space-x-2">
@@ -341,25 +267,10 @@ export default () => {
                 accessor: 'send.destination_chain',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    link,
-                  } = { ...row.original }
-
-                  const {
-                    recipient_address,
-                  } = { ...link }
-
-                  const {
-                    name,
-                    image,
-                    explorer,
-                  } = { ...getChainData(value, chains_data) }
-
+                  const { value, row } = { ...props }
+                  const { link } = { ...row.original }
+                  const { recipient_address } = { ...link }
+                  const { name, image, explorer } = { ...getChainData(value, chains_data) }
                   return (
                     <div className="w-60 flex flex-col text-slate-600 dark:text-slate-200 text-sm space-y-1 mb-4">
                       <div className="h-6 flex items-center space-x-2">
@@ -387,24 +298,9 @@ export default () => {
                 accessor: 'simplified_status',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    send,
-                    command,
-                    ibc_send,
-                    axelar_transfer,
-                    unwrap,
-                  } = { ...row.original }
-
-                  const {
-                    destination_chain,
-                    insufficient_fee,
-                  } = { ...send }
-
+                  const { value, row } = { ...props }
+                  const { send, command, ibc_send, axelar_transfer, unwrap } = { ...row.original }
+                  const { destination_chain, insufficient_fee } = { ...send }
                   const destination_chain_data = getChainData(destination_chain, chains_data)
 
                   let color

@@ -21,29 +21,10 @@ const PAGE_SIZE = 10
 const MIN_BROADCASTER_BALANCE = 5
 
 export default ({ data }) => {
-  const {
-    chains,
-    assets,
-    validators,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-        validators: state.validators,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { chains, assets, validators } = useSelector(state => ({ chains: state.chains, assets: state.assets, validators: state.validators }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { validators_data } = { ...validators }
 
   const {
     operator_address,
@@ -66,35 +47,14 @@ export default ({ data }) => {
     jailed,
     delegations,
   } = { ...data }
-
-  const {
-    symbol,
-    amount,
-  } = { ...broadcaster_balance }
-
-  const {
-    moniker,
-    details,
-    website,
-  } = { ...description }
-
-  const {
-    rate,
-    max_rate,
-    max_change_rate,
-  } = { ...commission?.commission_rates }
+  const { symbol, amount } = { ...broadcaster_balance }
+  const { moniker, details, website } = { ...description }
+  const { rate, max_rate, max_change_rate } = { ...commission?.commission_rates }
 
   const _delegations = _.orderBy(
     toArray(delegations).map(d => {
-      const {
-        denom,
-        amount,
-      } = { ...d }
-
-      const {
-        price,
-      } = { ...getAssetData(denom, assets_data) }
-
+      const { denom, amount } = { ...d }
+      const { price } = { ...getAssetData(denom, assets_data) }
       return {
         ...d,
         self: equalsIgnoreCase(d.delegator_address, delegator_address),
@@ -468,11 +428,7 @@ export default ({ data }) => {
               {supported_chains ?
                 toArray(supported_chains).length > 0 ?
                   _.orderBy(toArray(supported_chains).map(c => getChainData(c, chains_data)), ['i'], ['asc']).map((c, i) => {
-                    const {
-                      name,
-                      image,
-                    } = { ...c }
-
+                    const { name, image } = { ...c }
                     return (
                       <div key={i} className="mb-1 mr-1">
                         <Tooltip content={name}>
@@ -517,20 +473,11 @@ export default ({ data }) => {
                 accessor: 'delegator_address',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    self,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { self } = { ...row.original }
                   return value && (
                     <div className="flex items-center space-x-1.5">
-                      {self && (
-                        <ValidatorProfile description={description} />
-                      )}
+                      {self && <ValidatorProfile description={description} />}
                       <AccountProfile address={value} url={true} />
                     </div>
                   )
@@ -541,10 +488,7 @@ export default ({ data }) => {
                 accessor: 'amount',
                 sortType: (a, b) => a.original.amount > b.original.amount ? 1 : -1,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return (
                     <div className="text-left sm:text-right">
                       <NumberDisplay
@@ -561,10 +505,7 @@ export default ({ data }) => {
                 accessor: 'value',
                 sortType: (a, b) => a.original.value > b.original.value ? 1 : -1,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return (
                     <div className="text-left sm:text-right">
                       <NumberDisplay

@@ -11,19 +11,11 @@ import { searchPolls } from '../../lib/api/polls'
 import { split, toArray, getTitle, getQueryParams, createDayJSFromUnixtime } from '../../lib/utils'
 
 export default () => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
+  const { pathname, asPath, query } = { ...router }
 
   const [filters, setFilters] = useState(null)
   const [filterTrigger, setFilterTrigger] = useState(undefined)
@@ -79,11 +71,7 @@ export default () => {
       options: _.concat(
         // { value: '', title: 'Any' },
         _.orderBy(toArray(chains_data).filter(c => c.chain_type === 'evm' && (!c.no_inflation || c.deprecated)), ['deprecated'], ['desc']).map(c => {
-          const {
-            id,
-            name,
-          } = { ...c }
-
+          const { id, name } = { ...c }
           return {
             value: id,
             title: name,
@@ -251,11 +239,7 @@ export default () => {
                       className="form-select bg-slate-50"
                     >
                       {toArray(options).map((o, i) => {
-                        const {
-                          title,
-                          value,
-                        } = { ...o }
-
+                        const { title, value } = { ...o }
                         return (
                           <option
                             key={i}

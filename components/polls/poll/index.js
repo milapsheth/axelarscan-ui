@@ -12,12 +12,8 @@ import { toArray, getTitle, equalsIgnoreCase } from '../../../lib/utils'
 
 export default () => {
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  const {
-    id,
-  } = { ...query }
+  const { query } = { ...router }
+  const { id } = { ...query }
 
   const [data, setData] = useState(null)
 
@@ -25,10 +21,7 @@ export default () => {
     () => {
       const getData = async () => {
         if (id) {
-          const {
-            data,
-          } = { ...await searchPolls({ pollId: id }) }
-
+          const { data } = { ...await searchPolls({ pollId: id }) }
           const _d = {}
           const votes = []
 
@@ -45,12 +38,7 @@ export default () => {
 
           setData({ ..._d, votes: _.orderBy(votes, ['height', 'created_at'], ['desc', 'desc']) })
 
-          const {
-            event,
-            height,
-            participants,
-          } = { ..._d }
-
+          const { event, height, participants } = { ..._d }
           const confirmation_vote = votes.find(v => v.confirmed)
 
           if (height && (!confirmation_vote || votes.length < toArray(participants).length)) {
@@ -74,11 +62,7 @@ export default () => {
     [id],
   )
 
-  const {
-    participants,
-    votes,
-  } = { ...data }
-
+  const { participants, votes } = { ...data }
   const matched = equalsIgnoreCase(id, data?.id)
   let vote_options =
     Object.entries(_.groupBy(toArray(matched && votes).map(v => { return { ...v, option: v.vote ? 'yes' : typeof v.vote === 'boolean' ? 'no' : 'unsubmitted' } }), 'option'))
@@ -90,10 +74,7 @@ export default () => {
       })
       .filter(v => v.value)
       .map(v => {
-        const {
-          option,
-        } = { ...v }
-
+        const { option } = { ...v }
         return {
           ...v,
           i: option === 'yes' ? 0 : option === 'no' ? 1 : 2,
@@ -115,11 +96,7 @@ export default () => {
                 votes
               </span>
               {vote_options.map((v, i) => {
-                const {
-                  option,
-                  value,
-                } = { ...v }
-
+                const { option, value } = { ...v }
                 return (
                   <NumberDisplay
                     key={i}

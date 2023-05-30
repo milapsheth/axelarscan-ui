@@ -30,12 +30,8 @@ export default (
     modalClassName = '',
   },
 ) => {
-  const {
-    preferences,
-  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
-  const {
-    theme,
-  } = { ...preferences }
+  const { preferences } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
+  const { theme } = { ...preferences }
 
   const [open, setOpen] = useState(false)
 

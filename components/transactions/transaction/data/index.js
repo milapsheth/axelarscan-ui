@@ -44,47 +44,21 @@ const FORMATTABLE_TYPES = [
 const TIME_FORMAT = 'D MMM YYYY HH:mm:ss A'
 
 export default ({ data }) => {
-  const {
-    chains,
-    assets,
-    validators,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-        validators: state.validators,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { chains, assets, validators } = useSelector(state => ({ chains: state.chains, assets: state.assets, validators: state.validators }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { validators_data } = { ...validators }
 
   const [txFormat, setTxFormat] = useState('formatted')
   const [logsFormat, setLogsFormat] = useState('formatted')
 
   useEffect(
     () => {
-      const {
-        tx_response,
-      } = { ...data }
-
-      const {
-        raw_log,
-      } = { ...tx_response }
-
+      const { tx_response } = { ...data }
+      const { raw_log } = { ...tx_response }
       if (data) {
         const type = getType(tx_response)
         const activities = getActivities(tx_response)
-
         if (!(toArray(activities).length > 0)) {
           setTxFormat('json')
         }
@@ -96,18 +70,9 @@ export default ({ data }) => {
     [data],
   )
 
-  const {
-    tx,
-    tx_response,
-  } = { ...data }
-
-  const {
-    messages,
-  } = { ...tx?.body }
-
-  const {
-    raw_log,
-  } = { ...tx_response }
+  const { tx, tx_response } = { ...data }
+  const { messages } = { ...tx?.body }
+  const { raw_log } = { ...tx_response }
 
   const type = getType(tx_response)
   const activities = getActivities(tx_response, assets_data)
@@ -144,13 +109,8 @@ export default ({ data }) => {
               deposit_address_chain,
               symbol,
             } = { ...a }
-
-            const {
-              addresses,
-            } = { ...asset_data }
-            let {
-              image,
-            } = { ...asset_data }
+            const { addresses } = { ...asset_data }
+            let { image } = { ...asset_data }
 
             deposit_address = toHex(deposit_address)
             burner_address = toHex(burner_address)
@@ -172,10 +132,7 @@ export default ({ data }) => {
             image = token_data?.image || image
 
             if (toJson(symbol)) {
-              const {
-                denom,
-              } = { ...toJson(symbol) }
-
+              const { denom } = { ...toJson(symbol) }
               const asset_data = getAssetData(denom, assets_data)
               symbol = asset_data?.symbol || symbol
               image = asset_data?.image || image
@@ -428,10 +385,7 @@ export default ({ data }) => {
                       Events
                     </div>
                     {events.map((e, j) => {
-                      const {
-                        event,
-                      } = { ...e }
-
+                      const { event } = { ...e }
                       return (
                         <div key={j} className="w-fit bg-slate-100 dark:bg-slate-800 rounded space-y-2 py-5 px-4">
                           {event && (
@@ -526,11 +480,7 @@ export default ({ data }) => {
       return (
         <div className="w-fit space-y-3">
           {toJson(raw_log).map((l, i) => {
-            const {
-              log,
-              events,
-            } = { ...l }
-
+            const { log, events } = { ...l }
             return (
               <div key={i} className="w-fit min-w-max bg-slate-50 dark:bg-slate-900 rounded space-y-4 p-4">
                 {log && (
@@ -541,22 +491,14 @@ export default ({ data }) => {
                 {_.reverse(_.cloneDeep(toArray(events)))
                   .filter(e => toArray(e.attributes).length > 0)
                   .map(e => {
-                    const {
-                      type,
-                      attributes,
-                    } = { ...e }
-
+                    const { type, attributes } = { ...e }
                     return {
                       type,
                       attributes: toArray(attributes).map(a => [a.key, a.value]),
                     }
                   })
                   .map((e, j) => {
-                    const {
-                      type,
-                      attributes,
-                    } = { ...e }
-
+                    const { type, attributes } = { ...e }
                     return (
                       <div key={j} className="min-w-max bg-slate-100 dark:bg-slate-800 rounded space-y-2 py-5 px-4">
                         {type && (

@@ -4,16 +4,10 @@ import moment from 'moment'
 import _package from '../../package.json'
 
 export default () => {
-  const {
-    preferences,
-  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
-  const {
-    theme,
-  } = { ...preferences }
+  const { preferences } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
+  const { theme } = { ...preferences }
 
-  const {
-    dependencies,
-  } = { ..._package }
+  const { dependencies } = { ..._package }
 
   return (
     <div className={`${theme} footer flex flex-col md:flex-row items-end space-y-2.5 sm:space-y-0 p-3 3xl:text-2xl 3xl:p-8`} style={{ minHeight: '64px' }}>

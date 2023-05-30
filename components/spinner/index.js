@@ -11,16 +11,10 @@ export default (
     color,
   },
 ) => {
-  const {
-    preferences,
-  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
-  const {
-    theme,
-  } = { ...preferences }
+  const { preferences } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
+  const { theme } = { ...preferences }
 
   color = color || loaderColor(theme)
-  let spinner
-
   switch (name) {
     case 'Blocks':
       return <Blocks />

@@ -5,12 +5,8 @@ import { THEME } from '../../../reducers/types'
 
 export default () => {
   const dispatch = useDispatch()
-  const {
-    preferences,
-  } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
-  const {
-    theme,
-  } = { ...preferences }
+  const { preferences } = useSelector(state => ({ preferences: state.preferences }), shallowEqual)
+  const { theme } = { ...preferences }
 
   return (
     <button
@@ -19,14 +15,8 @@ export default () => {
     >
       <div className="w-6 h-6 flex items-center justify-center">
         {theme === 'light' ?
-          <RiMoonLine
-            size={20}
-            className="3xl:w-6 3xl:h-6 text-yellow-500"
-          /> :
-          <RiSunLine
-            size={20}
-            className="3xl:w-6 3xl:h-6 text-red-500"
-          />
+          <RiMoonLine size={20} className="3xl:w-6 3xl:h-6 text-yellow-500" /> :
+          <RiSunLine size={20} className="3xl:w-6 3xl:h-6 text-red-500" />
         }
       </div>
     </button>

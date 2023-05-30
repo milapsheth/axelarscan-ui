@@ -11,12 +11,8 @@ import { toArray, ellipse, getTitle } from '../../../lib/utils'
 const PAGE_SIZE = 25
 
 export default ({ data }) => {
-  const {
-    validators,
-  } = useSelector(state => ({ validators: state.validators }), shallowEqual)
-  const {
-    validators_data,
-  } = { ...validators }
+  const { validators } = useSelector(state => ({ validators: state.validators }), shallowEqual)
+  const { validators_data } = { ...validators }
 
   return data && (
     <Datatable
@@ -54,19 +50,9 @@ export default ({ data }) => {
           accessor: 'validator_data.operator_address',
           disableSortBy: true,
           Cell: props => {
-            const {
-              value,
-              row,
-            } = { ...props }
-
-            const {
-              description,
-            } = { ...row.original.validator_data }
-
-            const {
-              moniker,
-            } = { ...description }
-
+            const { value, row } = { ...props }
+            const { description } = { ...row.original.validator_data }
+            const { moniker } = { ...description }
             return (
               description ?
                 <div className="min-w-max flex items-start space-x-2">
@@ -120,10 +106,7 @@ export default ({ data }) => {
           accessor: 'validator_data.tokens',
           sortType: (a, b) => a.original.validator_data?.tokens > b.original.validator_data?.tokens ? 1 : -1,
           Cell: props => {
-            const {
-              value,
-            } = { ...props }
-
+            const { value } = { ...props }
             const total_voting_power = _.sumBy(toArray(validators_data).filter(v => !v.jailed && v.status === 'BOND_STATUS_BONDED'), 'tokens')
             return (
               <div className="flex flex-col items-start sm:items-end text-left sm:text-right">
@@ -150,10 +133,7 @@ export default ({ data }) => {
           accessor: 'option',
           sortType: (a, b) => a.original.status > b.original.status ? 1 : -1,
           Cell: props => {
-            const {
-              value,
-            } = { ...props }
-
+            const { value } = { ...props }
             return (
               <div className="flex flex-col items-end text-right">
                 {value ?

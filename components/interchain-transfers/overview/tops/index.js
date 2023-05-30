@@ -9,21 +9,11 @@ const TOPS = ['chains', 'contracts']
 const TOP_N = 5
 
 export default ({ data, types }) => {
-  const {
-    chains,
-  } = useSelector(state => ({ chains: state.chains }), shallowEqual)
-  const {
-    chains_data,
-  } = { ...chains }
+  const { chains } = useSelector(state => ({ chains: state.chains }), shallowEqual)
+  const { chains_data } = { ...chains }
 
-  const {
-    GMPStats,
-    transfersStats,
-  } = { ...data }
-
-  const {
-    messages,
-  } = { ...GMPStats }
+  const { GMPStats, transfersStats } = { ...data }
+  const { messages } = { ...GMPStats }
 
   const groupData = data =>
     Object.entries(_.groupBy(toArray(data), 'key')).map(([k, v]) => {
@@ -43,12 +33,7 @@ export default ({ data, types }) => {
         toArray(messages).flatMap(m =>
           toArray(m.source_chains).flatMap(s =>
             toArray(s.destination_chains).map(d => {
-              const {
-                key,
-                num_txs,
-                volume,
-              } = { ...d }
-
+              const { key, num_txs, volume } = { ...d }
               return {
                 key: `${s.key}_${key}`,
                 num_txs,
@@ -58,13 +43,7 @@ export default ({ data, types }) => {
           )
         ),
         toArray(transfersStats?.data).map(d => {
-          const {
-            source_chain,
-            destination_chain,
-            num_txs,
-            volume,
-          } = { ...d }
-
+          const { source_chain, destination_chain, num_txs, volume } = { ...d }
           return {
             key: `${source_chain}_${destination_chain}`,
             num_txs,
@@ -78,11 +57,7 @@ export default ({ data, types }) => {
         toArray(messages).flatMap(m =>
           toArray(m.source_chains).flatMap(s =>
             toArray(s.destination_chains).map(d => {
-              const {
-                num_txs,
-                volume,
-              } = { ...d }
-
+              const { num_txs, volume } = { ...d }
               return {
                 key: s.key,
                 num_txs,
@@ -92,12 +67,7 @@ export default ({ data, types }) => {
           )
         ),
         toArray(transfersStats?.data).map(d => {
-          const {
-            source_chain,
-            num_txs,
-            volume,
-          } = { ...d }
-
+          const { source_chain, num_txs, volume } = { ...d }
           return {
             key: source_chain,
             num_txs,
@@ -111,12 +81,7 @@ export default ({ data, types }) => {
         toArray(messages).flatMap(m =>
           toArray(m.source_chains).flatMap(s =>
             toArray(s.destination_chains).map(d => {
-              const {
-                key,
-                num_txs,
-                volume,
-              } = { ...d }
-
+              const { key, num_txs, volume } = { ...d }
               return {
                 key,
                 num_txs,
@@ -126,12 +91,7 @@ export default ({ data, types }) => {
           )
         ),
         toArray(transfersStats?.data).map(d => {
-          const {
-            destination_chain,
-            num_txs,
-            volume,
-          } = { ...d }
-
+          const { destination_chain, num_txs, volume } = { ...d }
           return {
             key: destination_chain,
             num_txs,
@@ -145,12 +105,7 @@ export default ({ data, types }) => {
         toArray(m.source_chains).flatMap(s =>
           toArray(s.destination_chains).flatMap(d =>
             toArray(d.contracts).map(c => {
-              const {
-                key,
-                num_txs,
-                volume,
-              } = { ...c }
-
+              const { key, num_txs, volume } = { ...c }
               return {
                 key: key?.toLowerCase(),
                 num_txs,

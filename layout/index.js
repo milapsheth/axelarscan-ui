@@ -45,34 +45,16 @@ export default ({ children }) => {
     ),
     shallowEqual,
   )
-  const {
-    theme,
-  } = { ...preferences }
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    ens_data,
-  } = { ...ens }
-  const {
-    status_data,
-  } = { ...status }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { theme } = { ...preferences }
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { ens_data } = { ...ens }
+  const { status_data } = { ...status }
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
-  const {
-    address,
-  } = { ...query }
+  const { pathname, asPath, query } = { ...router }
+  const { address } = { ...query }
 
   useEffect(
     () => {
@@ -145,10 +127,7 @@ export default ({ children }) => {
   useEffect(
     () => {
       const getData = async () => {
-        const {
-          data,
-        } = { ...await getEscrowAddresses() }
-
+        const { data } = { ...await getEscrowAddresses() }
         if (data) {
           dispatch({ type: ACCOUNTS_DATA, value: data })
         }
@@ -163,25 +142,14 @@ export default ({ children }) => {
     () => {
       const getData = async is_interval => {
         let response = await stakingParams()
-
         if (response) {
-          const {
-            params,
-          } = { ...response }
-
-          const {
-            bond_denom,
-          } = { ...params }
-
+          const { params } = { ...response }
+          const { bond_denom } = { ...params }
           dispatch({ type: CHAIN_DATA, value: { staking_params: { ...params } } })
 
           if (bond_denom) {
             response = await bankSupply(bond_denom)
-
-            const {
-              amount,
-            } = { ...response?.amount }
-
+            const { amount } = { ...response?.amount }
             if (amount) {
               dispatch({ type: CHAIN_DATA, value: { bank_supply: { symbol: 'AXL', amount: formatUnits(amount, 6) } } })
             }
@@ -189,23 +157,15 @@ export default ({ children }) => {
         }
 
         response = await stakingPool()
-
         if (response) {
-          const {
-            pool,
-          } = { ...response }
-
+          const { pool } = { ...response }
           dispatch({ type: CHAIN_DATA, value: { staking_pool: Object.fromEntries(Object.entries({ ...pool }).map(([k, v]) => [k, formatUnits(v, 6)])) } })
         }
 
         if (!is_interval) {
           response = await slashingParams()
-
           if (response) {
-            const {
-              params,
-            } = { ...response }
-
+            const { params } = { ...response }
             dispatch({ type: CHAIN_DATA, value: { slashing_params: { ...params } } })
           }
         }
@@ -240,10 +200,7 @@ export default ({ children }) => {
   useEffect(
     () => {
       const getChainData = async chain => {
-        const {
-          maintainers,
-        } = { ...await getChainMaintainers({ chain }) }
-
+        const { maintainers } = { ...await getChainMaintainers({ chain }) }
         if (maintainers) {
           dispatch({ type: MAINTAINERS_DATA, value: { [chain]: maintainers } })
         }
@@ -266,11 +223,7 @@ export default ({ children }) => {
   useEffect(
     () => {
       const getAssetData = async asset => {
-        const {
-          data,
-          updated_at,
-        } = { ...await getTVL({ asset }) }
-
+        const { data, updated_at } = { ...await getTVL({ asset }) }
         if (data) {
           dispatch({ type: TVL_DATA, value: { [asset]: { ..._.head(data), updated_at } } })
         }
@@ -298,16 +251,11 @@ export default ({ children }) => {
       const getVoteCount = (vote, votes) => _.sum(Object.values({ ...votes }).map(v => _.last(Object.entries({ ...v?.votes }).find(([_k, _v]) => equalsIgnoreCase(_k, vote?.toString()))) || 0))
 
       const getData = async is_interval => {
-        const {
-          latest_block_height,
-        } = { ...status_data }
+        const { latest_block_height } = { ...status_data }
 
         if (is_interval || (pathname && exclude_paths.findIndex(p => pathname.startsWith(p)) < 0 && latest_block_height)) {
           const includes = lite_paths.findIndex(p => pathname.startsWith(p)) > -1 ? [] : undefined
-
-          let {
-            data,
-          } = { ...await getValidators({ includes }) }
+          let { data } = { ...await getValidators({ includes }) }
 
           if (data) {
             if (!validators_data) {
@@ -336,13 +284,9 @@ export default ({ children }) => {
             if (response) {
               data =
                 data.map(d => {
-                  const {
-                    broadcaster_address,
-                  } = { ...d }
-
+                  const { broadcaster_address } = { ...d }
                   d.heartbeats_uptime = totalHeartbeat > 0 ? (response.find(_d => equalsIgnoreCase(_d.key, broadcaster_address))?.count || 0) * 100 / totalHeartbeat : 0
                   d.heartbeats_uptime = d.heartbeats_uptime > 100 ? 100 : d.heartbeats_uptime
-
                   return d
                 })
 
@@ -357,20 +301,15 @@ export default ({ children }) => {
               if (response) {
                 data =
                   data.map(d => {
-                    const {
-                      broadcaster_address,
-                    } = { ...d }
-
+                    const { broadcaster_address } = { ...d }
                     d.votes = { ...response.data?.[broadcaster_address] }
                     d.total_votes = d.votes.total || 0
                     d.total_yes_votes = getVoteCount(true, d.votes.chains)
                     d.total_no_votes = getVoteCount(false, d.votes.chains)
                     d.total_unsubmitted_votes = getVoteCount('unsubmitted', d.votes.chains)
                     d.total_polls = response.total || 0
-
                     return d
                   })
-
                 dispatch({ type: VALIDATORS_DATA, value: data })
               }
             }
@@ -385,12 +324,7 @@ export default ({ children }) => {
     [pathname, status_data],
   )
 
-  const {
-    title,
-    description,
-    image,
-    url,
-  } = { ...meta(asPath) }
+  const { title, description, image, url } = { ...meta(asPath) }
 
   return (
     <>

@@ -19,19 +19,11 @@ import { toArray, ellipse, equalsIgnoreCase, getQueryParams } from '../../lib/ut
 const PAGE_SIZE = 50
 
 export default ({ n }) => {
-  const {
-    validators,
-  } = useSelector(state => ({ validators: state.validators }), shallowEqual)
-  const {
-    validators_data,
-  } = { ...validators }
+  const { validators } = useSelector(state => ({ validators: state.validators }), shallowEqual)
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
+  const { pathname, asPath, query } = { ...router }
 
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -82,13 +74,8 @@ export default ({ n }) => {
           const response = await searchBlocks({ ...filters, size, from })
 
           if (response) {
-            const {
-              total,
-            } = { ...response }
-            let {
-              data,
-            } = { ...response }
-
+            const { total } = { ...response }
+            let { data } = { ...response }
             setTotal(total)
             data = _.orderBy(_.uniqBy(_.concat(toArray(data), _data), 'height'), ['height'], ['desc'])
             setData(data)
@@ -137,10 +124,7 @@ export default ({ n }) => {
                 accessor: 'height',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return value && (
                     <Link
                       href={`/block/${value}`}
@@ -161,15 +145,8 @@ export default ({ n }) => {
                 accessor: 'hash',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                    row,
-                  } = { ...props }
-
-                  const {
-                    height,
-                  } = { ...row.original }
-
+                  const { value, row } = { ...props }
+                  const { height } = { ...row.original }
                   return (
                     <Link
                       href={`/block/${height}`}
@@ -188,19 +165,9 @@ export default ({ n }) => {
                 accessor: 'proposer_address',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
-                  const {
-                    operator_address,
-                    description,
-                  } = { ...toArray(validators_data).find(v => equalsIgnoreCase(v.consensus_address, value)) }
-
-                  const {
-                    moniker,
-                  } = { ...description }
-
+                  const { value } = { ...props }
+                  const { operator_address, description } = { ...toArray(validators_data).find(v => equalsIgnoreCase(v.consensus_address, value)) }
+                  const { moniker } = { ...description }
                   return (
                     description ?
                       <div className="min-w-max flex items-start space-x-2">
@@ -256,10 +223,7 @@ export default ({ n }) => {
                 accessor: 'num_txs',
                 disableSortBy: true,
                 Cell: props => {
-                  const {
-                    value,
-                  } = { ...props }
-
+                  const { value } = { ...props }
                   return value && (
                     <NumberDisplay
                       value={value}

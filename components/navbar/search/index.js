@@ -13,21 +13,12 @@ import { ENS_DATA } from '../../../reducers/types'
 
 export default () => {
   const dispatch = useDispatch()
-  const {
-    ens,
-  } = useSelector(state => ({ ens: state.ens }), shallowEqual)
-  const {
-    ens_data,
-  } = { ...ens }
+  const { ens } = useSelector(state => ({ ens: state.ens }), shallowEqual)
+  const { ens_data } = { ...ens }
 
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  const {
-    address,
-    tx,
-  } = { ...query }
+  const { query } = { ...router }
+  const { address, tx } = { ...query }
 
   const [inputSearch, setInputSearch] = useState('')
 
@@ -39,29 +30,17 @@ export default () => {
     let input_type = getKeyType(input)
 
     if (input_type) {
-      const {
-        resolvedAddress,
-      } = { ...Object.values({ ...ens_data }).find(v => equalsIgnoreCase(v.name, input)) }
+      const { resolvedAddress } = { ...Object.values({ ...ens_data }).find(v => equalsIgnoreCase(v.name, input)) }
 
       if (resolvedAddress) {
-        const {
-          id,
-        } = { ...resolvedAddress }
-
+        const { id } = { ...resolvedAddress }
         input = id
         input_type = 'address'
       }
       else if (input_type === 'ens') {
         const domain = await domainFromENS(input, ens_data)
-
-        const {
-          resolvedAddress,
-        } = { ...domain }
-
-        const {
-          id,
-        } = { ...resolvedAddress }
-
+        const { resolvedAddress } = { ...domain }
+        const { id } = { ...resolvedAddress }
         if (id) {
           input = id
           dispatch({ type: ENS_DATA, value: { [input.toLowerCase()]: domain } })
@@ -70,13 +49,11 @@ export default () => {
       }
       else if (['evmAddress', 'axelarAddress', 'cosmosAddress'].includes(input_type)) {
         let response = await searchTransfers({ address: input, size: 0 })
-
         if (response?.total) {
           input_type = 'address'
         }
         else {
           response = await searchGMP({ senderAddress: input, size: 0 })
-
           if (response?.total) {
             input_type = 'address'
           }
@@ -88,13 +65,11 @@ export default () => {
       }
       else if (['txhash', 'tx'].includes(input_type)) {
         let response = await searchTransfers({ txHash: input, size: 0 })
-
         if (response?.total) {
           input_type = 'transfer'
         }
         else {
           response = await searchGMP({ txHash: input, size: 0 })
-
           if (response?.total) {
             input_type = 'gmp'
           }
@@ -107,7 +82,6 @@ export default () => {
       if (input && input_type === 'address') {
         const addresses = toArray(input, 'lower').filter(a => !ens_data?.[a])
         const data = await getENS(addresses)
-
         if (data) {
           dispatch({ type: ENS_DATA, value: data })
         }

@@ -19,10 +19,7 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const {
-          data,
-        } = { ...await getProposals() }
-
+        const { data } = { ...await getProposals() }
         setData(toArray(data))
       }
       getData()
@@ -50,20 +47,9 @@ export default () => {
               accessor: 'content.title',
               sortType: (a, b) => a.original.content?.title > b.original.content?.title ? 1 : -1,
               Cell: props => {
-                const {
-                  proposal_id,
-                  content,
-                } = { ...props.row.original }
-
-                const {
-                  plan,
-                  description,
-                } = { ...content }
-
-                const {
-                  name,
-                } = { ...plan }
-
+                const { proposal_id, content } = { ...props.row.original }
+                const { plan, description } = { ...content }
+                const { name } = { ...plan }
                 return (
                   <div className="flex flex-col space-y-1">
                     <Link
@@ -135,11 +121,7 @@ export default () => {
               Cell: props => (
                 <div className="flex flex-col items-start sm:items-end text-left sm:text-right space-y-1">
                   {toArray(props.value).map((d, i) => {
-                    const {
-                      symbol,
-                      amount,
-                    } = { ...d }
-
+                    const { symbol, amount } = { ...d }
                     return (
                       <NumberDisplay
                         key={i}
@@ -158,15 +140,8 @@ export default () => {
               accessor: 'status',
               sortType: (a, b) => a.original.status > b.original.status ? 1 : -1,
               Cell: props => {
-                const {
-                  value,
-                  row,
-                } = { ...props }
-
-                const {
-                  final_tally_result,
-                } = { ...row.original }
-
+                const { value, row } = { ...props }
+                const { final_tally_result } = { ...row.original }
                 return (
                   <div className="flex flex-col items-end space-y-1">
                     {value && (

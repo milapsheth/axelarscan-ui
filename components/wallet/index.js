@@ -16,16 +16,9 @@ export default (
   },
 ) => {
   const dispatch = useDispatch()
-  const {
-    wallet,
-  } = useSelector(state => ({ wallet: state.wallet }), shallowEqual)
-  const {
-    wallet_data,
-  } = { ...wallet }
-  const {
-    chain_id,
-    provider,
-  } = { ...wallet_data }
+  const { wallet } = useSelector(state => ({ wallet: state.wallet }), shallowEqual)
+  const { wallet_data } = { ...wallet }
+  const { chain_id, provider } = { ...wallet_data }
 
   const { open } = useWeb3Modal()
   const _provider = useProvider()

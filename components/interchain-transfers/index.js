@@ -12,10 +12,7 @@ const MENUS = ['overview', 'gmp_transfers', 'token_transfers']
 
 export default () => {
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-  } = { ...router }
+  const { pathname, asPath } = { ...router }
 
   const [menu, setMenu] = useState(null)
 

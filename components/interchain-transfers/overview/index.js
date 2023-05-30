@@ -31,17 +31,11 @@ const getGranularity = (fromTime, toTime) => {
 }
 
 export default () => {
-  const {
-    assets,
-  } = useSelector(state => ({ assets: state.assets }), shallowEqual)
-  const {
-    assets_data,
-  } = { ...assets }
+  const { assets } = useSelector(state => ({ assets: state.assets }), shallowEqual)
+  const { assets_data } = { ...assets }
 
   const router = useRouter()
-  const {
-    asPath,
-  } = { ...router }
+  const { asPath } = { ...router }
 
   const [data, setData] = useState(null)
   const [filters, setFilters] = useState(null)
@@ -84,10 +78,7 @@ export default () => {
             setData(null)
           }
 
-          const {
-            asset,
-          } = { ...filters }
-
+          const { asset } = { ...filters }
           const symbol = _.uniq(toArray(toArray(asset).map(a => getAssetData(a, assets_data))).flatMap(a => _.uniq(toArray(_.concat(a.symbol, Object.values({ ...a.addresses }).map(_a => _a.symbol))))))
 
           setData(
@@ -138,12 +129,7 @@ export default () => {
     [fetchTrigger],
   )
 
-  const {
-    transfersType,
-    fromTime,
-    toTime,
-  } = { ...filters }
-
+  const { transfersType, fromTime, toTime } = { ...filters }
   const types = toArray(transfersType || ['gmp', 'token_transfers'])
   const granularity = getGranularity(fromTime, toTime)
 

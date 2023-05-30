@@ -33,15 +33,8 @@ export default ({ data }) => {
                     accessor: 'type',
                     disableSortBy: true,
                     Cell: props => {
-                      const {
-                        value,
-                        row,
-                      } = { ...props }
-
-                      const {
-                        data,
-                      } = { ...row.original }
-
+                      const { value, row } = { ...props }
+                      const { data } = { ...row.original }
                       return (
                         <div className="flex items-center space-x-1">
                           <span className="font-medium">
@@ -64,19 +57,10 @@ export default ({ data }) => {
                     accessor: 'data',
                     disableSortBy: true,
                     Cell: props => {
-                      const {
-                        row,
-                      } = { ...props }
-                      let {
-                        value,
-                      } = { ...props }
-
-                      const {
-                        type,
-                      } = { ...row.original }
-
+                      const { row } = { ...props }
+                      let { value } = { ...props }
+                      const { type } = { ...row.original }
                       value = toArray(value)
-
                       return (
                         value.length > 0 ?
                           <div className="space-y-2">

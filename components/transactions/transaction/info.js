@@ -17,18 +17,10 @@ import { toArray, includesStringList, ellipse, equalsIgnoreCase } from '../../..
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'
 
 export default ({ data }) => {
-  const {
-    validators,
-  } = useSelector(state => ({ validators: state.validators }), shallowEqual)
-  const {
-    validators_data,
-  } = { ...validators }
+  const { validators } = useSelector(state => ({ validators: state.validators }), shallowEqual)
+  const { validators_data } = { ...validators }
 
-  const {
-    tx,
-    tx_response,
-  } = { ...data }
-
+  const { tx, tx_response } = { ...data }
   const {
     txhash,
     height,
@@ -37,31 +29,13 @@ export default ({ data }) => {
     gas_used,
     gas_wanted,
   } = { ...tx_response }
-
-  const {
-    auth_info,
-    body,
-  } = { ...tx }
-
-  const {
-    fee,
-  } = { ...auth_info }
-
-  const {
-    memo,
-  } = { ...body }
-
+  const { auth_info, body } = { ...tx }
+  const { fee } = { ...auth_info }
+  const { memo } = { ...body }
   const type = getType(tx_response)
   const sender = getSender(tx_response)
-
-  const {
-    operator_address,
-    description,
-  } = { ...(sender && toArray(validators_data).find(v => includesStringList(sender, toArray([v.broadcaster_address, v.operator_address], 'lower')))) }
-
-  const {
-    moniker,
-  } = { ...description }
+  const { operator_address, description } = { ...(sender && toArray(validators_data).find(v => includesStringList(sender, toArray([v.broadcaster_address, v.operator_address], 'lower')))) }
+  const { moniker } = { ...description }
 
   const rowClassName = 'flex flex-col md:flex-row items-start space-y-2 md:space-y-0 space-x-0 md:space-x-2'
   const titleClassName = 'w-40 lg:w-64 tracking-wider text-slate-600 dark:text-slate-400 text-sm lg:text-base font-medium'

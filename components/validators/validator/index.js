@@ -37,26 +37,14 @@ export default () => {
     ),
     shallowEqual,
   )
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    status_data,
-  } = { ...status }
-  const {
-    maintainers_data,
-  } = { ...maintainers }
-  const {
-    validators_data,
-  } = { ...validators }
+  const { assets_data } = { ...assets }
+  const { tatus_data } = { ...status }
+  const { maintainers_data } = { ...maintainers }
+  const { validators_data } = { ...validators }
 
   const router = useRouter()
-  const {
-    query,
-  } = { ...router }
-  let {
-    address,
-  } = { ...query }
+  const { query } = { ...router }
+  let { address } = { ...query }
   address = normalizeQuote(address)
 
   const [data, setData] = useState(null)
@@ -70,37 +58,20 @@ export default () => {
       const getData = async () => {
         if (address) {
           if (['axelarvalcons', 'axelar1'].findIndex(p => address.startsWith(p)) > -1 && validators_data) {
-            const {
-              operator_address,
-            } = { ...validators_data.find(v => includesStringList(address.toLowerCase(), [v.consensus_address, v.broadcaster_address])) }
-
+            const { operator_address } = { ...validators_data.find(v => includesStringList(address.toLowerCase(), [v.consensus_address, v.broadcaster_address])) }
             router.push(`/validator/${operator_address}`)
           }
           else if (address.startsWith('axelarvaloper') && validators_data && maintainers_data) {
             const validator_data = validators_data.find(v => equalsIgnoreCase(v.operator_address, address))
-
-            const {
-              operator_address,
-              broadcaster_address,
-              jailed,
-            } = { ...validator_data }
-
-            const {
-              data,
-            } = { ...(broadcaster_address && await getBalances({ address: broadcaster_address })) }
-
-            const {
-              total,
-            } = { ...await searchTransactions({ type: 'MsgUnjail', address, size: 0 }) }
-
-            setData(
-              {
-                ...validator_data,
-                broadcaster_balance: _.head(toArray(data).filter(d => d.denom === 'uaxl')),
-                num_jailed: (total || 0) + (jailed ? 1 : 0),
-                supported_chains: Object.entries(maintainers_data).filter(([k, _v]) => _v.includes(operator_address)).map(([k, _v]) => k),
-              }
-            )
+            const { operator_address, broadcaster_address, jailed } = { ...validator_data }
+            const { data } = { ...(broadcaster_address && await getBalances({ address: broadcaster_address })) }
+            const { total } = { ...await searchTransactions({ type: 'MsgUnjail', address, size: 0 }) }
+            setData({
+              ...validator_data,
+              broadcaster_balance: _.head(toArray(data).filter(d => d.denom === 'uaxl')),
+              num_jailed: (total || 0) + (jailed ? 1 : 0),
+              supported_chains: Object.entries(maintainers_data).filter(([k, _v]) => _v.includes(operator_address)).map(([k, _v]) => k),
+            })
           }
         }
       }
@@ -118,37 +89,16 @@ export default () => {
 
           while (page_key) {
             const response = await getDelegations(address, { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined })
-
-            const {
-              delegation_responses,
-              pagination,
-            } = { ...response }
-
+            const { delegation_responses, pagination } = { ...response }
             data = _.uniqBy(
               _.concat(
                 toArray(data),
                 toArray(delegation_responses).map(d => {
-                  const {
-                    balance,
-                    delegation,
-                  } = { ...d }
-
-                  const {
-                    denom,
-                    amount,
-                  } = { ...balance }
-
-                  const {
-                    shares,
-                  } = { ...delegation }
-
+                  const { balance, delegation } = { ...d }
+                  const { denom, amount } = { ...balance }
+                  const { shares } = { ...delegation }
                   const asset_data = getAssetData(denom, assets_data)
-
-                  const {
-                    symbol,
-                    decimals,
-                  } = { ...asset_data }
-
+                  const { symbol, decimals } = { ...asset_data }
                   return {
                     ...delegation,
                     shares: formatUnits(shares, decimals),
@@ -160,7 +110,6 @@ export default () => {
               ),
               'delegator_address',
             )
-
             page_key = pagination?.next_key
             setDelegations(data)
           }
@@ -174,31 +123,18 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const {
-          latest_block_height,
-        } = { ...status_data }
+        const { latest_block_height } = { ...status_data }
 
         if (address?.startsWith('axelarvaloper') && latest_block_height && validators_data) {
-          const {
-            consensus_address,
-          } = { ...validators_data.find(v => equalsIgnoreCase(v.operator_address, address)) }
-
+          const { consensus_address } = { ...validators_data.find(v => equalsIgnoreCase(v.operator_address, address)) }
           const toBlock = latest_block_height - 1
           const fromBlock = toBlock - PAGE_SIZE
-
-          const {
-            data,
-          } = { ...await searchUptimes({ fromBlock, toBlock, size: PAGE_SIZE }) }
-
+          const { data } = { ...await searchUptimes({ fromBlock, toBlock, size: PAGE_SIZE }) }
           setUptimes(
             _.range(0, PAGE_SIZE).map(i => {
               const height = toBlock - i
               const d = toArray(data).find(d => d.height === height)
-
-              const {
-                validators,
-              } = { ...d }
-
+              const { validators } = { ...d }
               return {
                 ...d,
                 height,
@@ -216,31 +152,18 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const {
-          latest_block_height,
-        } = { ...status_data }
+        const { latest_block_height } = { ...status_data }
 
         if (address?.startsWith('axelarvaloper') && latest_block_height && validators_data) {
-          const {
-            broadcaster_address,
-          } = { ...validators_data.find(v => equalsIgnoreCase(v.operator_address, address)) }
-
+          const { broadcaster_address } = { ...validators_data.find(v => equalsIgnoreCase(v.operator_address, address)) }
           const fromBlock = startBlock(latest_block_height - (PAGE_SIZE * NUM_BLOCKS_PER_HEARTBEAT))
           const toBlock = endBlock(latest_block_height)
-
-          const {
-            data,
-          } = { ...(broadcaster_address && await searchHeartbeats({ sender: broadcaster_address, fromBlock, toBlock, size: PAGE_SIZE })) }
-
+          const { data } = { ...(broadcaster_address && await searchHeartbeats({ sender: broadcaster_address, fromBlock, toBlock, size: PAGE_SIZE })) }
           setHeartbeats(
             _.range(0, PAGE_SIZE).map(i => {
               const height = startBlock(toBlock - (i * NUM_BLOCKS_PER_HEARTBEAT))
               const d = toArray(data).find(d => d.period_height === height)
-
-              const {
-                sender,
-              } = { ...d }
-
+              const { sender } = { ...d }
               return {
                 ...d,
                 period_height: height,
@@ -258,23 +181,13 @@ export default () => {
   useEffect(
     () => {
       const getData = async () => {
-        const {
-          latest_block_height,
-        } = { ...status_data }
-
-        const {
-          broadcaster_address,
-          supported_chains,
-        } = { ...data }
+        const { latest_block_height } = { ...status_data }
+        const { broadcaster_address, supported_chains } = { ...data }
 
         if (address?.startsWith('axelarvaloper') && latest_block_height && data) {
           const toBlock = latest_block_height
           const fromBlock = toBlock - 10000
-
-          const {
-            data,
-          } = { ...(broadcaster_address && await searchPolls({ voter: broadcaster_address, fromBlock, toBlock, size: PAGE_SIZE })) }
-
+          const { data } = { ...(broadcaster_address && await searchPolls({ voter: broadcaster_address, fromBlock, toBlock, size: PAGE_SIZE })) }
           setVotes(
             toArray(data).map(d =>
               Object.fromEntries(

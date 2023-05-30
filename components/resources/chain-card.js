@@ -9,17 +9,9 @@ import ValueBox from '../value-box'
 import { toArray, getTitle } from '../../lib/utils'
 
 export default ({ data }) => {
-  const {
-    contracts,
-  } = useSelector(state => ({ contracts: state.contracts }), shallowEqual)
-  const {
-    contracts_data,
-  } = { ...contracts }
-
-  const {
-    gateway_contracts,
-    gas_service_contracts,
-  } = { ...contracts_data }
+  const { contracts } = useSelector(state => ({ contracts: state.contracts }), shallowEqual)
+  const { contracts_data } = { ...contracts }
+  const { gateway_contracts, gas_service_contracts } = { ...contracts_data }
 
   const {
     id,
@@ -32,16 +24,8 @@ export default ({ data }) => {
     prefix_address,
     chain_type,
   } = { ...data }
-
-  const {
-    rpc,
-    lcd,
-  } = { ...endpoints }
-
-  const {
-    url,
-    address_path,
-  } = { ...explorer }
+  const { rpc, lcd } = { ...endpoints }
+  const { url, address_path } = { ...explorer }
 
   const gateway_address = gateway_contracts?.[id]?.address
   const gas_service_address = gas_service_contracts?.[id]?.address

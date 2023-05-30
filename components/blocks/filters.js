@@ -10,11 +10,7 @@ import { toArray, getQueryParams, createDayJSFromUnixtime } from '../../lib/util
 
 export default () => {
   const router = useRouter()
-  const {
-    pathname,
-    asPath,
-    query,
-  } = { ...router }
+  const { pathname, asPath, query } = { ...router }
 
   const [filters, setFilters] = useState(null)
   const [filterTrigger, setFilterTrigger] = useState(undefined)
@@ -111,11 +107,7 @@ export default () => {
                     className="form-select bg-slate-50"
                   >
                     {toArray(options).map((o, i) => {
-                      const {
-                        title,
-                        value,
-                      } = { ...o }
-
+                      const { title, value } = { ...o }
                       return (
                         <option
                           key={i}

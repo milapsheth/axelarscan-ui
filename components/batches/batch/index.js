@@ -28,42 +28,15 @@ const EXECUTE_PERIOD_SECONDS = 10 * 60
 const TIME_FORMAT = 'MMM D, YYYY h:mm:ss A'
 
 export default () => {
-  const {
-    chains,
-    assets,
-    wallet,
-  } = useSelector(
-    state => (
-      {
-        chains: state.chains,
-        assets: state.assets,
-        wallet: state.wallet,
-      }
-    ),
-    shallowEqual,
-  )
-  const {
-    chains_data,
-  } = { ...chains }
-  const {
-    assets_data,
-  } = { ...assets }
-  const {
-    wallet_data,
-  } = { ...wallet }
-  const {
-    signer,
-  } = { ...wallet_data }
+  const { chains, assets, wallet } = useSelector(state => ({ chains: state.chains, assets: state.assets, wallet: state.wallet }), shallowEqual)
+  const { chains_data } = { ...chains }
+  const { assets_data } = { ...assets }
+  const { wallet_data } = { ...wallet }
+  const { signer } = { ...wallet_data }
 
   const router = useRouter()
-  const {
-    pathname,
-    query,
-  } = { ...router }
-  const {
-    chain,
-    id,
-  } = { ...query }
+  const { pathname, query } = { ...router }
+  const { chain, id } = { ...query }
 
   const [data, setData] = useState(null)
   const [types, setTypes] = useState(null)
@@ -89,10 +62,7 @@ export default () => {
   useEffect(
     () => {
       if (data) {
-        const {
-          commands,
-        } = { ...data }
-
+        const { commands } = { ...data }
         setTypes(_.countBy(_.uniqBy(toArray(commands), 'id'), 'type'))
       }
     },
@@ -109,24 +79,16 @@ export default () => {
     prev_batched_commands_id,
     proof,
   } = { ...data }
-
-  const {
-    signatures,
-  } = { ...proof }
+  const { signatures } = { ...proof }
 
   const execute = async () => {
     if (execute_data && signer) {
       setExecuting(true)
       setExecuteResponse({ status: 'pending', message: 'Executing...' })
       try {
-        const {
-          hash,
-        } = { ...await signer.sendTransaction({ to: gateway_address, data: `0x${execute_data}` }) }
+        const { hash } = { ...await signer.sendTransaction({ to: gateway_address, data: `0x${execute_data}` }) }
         setExecuteResponse({ status: 'pending', message: 'Wait for Confirmation', hash })
-
-        const {
-          status,
-        } = { ...hash && await signer.provider.waitForTransaction(hash) }
+        const { status } = { ...hash && await signer.provider.waitForTransaction(hash) }
         setExecuteResponse({ status: status ? 'success' : 'error', message: status ? 'Execute successful' : 'Failed to execute', hash })
       } catch (error) {
         setExecuteResponse({ status: 'error', ...parseError(error) })
@@ -139,25 +101,14 @@ export default () => {
   const matched = equalsIgnoreCase(id, data?.id)
   const executed = toArray(commands).length === toArray(commands).filter(d => d.executed).length
   const chain_data = getChainData(chain, chains_data)
+  const { chain_id, name, image, explorer, gateway_address } = { ...chain_data }
+  const { url, transaction_path } = { ...explorer }
 
-  const {
-    chain_id,
-    name,
-    image,
-    explorer,
-    gateway_address,
-  } = { ...chain_data }
-
-  const {
-    url,
-    transaction_path,
-  } = { ...explorer }
-
-  const wrong_chain = chain_id && chain_id !== wallet_data?.chain_id
+  const wrongChain = chain_id && chain_id !== wallet_data?.chain_id
   const executeButton =
     matched && equalsIgnoreCase(status, 'BATCHED_COMMANDS_STATUS_SIGNED') && execute_data && !executed && moment().diff(moment(created_at?.ms), 'seconds') > EXECUTE_PERIOD_SECONDS && (
       <div className="flex items-center space-x-2">
-        {signer && !wrong_chain && (
+        {signer && !wrongChain && (
           <button
             disabled={executing}
             onClick={() => execute()}
@@ -173,10 +124,7 @@ export default () => {
       </div>
     )
 
-  const {
-    message,
-    hash,
-  } = { ...executeResponse }
+  const { message, hash } = { ...executeResponse }
   const _status = executeResponse?.status
 
   return (
@@ -251,14 +199,8 @@ export default () => {
                   accessor: 'id',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      transactionHash,
-                    } = { ...row.original }
+                    const { value, row } = { ...props }
+                    const { transactionHash } = { ...row.original }
 
                     const idComponent = value && (
                       <span className="font-medium">
@@ -292,15 +234,8 @@ export default () => {
                   accessor: 'type',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      transactionHash,
-                      executed,
-                    } = { ...row.original }
+                    const { value, row } = { ...props }
+                    const { transactionHash, executed } = { ...row.original }
 
                     const typeComponent = (
                       <Tooltip content={executed ? 'Executed' : 'Unexecuted'}>
@@ -335,18 +270,8 @@ export default () => {
                   accessor: 'params.account',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      value,
-                      row,
-                    } = { ...props }
-
-                    const {
-                      id,
-                      type,
-                      params,
-                      deposit_address,
-                    } = { ...row.original }
-
+                    const { value, row } = { ...props }
+                    const { id, type, params, deposit_address } = { ...row.original }
                     const {
                       name,
                       cap,
@@ -359,10 +284,8 @@ export default () => {
                       sourceTxHash,
                       contractAddress,
                     } = { ...params }
-
                     const transfer_id = parseInt(id, 16)
                     const source_chain_data = getChainData(sourceChain, chains_data)
-
                     return (
                       value ?
                         <div className="flex flex-wrap items-start">
@@ -509,24 +432,11 @@ export default () => {
                   accessor: 'params.amount',
                   disableSortBy: true,
                   Cell: props => {
-                    const {
-                      params,
-                    } = { ...props.row.original }
-
-                    const {
-                      amount,
-                      newThreshold,
-                    } = { ...params }
-                    let {
-                      symbol,
-                      decimals,
-                    } = { ...params }
-
+                    const { params } = { ...props.row.original }
+                    const { amount,  newThreshold } = { ...params }
+                    let { symbol, decimals } = { ...params }
                     const asset_data = getAssetData(symbol, assets_data)
-
-                    const {
-                      addresses,
-                    } = { ...asset_data }
+                    const { addresses } = { ...asset_data }
 
                     const token_data = addresses?.[chain]
                     symbol = token_data?.symbol || asset_data?.symbol || symbol
